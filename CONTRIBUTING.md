@@ -67,7 +67,7 @@ Let’s get your copy of Nudj up and running.
 # Fork the repo on GitHub, then:
 git clone https://github.com/YOUR-USERNAME/Nudj.git
 cd Nudj
-git remote add upstream https://github.com/BSoC-org/Nudj.git
+git remote add upstream https://github.com/bsoc-bitbyte/Nudj.git
 git remote -v
 ```
 

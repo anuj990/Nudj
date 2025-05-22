@@ -1,7 +1,6 @@
 
-<!-- Logo section -->
 <p align="center">
-  <img src="/app/src/main/ic_launcher-playstore.png" alt="Nudj Logo" width="180" height="180"/>
+  <img src="/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp" alt="Nudj Logo" width="180" height="180"/>
 </p>
 
 <h1 align="center">Nudj 📲</h1>
