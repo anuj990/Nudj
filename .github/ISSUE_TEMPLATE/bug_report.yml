@@ -1,0 +1,66 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in Nudj
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Nudj! Please fill out the form below so we can identify and fix the issue effectively.
+  - type: input
+    id: bug-description
+    attributes:
+      label: Bug Description
+      description: Clearly describe what the bug is and where it occurs (e.g., screen, component, or feature).
+      placeholder: "Example: Tapping on the 'Login' button doesn't navigate to the home screen."
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Describe the exact steps to reproduce the issue so we can try it ourselves.
+      placeholder: |
+        1. Launch the app
+        2. Navigate to the Login screen
+        3. Enter credentials and tap Login
+        4. Observe that nothing happens
+    validations:
+      required: true
+  - type: input
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should ideally happen when the above steps are followed?
+      placeholder: "Example: The user should be redirected to the home screen after successful login."
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened? Include any error messages or misbehaviors.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or Logs (if applicable)
+      description: Attach screenshots or logs that might help us diagnose the issue.
+    validations:
+      required: false
+  - type: input
+    id: environment
+    attributes:
+      label: Environment Details
+      description: Include platform (Web/Android/iOS), device info, OS, browser, app version, etc.
+      placeholder: "Example: Android 13, Pixel 5, Nudj v1.2.0"
+    validations:
+      required: false
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Mention if the issue involves Firebase, animations, Jetpack Compose UI components, etc.
+    validations:
+      required: false

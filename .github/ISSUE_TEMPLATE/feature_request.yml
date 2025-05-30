@@ -1,0 +1,43 @@
+name: Feature Request
+description: Suggest a meaningful improvement or new feature for Nudj
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new feature!  
+        Please ensure it's a **genuine enhancement** – avoid creating ideas for the sake of contributing.  
+        Only create an issue if you're confident it adds real value to Nudj. Suggestions will be reviewed and assigned based on their impact and feasibility.
+  - type: input
+    id: problem-description
+    attributes:
+      label: Is your feature request related to a problem?
+      description: Clearly describe the problem or limitation you’re facing. For example, "Users can't filter news by category."
+      placeholder: "Example: It’s difficult to find articles from a specific domain or category."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the solution you'd like
+      description: What would be an effective and feasible solution or feature to solve the problem?
+      placeholder: "Example: Add a category filter on the Home screen using Jetpack Compose Dropdown."
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Briefly mention any alternate ideas or approaches you considered.
+      placeholder: "Example: I thought about showing recommended tags but a filter seemed more user-friendly."
+    validations:
+      required: false
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add context like related Firebase logic, UI elements, or example apps. Screenshots/mockups are welcome.
+      placeholder: "Example: This feature could help customize feed logic via Firebase user preferences."
+    validations:
+      required: false

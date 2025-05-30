@@ -86,7 +86,7 @@ Feel free to reach out on the discussion channel if you’re stuck, confused, or
 
 ---
 
-## 📦 Getting Started
+## Getting Started
 
 1. Fork this repo  
 2. Clone it 🔽
