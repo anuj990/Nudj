@@ -1,11 +1,5 @@
+
 # Contributing to Nudj
-
-Hey there, awesome human!
-Welcome to **Nudj** – your one-stop app for never missing out on college events again. We're stoked to have you here and hope you’re ready to build something amazing with us. This guide will help you get started, stay on track, and make the most out of your open-source journey with us during **BSoC**.
-
-Let's nudge productivity in the right direction.
-
----
 
 ## Quick Links
 
@@ -17,90 +11,92 @@ Let's nudge productivity in the right direction.
         * [Fork & Clone](#fork--clone)
         * [Work on Pull Request](#work-on-pull-request)
         * [Keep Your Fork Updated](#keep-your-fork-updated)
+* [Guidelines](#guidelines)
 * [Need Help?](#need-help)
 
 ---
 
-## 🛠 Getting Started
+## Getting Started
 
-We’re keeping it structured but super chill.
-You’ll contribute through **Issues** (bugs/features/UI tasks) and **Pull Requests** (your awesome solutions). But first:
+We keep things structured but simple.
+You’ll contribute through **Issues** (bugs, features, UI tasks) and **Pull Requests** (your solutions). But first:
 
-* **Look before you leap**: Check if an Issue or PR already exists before making a new one.
-* **One change = One PR**: Keep things neat and focused.
-* **Respect time**: We’ll try to review quickly, but life happens — a friendly ping always helps!
+* Check if an Issue or PR already exists before creating a new one.
+* One change = One PR. Keep things focused.
+* We try to review quickly, but delays can happen — a friendly follow-up is welcome.
 
 ---
 
 ### Issues
 
-Issues = To-do list + Idea board + Bug tracker.
+Issues act as our to-do list, idea board, and bug tracker.
+
 You can:
 
-* Report bugs 🐛
-* Suggest features 💡
-* Ask questions or share thoughts 🧠
+* Report bugs
+* Suggest meaningful enhancements
+* Ask relevant questions
 
-You’ll see templates guiding you to share helpful info. If someone’s already reported the same thing, join the convo instead of making duplicates!
+Use the provided templates to ensure clarity. If your concern already exists as an issue, contribute to that thread instead of creating a duplicate.
 
 ---
 
 ### Pull Requests
 
-Pull Requests = Your playground to show us what you’ve got!
+Pull Requests are where you showcase your contribution.
 
 A good PR:
 
-* Solves one thing cleanly ✅
-* Follows the template 📋
-* Doesn’t mix style fixes + big features 🙅‍♂️
+* Addresses a single issue cleanly
+* Uses the provided template
+* Avoids mixing style changes with major features
 
-Start small – we love seeing your creative takes on UI components, and then we’ll dive deeper into logic and Firebase magic later!
+Start small — UI components are a great entry point. As you progress, you can take on more complex features like logic and backend integrations.
 
 ---
 
 #### Fork & Clone
 
-Let’s get your copy of Nudj up and running.
+To work locally:
 
 ```bash
-# Fork the repo on GitHub, then:
+# Fork the repository on GitHub, then:
 git clone https://github.com/YOUR-USERNAME/Nudj.git
 cd Nudj
 git remote add upstream https://github.com/bsoc-bitbyte/Nudj.git
 git remote -v
 ```
 
-✅ `origin` points to *your* fork.
-✅ `upstream` points to *us*.
+* `origin` points to your fork
+* `upstream` points to the original Nudj repo
 
 ---
 
 #### Work on Pull Request
 
 ```bash
-# Create a new branch for your work
-git checkout -b cool-feature
+# Create a new branch for your changes
+git checkout -b your-branch-name
 
-# Make your changes (code, test, repeat)
+# Make your changes, test them, then:
 git add .
-git commit -m "Add: Sparkly new feature"
+git commit -m "Add: Description of your feature or fix"
 
 # Push to your fork
-git push origin cool-feature
+git push origin your-branch-name
 ```
 
-Now head to GitHub, hit “Compare & pull request,” fill out the PR template, and boom — you're in the game!
+Then, go to GitHub, open a pull request from your branch, and fill in the PR template.
 
-Need to fix something? Just push to the same branch and GitHub will auto-update the PR.
+If you need to make updates, just push more commits to the same branch — the PR will auto-update.
 
-**Golden Rule**: Never commit directly to `main` in your fork. Keep it squeaky clean
+**Important**: Never commit directly to `main` on your fork. Keep it clean.
 
 ---
 
 #### Keep Your Fork Updated
 
-Don’t let your fork fall behind! Stay synced with us like this:
+Keep your fork in sync with the main repository:
 
 ```bash
 git checkout main
@@ -108,26 +104,33 @@ git pull upstream main
 git push origin main
 ```
 
-Repeat weekly or before starting new work!
+Do this regularly or before starting new work.
+
+---
+
+## Guidelines
+
+Please follow these contribution standards:
+
+* Only mentors or maintainers will create issues related to features, bugs, or assignments.
+* Create an issue only if it is a genuine bug or valuable enhancement — avoid unnecessary or spam issues.
+* Before working on any issue, comment your approach in detail.
+* The issue will be assigned based on the most suitable approach — do not spam multiple issues.
+* Once assigned, focus solely on that issue — avoid contributing to others in parallel.
+* Maintain a clean commit history and write clear, meaningful pull requests.
+* Submitting AI-generated code is strictly prohibited and will result in removal from the project.
 
 ---
 
 ## Need Help?
 
-We gotchu 💬
-Join the fun on our [BSoC Discord](https://discord.gg/wsTZBRMqdg) and ask away in the correct channel.
-
-Just tag your message clearly and someone will swoop in to help.
+Join our [BSoC Discord](https://discord.gg/wsTZBRMqdg) and ask questions in the appropriate channels.
+Be clear and specific in your message, and someone will assist you.
 
 ---
 
-## Final Nudj
+## Final Notes
 
-* Don’t forget to read the [README.md](./README.md) – it’s where the magic begins ✨
-* Ready to roll? Let’s ship it together. 🔥
-
----
-
-👾 Built with 💙 by Team Nudj
-Let’s nudge things in the right direction!
+* Make sure to read the [README.md](./README.md) for project context and setup instructions.
+* If you're ready, let's build something great together.
 
