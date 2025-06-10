@@ -1,6 +1,7 @@
 package com.tpc.nudj.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,9 +25,9 @@ fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    isDark: Boolean
 ) {
-    val buttonColor = if (isDark) Purple else Orange
+
+    val buttonColor = if (isSystemInDarkTheme()) Purple else Orange
     val contentColor = Color.White
     val disabledBackgroundColor = buttonColor.copy(alpha = 0.6f)
     val disabledTextColor = contentColor.copy(alpha = 0.6f)
@@ -61,10 +62,9 @@ fun SecondaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    isDark: Boolean
 ) {
     val buttonColor = Color.White
-    val contentColor = if (isDark) Purple else Orange
+    val contentColor = if (isSystemInDarkTheme()) Purple else Orange
     val disabledBackgroundColor = buttonColor.copy(alpha = 0.6f)
     val disabledTextColor = contentColor.copy(alpha = 0.6f)
 
@@ -100,10 +100,8 @@ fun TertiaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    isDark: Boolean
 ) {
-    val buttonColor = if(isDark) Purple else Color.White
-    val contentColor = if (isDark) Color.White else Purple
+    val contentColor = if (isSystemInDarkTheme()) Color.White else Purple
 
     TextButton(
         onClick = onClick,
@@ -111,7 +109,6 @@ fun TertiaryButton(
         modifier = modifier
             .padding(16.dp),
         colors = ButtonDefaults.textButtonColors(
-            containerColor = buttonColor,
             contentColor = contentColor,
         )
     ) {
@@ -130,79 +127,44 @@ fun TertiaryButton(
 
 
 @Preview(showBackground = true, showSystemUi = false)
-@Composable
-fun PrimaryButtonLightModePreview(modifier: Modifier = Modifier) {
-    PrimaryButton(
-        text = "Edit",
-        onClick = {
-            // onClick logic
-        },
-        enabled = true,
-        isDark = false
-    )
-}
-
 @Preview(showBackground = true, showSystemUi = false, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PrimaryButtonDarkModePreview(modifier: Modifier = Modifier) {
+fun PrimaryButtonPreview(modifier: Modifier = Modifier) {
     PrimaryButton(
         text = "Edit",
         onClick = {
             // onClick logic
         },
-        enabled = true,
-        isDark = true
+        enabled = true
     )
 }
 
+
+@Preview(showBackground = true, showSystemUi = false, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, showSystemUi = false)
 @Composable
-fun SecondaryButtonLightModePreview(modifier: Modifier = Modifier) {
+fun SecondaryButtonPreview(modifier: Modifier = Modifier) {
     SecondaryButton(
         text = "Edit",
         onClick = {
             // onClick logic
         },
         enabled = true,
-        isDark = false
     )
 }
+
 
 @Preview(showBackground = true, showSystemUi = false, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun SecondaryButtonDarkModePreview(modifier: Modifier = Modifier) {
-    SecondaryButton(
-        text = "Edit",
-        onClick = {
-            // onClick logic
-        },
-        enabled = true,
-        isDark = true
-    )
-}
-
 @Preview(showBackground = true, showSystemUi = false)
 @Composable
-fun TertiaryButtonLightModePreview(modifier: Modifier = Modifier) {
+fun TertiaryButtonPreview(modifier: Modifier = Modifier) {
     TertiaryButton(
         text = "Edit",
         onClick = {
             // onClick logic
         },
         enabled = true,
-        isDark = false
     )
 }
 
-@Preview(showBackground = true, showSystemUi = false, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun TertiaryButtonDarkModePreview(modifier: Modifier = Modifier) {
-    TertiaryButton(
-        text = "Edit",
-        onClick = {
-            // onClick logic
-        },
-        enabled = true,
-        isDark = true
-    )
-}
+
