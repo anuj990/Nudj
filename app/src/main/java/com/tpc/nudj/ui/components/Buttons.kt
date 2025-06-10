@@ -25,9 +25,12 @@ fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    isDarkModeEnabled: Boolean
 ) {
+    val isSystemDark = isSystemInDarkTheme()
+    val useDarkTheme = isDarkModeEnabled && isSystemDark
 
-    val buttonColor = if (isSystemInDarkTheme()) Purple else Orange
+    val buttonColor = if (useDarkTheme) Purple else Orange
     val contentColor = Color.White
     val disabledBackgroundColor = buttonColor.copy(alpha = 0.6f)
     val disabledTextColor = contentColor.copy(alpha = 0.6f)
@@ -56,15 +59,20 @@ fun PrimaryButton(
     }
 }
 
+
 @Composable
 fun SecondaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    isDarkModeEnabled: Boolean
 ) {
+    val isSystemDark = isSystemInDarkTheme()
+    val useDarkTheme = isDarkModeEnabled && isSystemDark
+
     val buttonColor = Color.White
-    val contentColor = if (isSystemInDarkTheme()) Purple else Orange
+    val contentColor = if (useDarkTheme) Purple else Orange
     val disabledBackgroundColor = buttonColor.copy(alpha = 0.6f)
     val disabledTextColor = contentColor.copy(alpha = 0.6f)
 
@@ -100,8 +108,12 @@ fun TertiaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    isDarkModeEnabled: Boolean
 ) {
-    val contentColor = if (isSystemInDarkTheme()) Color.White else Purple
+    val isSystemDark = isSystemInDarkTheme()
+    val useDarkTheme = isDarkModeEnabled && isSystemDark
+
+    val contentColor = if (useDarkTheme) Color.White else Purple
 
     TextButton(
         onClick = onClick,
@@ -125,7 +137,6 @@ fun TertiaryButton(
 }
 
 
-
 @Preview(showBackground = true, showSystemUi = false)
 @Preview(showBackground = true, showSystemUi = false, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -135,7 +146,8 @@ fun PrimaryButtonPreview(modifier: Modifier = Modifier) {
         onClick = {
             // onClick logic
         },
-        enabled = true
+        enabled = true,
+        isDarkModeEnabled = true
     )
 }
 
@@ -150,6 +162,7 @@ fun SecondaryButtonPreview(modifier: Modifier = Modifier) {
             // onClick logic
         },
         enabled = true,
+        isDarkModeEnabled = true
     )
 }
 
@@ -164,6 +177,7 @@ fun TertiaryButtonPreview(modifier: Modifier = Modifier) {
             // onClick logic
         },
         enabled = true,
+        isDarkModeEnabled = true
     )
 }
 
