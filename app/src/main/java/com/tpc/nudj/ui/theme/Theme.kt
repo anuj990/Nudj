@@ -11,6 +11,10 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.CompositionLocalProvider
+
+val LocalAppColors = staticCompositionLocalOf { LightColorScheme }
 
 data class AppColors(
     // Variables for Landing Page
@@ -82,4 +86,10 @@ fun NudjTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    CompositionLocalProvider(LocalAppColors provides colorScheme) {
+        MaterialTheme(
+            colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme(),
+            content = content
+        )
+    }
 }
