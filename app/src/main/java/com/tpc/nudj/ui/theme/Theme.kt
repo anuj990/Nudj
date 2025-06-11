@@ -52,7 +52,7 @@ private val LightColorScheme = AppColors(
     viewText = Orange,
     editText = Color.Black,
     editTextBorder = Purple,
-    editTextBackground = Color.White,
+    editTextBackground = EditTextBackgroundColorLight,
     fillButtonBackground = Orange,
 
     forgetPasswordText = Color.Black,
