@@ -11,14 +11,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,11 +22,11 @@ import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 
 @Composable
-fun EmailField(
+fun NudjTextField(
     modifier: Modifier = Modifier,
-    email: String = "",
-    onEmailChange: (String) -> Unit
-
+    label: String,
+    value: String = "",
+    onValueChange: (String) -> Unit
 ) {
     val colors = LocalAppColors.current
 
@@ -41,7 +36,7 @@ fun EmailField(
             .padding(horizontal = 44.dp)
     ) {
         Text(
-            text = "Email",
+            text = label,
             modifier = Modifier
                 .align(Alignment.Start),
             fontSize = 18.sp,
@@ -49,8 +44,8 @@ fun EmailField(
             color = colors.viewText
         )
         OutlinedTextField(
-            value = email,
-            onValueChange = onEmailChange,
+            value = value,
+            onValueChange = onValueChange,
             modifier = modifier
                 .border(width = 1.8F.dp, color = colors.editTextBorder,shape = RoundedCornerShape(16.dp))
                 .background(colors.editTextBackground, shape = RoundedCornerShape(24.dp))
@@ -65,78 +60,14 @@ fun EmailField(
     }
 }
 
-@Composable
-fun PasswordField(
-    modifier: Modifier = Modifier,
-    password: String = "",
-    onPasswordChange: (String) -> Unit
-) {
-    val colors = LocalAppColors.current
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 44.dp)
-    ) {
-        Text(
-            text = "Password",
-            modifier = Modifier
-                .align(Alignment.Start) ,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.W400,
-            fontFamily = ClashDisplay,
-            color = colors.viewText
-        )
-        OutlinedTextField(
-            value = password,
-            onValueChange = onPasswordChange,
-            modifier = modifier
-                .border(width = 1.8F.dp, colors.editTextBorder,shape = RoundedCornerShape(16.dp))
-                .background(colors.editTextBackground, shape = RoundedCornerShape(24.dp))
-                .fillMaxWidth()
-                .height(60.dp),
-            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 28.sp,fontFamily = ClashDisplay),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
-            ),
-            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation()
-        )
-    }
-}
 
-
-@Preview(
-    name = "EmailFieldPreview-LightTheme",
-    showBackground = true
-)
-@Preview(
-    name = "EmailFieldPreview-DarkTheme",
-    showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
-    backgroundColor = 0xFF3F1872
-)
+@Preview(name = "Text Field Light Mode", showBackground = true)
+@Preview(name = "Text Field Dark Mode", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF3F1872)
 @Composable
-fun EmailFieldPreview() {
+fun NudjTextFieldPreview() {
     NudjTheme {
-        var email by remember { mutableStateOf("") }
-        EmailField(email = email, onEmailChange = { email = it })
-    }
-}
-
-@Preview(
-    name = "PasswordFieldPreview-LightTheme",
-    showBackground = true
-)
-@Preview(
-    name = "PasswordFieldPreview-DarkTheme",
-    showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
-    backgroundColor = 0xFF3F1872
-)
-@Composable
-fun PasswordFieldPreview() {
-    NudjTheme {
-        var password by remember { mutableStateOf("") }
-        PasswordField(password = password, onPasswordChange = { password = it })
+        NudjTextField(
+            label = "Text Field"
+        ) {}
     }
 }
