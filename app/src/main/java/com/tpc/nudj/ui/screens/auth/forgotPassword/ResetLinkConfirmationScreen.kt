@@ -1,6 +1,8 @@
 package com.tpc.nudj.ui.screens.auth.forgotPassword
 
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -14,14 +16,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.theme.Purple
@@ -30,21 +33,23 @@ import com.tpc.nudj.ui.components.PrimaryButton
 import com.tpc.nudj.ui.components.TertiaryButton
 import com.tpc.nudj.ui.theme.LocalAppColors
 
+
 @Composable
 fun ResetLinkConfirmationScreen(
     viewModel: ForgetPasswordScreenModel = hiltViewModel()
 ) {
+
     ResetLinkConfirmationScreenLayout(
-        onCheckInboxClicked = viewModel::onCheckInboxClicked,
         onResendEmail = viewModel::resendEmail
     )
 }
 
 @Composable
 fun ResetLinkConfirmationScreenLayout(
-    onCheckInboxClicked: () -> Unit,
     onResendEmail: () -> Unit
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -69,7 +74,12 @@ fun ResetLinkConfirmationScreenLayout(
         )
         Spacer(modifier = Modifier.padding(40.dp))
         PrimaryButton(
-            text = "Check Inbox", onClick = onCheckInboxClicked, modifier = Modifier.align(
+            text = "Check Inbox", onClick = {
+                val intent = Intent(Intent.ACTION_MAIN).apply {
+                    addCategory(Intent.CATEGORY_APP_EMAIL)
+                }
+                context.startActivity(intent)
+            }, modifier = Modifier.align(
                 Alignment.CenterHorizontally
             ), isDarkModeEnabled = false
         )
@@ -88,6 +98,6 @@ fun ResetLinkConfirmationScreenLayout(
 @Composable
 fun ResetLinkConfirmationScreenPreview() {
     NudjTheme {
-        ResetLinkConfirmationScreenLayout(onResendEmail = {}, onCheckInboxClicked = {})
+        ResetLinkConfirmationScreenLayout(onResendEmail = {})
     }
 }

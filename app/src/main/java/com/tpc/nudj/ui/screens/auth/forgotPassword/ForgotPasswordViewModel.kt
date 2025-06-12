@@ -15,7 +15,6 @@ class ForgetPasswordScreenModel @Inject constructor(
 ): ViewModel() {
     private val _forgetPasswordUiState = MutableStateFlow(ForgetPasswordUiState())
     val forgetPasswordUiState: StateFlow<ForgetPasswordUiState> = _forgetPasswordUiState.asStateFlow()
-
     fun emailInput(input:String){
         _forgetPasswordUiState.update {
             it.copy(
