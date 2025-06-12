@@ -26,7 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.R
-import com.tpc.nudj.ui.components.NudjTextField
+import com.tpc.nudj.ui.components.EmailField
+import com.tpc.nudj.ui.components.PasswordField
 import com.tpc.nudj.ui.components.PrimaryButton
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.LocalAppColors
@@ -97,23 +98,24 @@ fun SignUpScreenLayout(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                NudjTextField(
-                    label = "Email",
-                    value = uiState.email,
-                    onValueChange = onEmailChange
+                EmailField(
+                    email = uiState.email,
+                    onEmailChange = onEmailChange
                 )
 
-                NudjTextField(
-                    label = "Password",
-                    value = uiState.password,
-                    onValueChange = onPasswordChange
+                PasswordField(
+                    password = uiState.password,
+                    onPasswordChange = onPasswordChange,
+                    label = "Password"
                 )
 
-                NudjTextField(
-                    label = "Confirm Password",
-                    value = uiState.confirmPassword,
-                    onValueChange = onConfirmPasswordChange
+                PasswordField(
+                    password = uiState.confirmPassword,
+                    onPasswordChange = onConfirmPasswordChange,
+                    label = "Confirm Password"
                 )
+
+                Spacer(modifier = Modifier.height(24.dp))
 
                 PrimaryButton(
                     text = "Sign Up",
