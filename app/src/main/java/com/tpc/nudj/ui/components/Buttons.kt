@@ -2,16 +2,22 @@ package com.tpc.nudj.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,7 +31,8 @@ fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    isDarkModeEnabled: Boolean
+    isDarkModeEnabled: Boolean,
+    isLoading:Boolean =false
 ) {
     val isSystemDark = isSystemInDarkTheme()
     val useDarkTheme = isDarkModeEnabled && isSystemDark
@@ -39,23 +46,33 @@ fun PrimaryButton(
         onClick = onClick,
         enabled = enabled,
         modifier = modifier
-            .padding(16.dp)
+            .height(50.dp)
         ,
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColor ,
             contentColor = contentColor,
             disabledContainerColor = disabledBackgroundColor,
             disabledContentColor = disabledTextColor
-        )
+        ),
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontFamily = ClashDisplay
-            ),
-            modifier = modifier
-                .padding(horizontal = 16.dp)
-        )
+        if(isLoading){
+            CircularProgressIndicator(
+                color = Color.White,
+                strokeWidth = 2.dp,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+        else {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = ClashDisplay
+                ),
+                textAlign = TextAlign.Center,
+                modifier = modifier
+                    .padding(horizontal = 16.dp)
+            )
+        }
     }
 }
 
@@ -80,7 +97,7 @@ fun SecondaryButton(
         onClick = onClick,
         enabled = enabled,
         modifier = modifier
-            .padding(16.dp)
+            .height(50.dp)
         ,
         border = BorderStroke(1.dp, contentColor),
         colors = ButtonDefaults.outlinedButtonColors(
@@ -118,8 +135,7 @@ fun TertiaryButton(
     TextButton(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier
-            .padding(16.dp),
+        modifier = modifier,
         colors = ButtonDefaults.textButtonColors(
             contentColor = contentColor,
         )
