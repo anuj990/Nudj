@@ -2,6 +2,7 @@ package com.tpc.nudj.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,7 +60,7 @@ fun EmailField(
                 .background(colors.editTextBackground, shape = RoundedCornerShape(24.dp))
                 .fillMaxWidth()
                 .height(60.dp),
-            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 20.sp, fontFamily = ClashDisplay),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 20.sp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent
@@ -72,6 +76,7 @@ fun PasswordField(
     onPasswordChange: (String) -> Unit
 ) {
     val colors = LocalAppColors.current
+    var passwordVisible by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -94,12 +99,24 @@ fun PasswordField(
                 .background(colors.editTextBackground, shape = RoundedCornerShape(24.dp))
                 .fillMaxWidth()
                 .height(60.dp),
-            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 28.sp,fontFamily = ClashDisplay),
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 20.sp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent
             ),
-            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation()
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                Text(
+                    text = if (passwordVisible) "Hide" else "Show",
+                    color = colors.viewText,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.W500,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .clickable { passwordVisible = !passwordVisible }
+                )
+            }
         )
     }
 }
