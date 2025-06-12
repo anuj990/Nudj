@@ -16,8 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.tpc.nudj.ui.screens.auth.login.LoginScreen
 import com.tpc.nudj.ui.theme.NudjTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,32 +30,10 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)
                         .fillMaxSize()) {
-                        Greeting(
-                            name = "devs, Let's get started with Nudj!",
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                        )
+
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-            .fillMaxSize()
-            .padding(WindowInsets.systemBars.asPaddingValues())
-    )
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun GreetingPreview() {
-    NudjTheme {
-        Greeting("this is Nudj Preview")
     }
 }
