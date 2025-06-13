@@ -102,7 +102,7 @@ private fun LoginScreenLayout(
         ) {
             EmailField(email = uiState.email, onEmailChange = onEmailInput)
             Spacer(modifier = Modifier.height(24.dp))
-            PasswordField(password = uiState.password, onPasswordChange = onPasswordInput)
+            PasswordField(password = uiState.password, onPasswordChange = onPasswordInput, label = "Password")
 
             TertiaryButton(
                 text = "Forget Password?",

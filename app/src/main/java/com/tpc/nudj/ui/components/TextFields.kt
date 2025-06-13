@@ -73,7 +73,8 @@ fun EmailField(
 fun PasswordField(
     modifier: Modifier = Modifier,
     password: String = "",
-    onPasswordChange: (String) -> Unit
+    onPasswordChange: (String) -> Unit,
+    label: String
 ) {
     val colors = LocalAppColors.current
     var passwordVisible by remember { mutableStateOf(false) }
@@ -83,7 +84,7 @@ fun PasswordField(
             .padding(horizontal = 44.dp)
     ) {
         Text(
-            text = "Password",
+            text = label,
             modifier = Modifier
                 .align(Alignment.Start) ,
             fontSize = 18.sp,
@@ -154,6 +155,6 @@ fun EmailFieldPreview() {
 fun PasswordFieldPreview() {
     NudjTheme {
         var password by remember { mutableStateOf("") }
-        PasswordField(password = password, onPasswordChange = { password = it })
+        PasswordField(password = password, onPasswordChange = { password = it }, label = "Password")
     }
 }
