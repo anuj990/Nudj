@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -8,13 +11,24 @@ plugins {
     alias(libs.plugins.hilt)
 
     alias(libs.plugins.ksp)
+    alias(libs.plugins.google.gms.google.services)
 }
+
+val localPropertiesFile = rootProject.file("local.properties")
 
 android {
     namespace = "com.tpc.nudj"
     compileSdk = 36
 
     defaultConfig {
+        val localProperties = Properties()
+            .takeIf { localPropertiesFile.exists() }
+            ?.apply { load(FileInputStream(localPropertiesFile))}
+
+        fun addStringResource(name: String) = resValue("string", name, localProperties?.getProperty(name).toString())
+
+        addStringResource("WEB_CLIENT_ID")
+
         applicationId = "com.tpc.nudj"
         minSdk = 24
         targetSdk = 36
@@ -55,6 +69,12 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

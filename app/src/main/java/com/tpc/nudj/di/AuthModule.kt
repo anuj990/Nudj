@@ -1,7 +1,8 @@
 package com.tpc.nudj.di
 
+import android.content.Context
 import com.tpc.nudj.repository.auth.AuthRepository
-import com.tpc.nudj.repository.auth.FakeAuthRepository
+import com.tpc.nudj.repository.auth.FirebaseAuthRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,6 +14,7 @@ import javax.inject.Singleton
 object AuthModule {
     @Provides
     @Singleton
-    fun provideAuthRepository(): AuthRepository = FakeAuthRepository()
+    fun provideAuthRepository(): AuthRepository = FirebaseAuthRepository()
+
 }
 
