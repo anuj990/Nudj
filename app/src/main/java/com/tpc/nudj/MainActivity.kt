@@ -16,7 +16,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation3.runtime.entry
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
+import com.tpc.nudj.ui.TestScreen
+import com.tpc.nudj.ui.TestScreen2
+import com.tpc.nudj.ui.navigation.Screens
 import com.tpc.nudj.ui.screens.auth.login.LoginScreen
+import com.tpc.nudj.ui.screens.dashboard.DashboardScreen
 import com.tpc.nudj.ui.theme.NudjTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,12 +35,24 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NudjTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)
-                        .fillMaxSize()) {
+                var backstack = rememberNavBackStack(Screens.LoginScreen)
 
+                NavDisplay(
+                    backStack = backstack,
+                    modifier = Modifier.fillMaxSize(),
+                    entryProvider = entryProvider {
+                        entry<Screens.LoginScreen>{
+                            LoginScreen(
+                                onSignInComplete = {
+                                    backstack.add(Screens.DashboardScreen)
+                                }
+                            )
+                        }
+                        entry<Screens.DashboardScreen> {
+                            DashboardScreen()
+                        }
                     }
-                }
+                )
             }
         }
     }

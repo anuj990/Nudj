@@ -53,7 +53,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
+    onSignInComplete: ()->Unit
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.loginUiState.collectAsState()
     LoginScreenLayout(
         uiState = uiState,
@@ -61,7 +63,10 @@ fun LoginScreen(
         onPasswordInput = { password -> viewModel.passwordInput(password) },
         onForgetPasswordClicked = viewModel::onForgetPasswordClicked,
         onLoginClicked = viewModel::onLoginClicked,
-        onGoogleClicked = viewModel::onGoogleClicked,
+        onGoogleClicked = {
+            viewModel.onGoogleClicked(context, onSignInComplete)
+
+        },
         clearToastMessage = viewModel::clearError
     )
 }
