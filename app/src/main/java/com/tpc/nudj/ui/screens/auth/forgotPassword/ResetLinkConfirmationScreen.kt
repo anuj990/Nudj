@@ -2,7 +2,6 @@ package com.tpc.nudj.ui.screens.auth.forgotPassword
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement

@@ -11,12 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,44 +26,44 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tpc.nudj.ui.components.EmailField
 import com.tpc.nudj.ui.components.PasswordField
 import com.tpc.nudj.ui.components.PrimaryButton
 import com.tpc.nudj.ui.components.TertiaryButton
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.NudjTheme
-import com.tpc.nudj.ui.theme.Purple
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.tpc.nudj.ui.screens.auth.login.LoginViewModel
 import com.tpc.nudj.ui.theme.LocalAppColors
 import kotlinx.coroutines.launch
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.Scaffold
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    onSignInComplete: ()->Unit
+    onSignInComplete: () -> Unit = {},
+    onNavigateToForgotPassword: () -> Unit = {},
+    onNavigateToDetailsScreen: () -> Unit = {}
 ) {
-    val context = LocalContext.current
     val uiState by viewModel.loginUiState.collectAsState()
+    val context = LocalContext.current
+
     LoginScreenLayout(
         uiState = uiState,
-        onEmailInput = { email -> viewModel.emailInput(email) },
-        onPasswordInput = { password -> viewModel.passwordInput(password) },
-        onForgetPasswordClicked = viewModel::onForgetPasswordClicked,
-        onLoginClicked = viewModel::onLoginClicked,
+        onEmailInput = viewModel::emailInput,
+        onPasswordInput = viewModel::passwordInput,
+        onForgetPasswordClicked = {
+            viewModel.onForgetPasswordClicked(onNavigateToForgotPassword)
+        },
+        onLoginClicked = {
+            viewModel.onLoginClicked(onNavigateToDetailsScreen)
+        },
         onGoogleClicked = {
             viewModel.onGoogleClicked(context, onSignInComplete)
-
         },
         clearToastMessage = viewModel::clearError
     )
@@ -159,7 +157,7 @@ fun LoginScreenPreview() {
         LoginScreenLayout(
             uiState = LoginUiState(
                 email = "abc@iiitdmj.ac.in",
-                password = "password123",
+                password = "password123"
             ),
             onEmailInput = {},
             onPasswordInput = {},

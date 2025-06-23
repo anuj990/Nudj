@@ -1,12 +1,15 @@
 package com.tpc.nudj.ui.screens.auth.forgotPassword
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.tpc.nudj.model.AuthResult
 import com.tpc.nudj.repository.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,15 +32,16 @@ class ForgetPasswordScreenModel @Inject constructor(
             )
         }
     }
+
     fun onCheckInboxClicked(){
 
     }
 
-    fun resendEmail(){
-
+    fun resendEmail() {
+        onSendEmailClicked {}
     }
 
-    fun onSendEmailClicked(){
+    fun onSendEmailClicked(onResetSent: () -> Unit) {
         val email = _forgetPasswordUiState.value.email
 
         if (email.isBlank()) {
@@ -46,6 +50,32 @@ class ForgetPasswordScreenModel @Inject constructor(
             }
             return
         }
-       _forgetPasswordUiState.update { it.copy(isLoading = true, toastMessage = null) }
+
+        _forgetPasswordUiState.update { it.copy(isLoading = true, toastMessage = null) }
+
+        viewModelScope.launch {
+            authRepository.sendPasswordResetEmail(email).collect { result ->
+                when (result) {
+                    is AuthResult.Loading -> {
+                        _forgetPasswordUiState.update { it.copy(isLoading = true) }
+                    }
+
+                    is AuthResult.Success -> {
+                        _forgetPasswordUiState.update {
+                            it.copy(isLoading = false, toastMessage = "Reset link sent!")
+                        }
+                        onResetSent()
+                    }
+
+                    is AuthResult.Error -> {
+                        _forgetPasswordUiState.update {
+                            it.copy(isLoading = false, toastMessage = result.message)
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+        }
     }
 }

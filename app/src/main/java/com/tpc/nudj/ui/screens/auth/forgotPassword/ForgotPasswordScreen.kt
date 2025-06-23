@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -20,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tpc.nudj.ui.components.EmailField
 import com.tpc.nudj.ui.components.PrimaryButton
 import com.tpc.nudj.ui.theme.NudjTheme
@@ -31,18 +28,21 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.ui.theme.LocalAppColors
 import kotlinx.coroutines.launch
 
+
 @Composable
 fun ForgetPasswordScreen(
-    viewModel: ForgetPasswordScreenModel = hiltViewModel()
+    viewModel: ForgetPasswordScreenModel = hiltViewModel(),
+    onNavigateToResetConfirmation: () -> Unit = {}
 ) {
     val uiState by viewModel.forgetPasswordUiState.collectAsState()
     ForgetPasswordScreenLayout(
         uiState = uiState,
         onEmailInput = viewModel::emailInput,
-        onSendClicked = viewModel::onSendEmailClicked,
+        onSendClicked = { viewModel.onSendEmailClicked(onNavigateToResetConfirmation) },
         onClearToastMessage = viewModel::clearError
     )
 }
+
 
 @Composable
 fun ForgetPasswordScreenLayout(
