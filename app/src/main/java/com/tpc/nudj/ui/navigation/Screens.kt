@@ -10,4 +10,13 @@ sealed interface Screens: NavKey {
     @Serializable
     data object DashboardScreen: Screens
 
+    @Serializable
+    data object DetailsScreen: Screens
+
+    @Serializable
+    data object ForgotPasswordScreen : Screens
+
+    @Serializable
+    data object ResetConfirmationScreen : Screens
+
 }
