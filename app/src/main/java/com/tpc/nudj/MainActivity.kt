@@ -20,8 +20,6 @@ import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.tpc.nudj.ui.TestScreen
-import com.tpc.nudj.ui.TestScreen2
 import com.tpc.nudj.ui.navigation.Screens
 import com.tpc.nudj.ui.screens.auth.login.LoginScreen
 import com.tpc.nudj.ui.screens.dashboard.DashboardScreen
