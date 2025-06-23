@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Nudj</string>
+    <string name="home">HOME</string>
+    <string name="my_clubs">MY CLUBS</string>
+    <string name="rsvp">RSVP</string>
+    <string name="profile">PROFILE</string>
 </resources>
