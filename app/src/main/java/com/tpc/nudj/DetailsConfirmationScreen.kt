@@ -84,7 +84,7 @@ fun DetailsConfirmationScreenLayout(details: UserDetails) {
                 .width(345.dp)
                 .height(323.dp)
                 .background(color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(16.dp))
-                .border(width = 2.dp, color = Color(0xFF3F1872), shape = RoundedCornerShape(16.dp)),
+                .border(width = 2.dp, color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(16.dp)),
             contentAlignment = Alignment.Center
         ) {
             Column(
