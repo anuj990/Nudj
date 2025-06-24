@@ -1,10 +1,7 @@
 
 <p align="center">
-  <img src="/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp" alt="Nudj Logo" width="180" height="180"/>
+  <img src="/app/src/main/ic_launcher-playstore.png" alt="Nudj Logo" width="180" height="180"/>
 </p>
-
-<h1 align="center">Nudj</h1>
-
 <p align="center">
   Your campus, your events – all in one place.
 </p>
@@ -106,8 +103,11 @@ It’s got all the instructions you need to get started – no guesswork needed!
 
 ---
 
-## Design Preview (Coming Soon)
-We’re cooking something tasty in Figma. Stay tuned!
+## Design Preview
+All UI screens are designed in Figma for both Light and Dark themes.
+Refer to the design system and layout specs in our  [Figma](https://www.figma.com/design/63gKaXiz7X81h25qyQYOky/Nudj-UI-Final?node-id=0-1&t=mZPXEmhL61MNN80B-1)
+ file to maintain consistency.
+Follow the spacing, typography, and color guidelines.
 
 ---
 
