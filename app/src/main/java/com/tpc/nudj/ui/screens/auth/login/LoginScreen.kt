@@ -47,7 +47,6 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     onSignInComplete: () -> Unit = {},
     onNavigateToForgotPassword: () -> Unit = {},
-    onNavigateToDetailsScreen: () -> Unit = {}
 ) {
     val uiState by viewModel.loginUiState.collectAsState()
     val context = LocalContext.current
@@ -60,7 +59,7 @@ fun LoginScreen(
             viewModel.onForgetPasswordClicked(onNavigateToForgotPassword)
         },
         onLoginClicked = {
-            viewModel.onLoginClicked(onNavigateToDetailsScreen)
+            viewModel.onLoginClicked(onSignInComplete)
         },
         onGoogleClicked = {
             viewModel.onGoogleClicked(context, onSignInComplete)
