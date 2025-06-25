@@ -3,9 +3,11 @@ package com.tpc.nudj.ui.screens.auth.forgotPassword
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -25,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tpc.nudj.ui.components.NudjLogo
 import com.tpc.nudj.ui.theme.LocalAppColors
 import kotlinx.coroutines.launch
 
@@ -67,22 +70,25 @@ fun ForgetPasswordScreenLayout(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = LocalAppColors.current.background
     ) { it ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .background(LocalAppColors.current.background),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            EmailField(email = uiState.email, onEmailChange = onEmailInput)
-            Spacer(modifier = Modifier.height(40.dp))
-            PrimaryButton(
-                text = "Send Email",
-                onClick = onSendClicked,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                isDarkModeEnabled = false,
-                isLoading = false
-            )
+        Box(modifier = Modifier.fillMaxSize()
+            .padding(it)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(LocalAppColors.current.background),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                EmailField(email = uiState.email, onEmailChange = onEmailInput)
+                Spacer(modifier = Modifier.height(40.dp))
+                PrimaryButton(
+                    text = "Send Email",
+                    onClick = onSendClicked,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    isDarkModeEnabled = false,
+                    isLoading = uiState.isLoading
+                )
+            }
+            NudjLogo(modifier = Modifier.fillMaxWidth())
         }
     }
 }

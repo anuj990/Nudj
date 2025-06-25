@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,45 +50,47 @@ fun ResetLinkConfirmationScreenLayout(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalAppColors.current.background),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Sent successfully!",
-            color = if (isSystemInDarkTheme()) Color.White else Purple,
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontFamily = ClashDisplay
-            ),
-        )
-        Spacer(modifier = Modifier.height(35.dp))
-        Icon(
-            painter = painterResource(R.drawable.hot_air_balloon__travel_transportation_hot_air_balloon),
-            contentDescription = "Sent Successfully",
-            tint = LocalAppColors.current.editText,
+    Scaffold {paddingValues->
+        Column(
             modifier = Modifier
-                .aspectRatio(1.4f)
-        )
-        Spacer(modifier = Modifier.padding(40.dp))
-        PrimaryButton(
-            text = "Check Inbox", onClick = {
-                val intent = Intent(Intent.ACTION_MAIN).apply {
-                    addCategory(Intent.CATEGORY_APP_EMAIL)
-                }
-                context.startActivity(intent)
-            }, modifier = Modifier.align(
-                Alignment.CenterHorizontally
-            ), isDarkModeEnabled = false
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        TertiaryButton(
-            text = "Resend Email?",
-            onClick = onResendEmail,
-            isDarkModeEnabled = isSystemInDarkTheme()
-        )
+                .fillMaxSize()
+                .background(LocalAppColors.current.background),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Sent successfully!",
+                color = if (isSystemInDarkTheme()) Color.White else Purple,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontFamily = ClashDisplay
+                ),
+            )
+            Spacer(modifier = Modifier.height(35.dp))
+            Icon(
+                painter = painterResource(R.drawable.hot_air_balloon__travel_transportation_hot_air_balloon),
+                contentDescription = "Sent Successfully",
+                tint = LocalAppColors.current.editText,
+                modifier = Modifier
+                    .aspectRatio(1.4f)
+            )
+            Spacer(modifier = Modifier.padding(40.dp))
+            PrimaryButton(
+                text = "Check Inbox", onClick = {
+                    val intent = Intent(Intent.ACTION_MAIN).apply {
+                        addCategory(Intent.CATEGORY_APP_EMAIL)
+                    }
+                    context.startActivity(intent)
+                }, modifier = Modifier.align(
+                    Alignment.CenterHorizontally
+                ), isDarkModeEnabled = false
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            TertiaryButton(
+                text = "Resend Email?",
+                onClick = onResendEmail,
+                isDarkModeEnabled = isSystemInDarkTheme()
+            )
+        }
     }
 
 }

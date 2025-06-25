@@ -67,5 +67,3 @@ hilt = {id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid"}
 
 ksp = {id = "com.google.devtools.ksp", version.ref = "ksp"}
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
-
-

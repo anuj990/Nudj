@@ -6,11 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.tpc.nudj.ui.navigation.Screens
+import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsConfirmationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsInputScreen
 import com.tpc.nudj.ui.screens.auth.forgotPassword.ForgetPasswordScreen
 import com.tpc.nudj.ui.screens.auth.forgotPassword.ResetLinkConfirmationScreen
@@ -31,18 +34,20 @@ class MainActivity : ComponentActivity() {
                 NavDisplay(
                     backStack = backstack,
                     modifier = Modifier.fillMaxSize(),
+                    entryDecorators = listOf(
+                        rememberSavedStateNavEntryDecorator(),
+                        rememberViewModelStoreNavEntryDecorator(),
+                    ),
                     entryProvider = entryProvider {
                         entry<Screens.LoginScreen> {
                             LoginScreen(
                                 onSignInComplete = {
-                                    backstack.add(Screens.DashboardScreen)
+                                    //TODO: Update logic
+                                    backstack.add(Screens.UserDetailsScreen)
                                 },
                                 onNavigateToForgotPassword = {
                                     backstack.add(Screens.ForgotPasswordScreen)
                                 },
-                                onNavigateToDetailsScreen = {
-                                    backstack.add(Screens.DetailsScreen)
-                                }
                             )
                         }
                         entry<Screens.ForgotPasswordScreen> {
@@ -58,8 +63,13 @@ class MainActivity : ComponentActivity() {
                         entry<Screens.DashboardScreen> {
                             DashboardScreen()
                         }
-                        entry<Screens.DetailsScreen> {
-                            DetailsInputScreen()
+                        entry<Screens.UserDetailsScreen> {
+                            DetailsInputScreen(onNavigateToConfirmationScreen = {
+                                backstack.add(Screens.UserDetailsConfirmationScreen)
+                            })
+                        }
+                        entry<Screens.UserDetailsConfirmationScreen> {
+                            DetailsConfirmationScreen()
                         }
                     }
                 )
