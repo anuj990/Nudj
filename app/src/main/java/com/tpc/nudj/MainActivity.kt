@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NudjTheme {
-                var backstack = rememberNavBackStack(Screens.UserDetailsScreen)
+                var backstack = rememberNavBackStack(Screens.LoginScreen)
 
                 NavDisplay(
                     backStack = backstack,

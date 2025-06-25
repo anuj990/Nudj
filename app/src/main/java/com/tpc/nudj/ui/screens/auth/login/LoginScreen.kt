@@ -5,9 +5,11 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -40,6 +42,7 @@ import com.tpc.nudj.ui.theme.LocalAppColors
 import kotlinx.coroutines.launch
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.ui.platform.LocalContext
+import com.tpc.nudj.ui.components.NudjLogo
 
 
 @Composable
@@ -95,55 +98,62 @@ private fun LoginScreenLayout(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = LocalAppColors.current.background
     ) { it->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .background(LocalAppColors.current.background),
-            verticalArrangement = Arrangement.Center
-        ) {
-            EmailField(email = uiState.email, onEmailChange = onEmailInput)
-            Spacer(modifier = Modifier.height(24.dp))
-            PasswordField(password = uiState.password, onPasswordChange = onPasswordInput, label = "Password")
-
-            TertiaryButton(
-                text = "Forget Password?",
-                onClick = onForgetPasswordClicked,
-                modifier = Modifier.padding(start = 10.dp, top = 2.dp),
-                isDarkModeEnabled = isSystemInDarkTheme()
-            )
-            Spacer(modifier = Modifier.height(30.dp))
-            PrimaryButton(
-                text = "Login",
-                onClick = onLoginClicked,
-                isDarkModeEnabled = false,
+        Box(modifier = Modifier.fillMaxSize()
+            .padding(it)) {
+            Column(
                 modifier = Modifier
-                    .align(
-                        Alignment.CenterHorizontally
-                    )
-                    .width(130.dp),
-                isLoading = uiState.isLoading
-            )
-            Spacer(modifier = Modifier.height(40.dp))
-            Text(
-                text = "OR",
-                color = LocalAppColors.current.editText,
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontFamily = ClashDisplay
-                ),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-            Spacer(modifier = Modifier.height(40.dp))
-            IconButton(
-                onClick = onGoogleClicked,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                    .fillMaxSize()
+                    .background(LocalAppColors.current.background),
+                verticalArrangement = Arrangement.Center
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.google_icon),
-                    contentDescription = "Google",
-                    tint = if (isSystemInDarkTheme()) Color.White else Color.Unspecified,
+                EmailField(email = uiState.email, onEmailChange = onEmailInput)
+                Spacer(modifier = Modifier.height(24.dp))
+                PasswordField(
+                    password = uiState.password,
+                    onPasswordChange = onPasswordInput,
+                    label = "Password"
                 )
+
+                TertiaryButton(
+                    text = "Forget Password?",
+                    onClick = onForgetPasswordClicked,
+                    modifier = Modifier.padding(start = 10.dp, top = 2.dp),
+                    isDarkModeEnabled = isSystemInDarkTheme()
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+                PrimaryButton(
+                    text = "Login",
+                    onClick = onLoginClicked,
+                    isDarkModeEnabled = false,
+                    modifier = Modifier
+                        .align(
+                            Alignment.CenterHorizontally
+                        )
+                        .width(130.dp),
+                    isLoading = uiState.isLoading
+                )
+                Spacer(modifier = Modifier.height(40.dp))
+                Text(
+                    text = "OR",
+                    color = LocalAppColors.current.editText,
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontFamily = ClashDisplay
+                    ),
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(40.dp))
+                IconButton(
+                    onClick = onGoogleClicked,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.google_icon),
+                        contentDescription = "Google",
+                        tint = if (isSystemInDarkTheme()) Color.White else Color.Unspecified,
+                    )
+                }
             }
+            NudjLogo(modifier = Modifier.fillMaxWidth())
         }
     }
 }

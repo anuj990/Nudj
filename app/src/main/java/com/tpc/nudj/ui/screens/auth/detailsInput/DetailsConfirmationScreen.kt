@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.R
+import com.tpc.nudj.ui.components.NudjLogo
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 
@@ -61,17 +62,7 @@ fun DetailsConfirmationScreenLayout(details: UserDetailsUIState) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Box {
-                Image(
-                    painter = painterResource(id = R.drawable.nudjlogo),
-                    contentDescription = "App Logo",
-                    modifier = Modifier.size(width = 132.dp, height = 59.dp),
-                    contentScale = ContentScale.Fit,
-                    colorFilter = ColorFilter.tint(
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                )
-            }
+            NudjLogo()
 
             Spacer(modifier = Modifier.padding(top = 74.dp))
 
