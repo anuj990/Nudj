@@ -19,7 +19,17 @@ sealed interface Screens: NavKey {
     @Serializable
     data object ResetConfirmationScreen : Screens
 
+    //Users
+
     @Serializable
     data object UserDetailsConfirmationScreen : Screens
+
+
+    //Clubs
+    @Serializable
+    data object ClubRegistrationScreen : Screens
+
+    @Serializable
+    data object ClubDashboardScreen: Screens
 
 }
