@@ -16,16 +16,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.theme.Purple
@@ -41,9 +46,30 @@ fun EmailVerificationScreen(
     viewModel: EmailVerificationViewModel = hiltViewModel(),
     goToLoginScreen : () -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.sendVerificationEmail(goToLoginScreen = goToLoginScreen)
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.checkCurrentUserVerificationStatus(goToLoginScreen)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
+
+    LaunchedEffect(Unit) {
+        viewModel.sendVerificationEmail()
+    }
+
+    EmailVerificationScreenLayout(
+        onResendEmail = {
+            viewModel.sendVerificationEmail()
+        }
+    )
+
 
 }
 
@@ -53,11 +79,12 @@ fun EmailVerificationScreenLayout(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    Scaffold {paddingValues->
+    Scaffold(
+        containerColor = LocalAppColors.current.background
+    ) {paddingValues->
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .background(LocalAppColors.current.background),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -81,6 +108,7 @@ fun EmailVerificationScreenLayout(
                 text = "Check Inbox", onClick = {
                     val intent = Intent(Intent.ACTION_MAIN).apply {
                         addCategory(Intent.CATEGORY_APP_EMAIL)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
                     context.startActivity(intent)
                 }, modifier = Modifier.align(

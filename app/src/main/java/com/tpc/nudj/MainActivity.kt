@@ -65,9 +65,11 @@ class MainActivity : ComponentActivity() {
                                 viewModel = hiltViewModel(),
                                 onSuccessfulSignIn = {
                                     backstack.add(Screens.DashboardScreen)
+                                    backstack.remove(Screens.SignUpScreen)
                                 },
                                 goToEmailVerificationScreen = {
                                     backstack.add(Screens.EmailVerificationScreen)
+                                    backstack.remove(Screens.SignUpScreen)
                                 }
                             )
                         }
@@ -76,6 +78,7 @@ class MainActivity : ComponentActivity() {
                                 viewModel = hiltViewModel(),
                                 goToLoginScreen = {
                                     backstack.add(Screens.LoginScreen)
+                                    backstack.remove(Screens.EmailVerificationScreen)
                                 }
                             )
                         }
