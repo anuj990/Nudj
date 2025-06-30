@@ -138,7 +138,7 @@ fun DetailsInputScreenLayout(
                         modifier = Modifier
                             .size(width = 192.dp, height = 62.dp)
                             .background(
-                                color = (MaterialTheme.colorScheme.surface),
+                                color = (LocalAppColors.current.editTextBackground),
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .border(
@@ -164,7 +164,7 @@ fun DetailsInputScreenLayout(
                         modifier = Modifier
                             .size(width = 153.dp, height = 62.dp)
                             .background(
-                                color = (MaterialTheme.colorScheme.surface),
+                                color = (LocalAppColors.current.editTextBackground),
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .border(
@@ -203,7 +203,7 @@ fun DetailsInputScreenLayout(
                                 .menuAnchor()
 
                                 .background(
-                                    color = (MaterialTheme.colorScheme.surface),
+                                    color = (LocalAppColors.current.editTextBackground),
                                     shape = RoundedCornerShape(16.dp)
                                 )
                                 .border(
@@ -258,7 +258,7 @@ fun DetailsInputScreenLayout(
                                 .size(width = 153.dp, height = 62.dp)
                                 .menuAnchor()
                                 .background(
-                                    color = (MaterialTheme.colorScheme.surface),
+                                    color = (LocalAppColors.current.editTextBackground),
                                     shape = RoundedCornerShape(16.dp)
                                 )
                                 .border(
@@ -314,7 +314,7 @@ fun DetailsInputScreenLayout(
                     fontSize = 20.sp,
                     fontFamily = clashDisplayFont,
                     fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = Color.White
                 )
             }
         }
@@ -324,7 +324,7 @@ fun DetailsInputScreenLayout(
 @Preview(showBackground = true)
 @Composable
 fun DetailsInputScreePreview() {
-    NudjTheme(darkTheme = true) {
+    NudjTheme(darkTheme = false) {
         DetailsInputScreenLayout()
     }
 }
