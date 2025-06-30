@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.google.firebase.auth.FirebaseAuth
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.theme.Purple
@@ -39,6 +40,7 @@ import com.tpc.nudj.ui.components.PrimaryButton
 import com.tpc.nudj.ui.components.TertiaryButton
 import com.tpc.nudj.ui.screens.auth.forgotPassword.ForgetPasswordScreenModel
 import com.tpc.nudj.ui.theme.LocalAppColors
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -46,23 +48,22 @@ fun EmailVerificationScreen(
     viewModel: EmailVerificationViewModel = hiltViewModel(),
     goToLoginScreen : () -> Unit
 ) {
-    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.checkCurrentUserVerificationStatus(goToLoginScreen)
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
+
 
     LaunchedEffect(Unit) {
         viewModel.sendVerificationEmail()
+        while (true) {
+            delay(1000)
+            val user = FirebaseAuth.getInstance().currentUser
+            user?.reload()
+            if (user?.isEmailVerified == true) {
+                goToLoginScreen()
+                break
+            }
+        }
     }
+
 
     EmailVerificationScreenLayout(
         onResendEmail = {
