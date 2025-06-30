@@ -44,6 +44,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import com.tpc.nudj.ui.theme.NudjTheme
 import kotlinx.coroutines.delay
 import com.tpc.nudj.R
+import com.tpc.nudj.ui.navigation.Screens
+import com.tpc.nudj.ui.screens.homeScreen.HomeScreenLayout
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.LocalAppColors
 
@@ -67,14 +69,14 @@ fun DashboardScreen(viewModel: DashBoardViewModel = viewModel()) {
     val pagerState = rememberPagerState(initialPage = uiState.selectedPage) { destination.size }
     LaunchedEffect(pagerState.currentPage) {
         if (uiState.selectedPage != pagerState.currentPage) {
-            delay(100)
+            delay(120)
             viewModel.onScreenClicked(pagerState.currentPage)
         }
     }
     LaunchedEffect(uiState.selectedPage) {
         if (pagerState.currentPage != uiState.selectedPage) {
-            delay(300)
-            pagerState.animateScrollToPage(uiState.selectedPage)
+            delay(200)
+            pagerState.scrollToPage(uiState.selectedPage)
         }
     }
     Scaffold(
@@ -93,7 +95,12 @@ fun DashboardScreen(viewModel: DashBoardViewModel = viewModel()) {
                 .padding(padding)
         ) { page ->
             val screen = destination[page]
-                NavScreens(screen)
+            when (screen) {
+                BottomNavScreen.Home -> {
+                    HomeScreenLayout()
+                }
+                else -> NavScreens(screen)
+            }
         }
     }
 }
@@ -130,7 +137,7 @@ fun BottomNavigationBar(
         val positionWidth = this.maxWidth / screens.size
         val slidingEffect by animateDpAsState(
             targetValue = (uiState.selectedPage * positionWidth.value).dp,
-            animationSpec = tween(durationMillis = 300)
+            animationSpec = tween(durationMillis = 200)
         )
         Box(
             modifier = Modifier
@@ -158,11 +165,11 @@ fun BottomNavigationBar(
             screens.forEachIndexed { index, dest ->
                 val animateIconSize by animateDpAsState(
                     targetValue = if (uiState.selectedPage == index) 32.dp else 30.dp,
-                    animationSpec = tween(durationMillis = 300)
+                    animationSpec = tween(durationMillis = 200)
                 )
                 val slidingEffectY by animateDpAsState(
                     targetValue = if (uiState.selectedPage == index) -4.dp else 0.dp,
-                    animationSpec = tween(durationMillis = 300)
+                    animationSpec = tween(durationMillis = 200)
                 )
                 NavigationBarItem(
                     icon = {
