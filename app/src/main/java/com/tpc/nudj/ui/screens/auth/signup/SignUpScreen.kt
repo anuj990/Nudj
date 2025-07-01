@@ -158,8 +158,10 @@ fun SignUpScreenLayout(
                     onClick = onSignUpClick,
                     modifier = Modifier,
                     enabled = uiState.email.isNotBlank() &&
-                            uiState.confirmPassword == uiState.password,
-                    isDarkModeEnabled = false
+                            uiState.confirmPassword == uiState.password &&
+                            !uiState.isLoading,
+                    isDarkModeEnabled = false,
+                    isLoading = uiState.isLoading
                 )
 
                 Text(
@@ -169,9 +171,8 @@ fun SignUpScreenLayout(
                 )
 
                 IconButton(
-                    onClick = {
-                        onGoogleSignUpClick()
-                    }
+                    onClick = onGoogleSignUpClick,
+                    enabled = !uiState.isLoading
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.google_icon),
