@@ -112,6 +112,7 @@ fun SecondaryButton(
             style = MaterialTheme.typography.bodyLarge.copy(
                 fontFamily = ClashDisplay
             ),
+            textAlign = TextAlign.Center,
             modifier = modifier
                 .padding(horizontal = 16.dp)
         )
