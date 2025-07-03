@@ -1,4 +1,5 @@
 package com.tpc.nudj.ui.screens.auth.PreHomeScreen
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,40 +11,53 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tpc.nudj.ui.components.*
-import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.LocalAppColors
-
-val culturalClubs = clubDetails(
-    listOf("Avartan", "Saaz", "Abhivyakti", "Jazbaat", "Samvaad", "Shutterbox"),
-    "Cultural clubs"
-)
-val technicalClubs = clubDetails(
-    listOf("Programming", "Robotics", "Buisness", "Racing", "AeroFabrication", "Astronomy", "CAD"),
-    "Technical clubs"
-)
-val sportsClubs = clubDetails(
-    listOf("Athletics", "Badminton", "Chess", "Carrom", "Cricket", "Football", "GYM", "Lawn Tennis", "Table Tennis", "VolleyBall"),
-    "Sport clubs"
-)
-val otherClubs = clubDetails(listOf("E-Cell", "Jaagrati"), "Others")
+import com.tpc.nudj.ui.theme.NudjTheme
+import com.tpc.nudj.ui.theme.Purple
 
 @Composable
-fun PreHomeScreenLayout(viewModel: PreHomeScreenViewModel = viewModel()) {
+fun PreHomeScreen() {
+    val viewModel: PreHomeScreenViewModel = hiltViewModel()
+
+    val buttonText = if (viewModel.selectedCount.value > 0)
+        "Follow ${viewModel.selectedCount.value} club${if (viewModel.selectedCount.value > 1) "s" else ""}"
+    else
+        "Let's Go!"
+
+    PreHomeScreenLayout(
+        culturalClubs = viewModel.culturalClubsState,
+        technicalClubs = viewModel.technicalClubsState,
+        sportsClubs = viewModel.sportsClubsState,
+        onClubSelected = { list, index -> viewModel.ClubSelection(list, index) },
+        buttonText = buttonText
+    )
+}
+
+@Composable
+fun PreHomeScreenLayout(
+    culturalClubs: ClubCategoryState,
+    technicalClubs: ClubCategoryState,
+    sportsClubs: ClubCategoryState,
+    onClubSelected: (SnapshotStateList<ClubCardState>, Int) -> Unit,
+    buttonText: String
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = LocalAppColors.current.background
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -57,7 +71,6 @@ fun PreHomeScreenLayout(viewModel: PreHomeScreenViewModel = viewModel()) {
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                NudjLogo()
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Box(
@@ -71,7 +84,7 @@ fun PreHomeScreenLayout(viewModel: PreHomeScreenViewModel = viewModel()) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(color = Color.White, shape = RoundedCornerShape(16.dp))
-                            .padding(16.dp),
+                            .padding(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -83,51 +96,30 @@ fun PreHomeScreenLayout(viewModel: PreHomeScreenViewModel = viewModel()) {
                             color = LocalAppColors.current.landingPageAppTitle
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
-
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             item {
-                                ClubCategorySection(culturalClubs, viewModel.culturalClubsState) {
-                                    viewModel.ClubSelection(viewModel.culturalClubsState, it)
-                                }
+                                ClubCategorySection(culturalClubs, onClubSelected)
                             }
                             item {
-                                ClubCategorySection(technicalClubs, viewModel.technicalClubsState) {
-                                    viewModel.ClubSelection(viewModel.technicalClubsState, it)
-                                }
+                                ClubCategorySection(technicalClubs, onClubSelected)
                             }
                             item {
-                                ClubCategorySection(sportsClubs, viewModel.sportsClubsState) {
-                                    viewModel.ClubSelection(viewModel.sportsClubsState, it)
-                                }
-                            }
-                            item {
-                                ClubCategorySection(otherClubs, viewModel.otherClubsState) {
-                                    viewModel.ClubSelection(viewModel.otherClubsState, it)
-                                }
+                                ClubCategorySection(sportsClubs, onClubSelected)
                             }
                         }
                     }
                 }
             }
 
-
-            val selectedCount by viewModel.selectedCount
-
-            val buttonText = if (selectedCount > 0)
-                "Follow $selectedCount club${if (selectedCount> 1) "s" else ""}"
-            else
-                "Let's Go!"
-
             PrimaryButton(
                 text = buttonText,
-                onClick = {  },
+                onClick = { },
                 modifier = Modifier
-                    .padding(10.dp)
-                    .width(346.dp)
+                    .padding(bottom = 19.dp, top = 6.dp)
+                    .width(300.dp)
                     .height(62.dp),
                 enabled = true,
                 isDarkModeEnabled = false
@@ -136,18 +128,27 @@ fun PreHomeScreenLayout(viewModel: PreHomeScreenViewModel = viewModel()) {
     }
 }
 
-
 @Composable
 fun ClubCategorySection(
-    data: clubDetails,
-    clubList: SnapshotStateList<ClubCardState>,
-    onClubSelected: (index: Int) -> Unit
+    data: ClubCategoryState,
+    onClubSelected: (SnapshotStateList<ClubCardState>, Int) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        categoryName(data.clubCategory)
+        Text(
+            text = data.category,
+            fontFamily = ClashDisplay,
+            fontWeight = FontWeight.W600,
+            fontSize = 20.sp,
+            lineHeight = 20.sp,
+            color = Purple,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        )
 
-        val rows = (data.clubName.size + 1) / 2
-        val gridHeight = (rows * 220).dp + ((rows - 1) * 12).dp
+        val rows = (data.clubList.size + 1) / 2
+        val gridHeight = (rows * 211).dp + ((rows - 1) * 12).dp
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -158,12 +159,58 @@ fun ClubCategorySection(
                 .fillMaxWidth()
                 .height(gridHeight)
         ) {
-            itemsIndexed(clubList) { index, club ->
+            itemsIndexed(data.clubList) { index, club ->
                 ClubNameCard(
                     club = club,
-                    onClick = { onClubSelected(index) }
+                    baseColor = data.baseColor,
+                    textColor = data.textColor,
+                    onClick = { onClubSelected(data.clubList, index) }
                 )
             }
         }
+    }
+}
+
+
+
+
+@Composable
+@Preview(showBackground = true)
+fun PreHomeScreenLayoutPreview() {
+    val dummyClubs = listOf("Club A", "Club B", "Club C", "Club D")
+
+
+    val dummyList = mutableStateListOf<ClubCardState>().apply {
+        addAll(dummyClubs.map { ClubCardState(it) })
+    }
+
+    val cultural = ClubCategoryState(
+        category = "Cultural Clubs",
+        clubList = dummyList,
+        baseColor = Purple,
+        textColor = Color.White
+    )
+    val technical = ClubCategoryState(
+        category = "Technical Clubs",
+        clubList = dummyList,
+        baseColor = Color(0xFFFFF1E6),
+        textColor = Purple
+    )
+    val sports = ClubCategoryState(
+        category = "Sports Clubs",
+        clubList = dummyList,
+        baseColor = Color.Yellow,
+        textColor = Color.Black
+    )
+
+
+    NudjTheme {
+        PreHomeScreenLayout(
+            culturalClubs = cultural,
+            technicalClubs = technical,
+            sportsClubs = sports,
+            onClubSelected = { _, _ -> },
+            buttonText = "Follow 0 clubs"
+        )
     }
 }

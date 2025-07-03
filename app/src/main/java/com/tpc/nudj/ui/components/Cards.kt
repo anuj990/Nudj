@@ -12,20 +12,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tpc.nudj.ui.screens.auth.PreHomeScreen.ClubCardState
-
 import com.tpc.nudj.ui.theme.ClashDisplay
-
 import com.tpc.nudj.ui.theme.Purple
 
 @Composable
 fun ClubNameCard(
     club: ClubCardState,
+    baseColor: Color,
+    textColor: Color,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (club.isSelected) Color.Green else Purple
+    val backgroundColor = if (club.isSelected) Color.Green else baseColor
 
     Box(
         modifier = Modifier
@@ -35,39 +37,22 @@ fun ClubNameCard(
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = club.clubName,
-                fontFamily = ClashDisplay,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.W600,
-                fontSize = 18.sp,
-                color = Color.White
-            )
-        }
+        Text(
+            text = club.clubName,
+            fontFamily = ClashDisplay,
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.W600,
+            fontSize = 17.8.sp,
+            softWrap = true,
+            overflow = TextOverflow.Ellipsis,
+            color = textColor,
+            textAlign = TextAlign.Center,
+            maxLines = 4,
+            lineHeight = 20.sp,
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .fillMaxWidth()
+        )
     }
 }
 
-
-data class clubDetails(
-    val clubName : List<String>,
-    val clubCategory : String
-)
-
-
-@Composable
-fun categoryName( name : String){
-    Text(
-        text = name,
-        fontFamily = ClashDisplay,
-        fontWeight = FontWeight.W500,
-        style = MaterialTheme.typography.headlineSmall,
-        fontSize = 22.sp,
-        lineHeight = 20.sp,
-        color = Purple,
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp)
-    )
-}
