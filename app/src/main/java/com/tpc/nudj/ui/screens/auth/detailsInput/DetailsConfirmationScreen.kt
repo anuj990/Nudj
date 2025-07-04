@@ -3,6 +3,7 @@ package com.tpc.nudj.ui.screens.auth.detailsInput
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -82,7 +83,11 @@ fun DetailsConfirmationScreenLayout(details: UserDetailsUIState) {
                     .width(345.dp)
                     .height(323.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = if (isSystemInDarkTheme()) {
+                            Color.White
+                        } else {
+                            LocalAppColors.current.editTextBackground
+                        },
                         shape = RoundedCornerShape(16.dp)
                     )
                     .border(
@@ -174,7 +179,8 @@ fun DetailsConfirmationScreenLayout(details: UserDetailsUIState) {
                         text = "Save",
                         fontSize = 20.sp,
                         fontFamily = clashDisplayFont,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
                     )
                 }
             }
