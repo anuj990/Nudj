@@ -1,6 +1,5 @@
 package com.tpc.nudj.ui.screens.auth.login
 
-import com.tpc.nudj.R
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -17,38 +16,39 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.tpc.nudj.R
 import com.tpc.nudj.ui.components.EmailField
+import com.tpc.nudj.ui.components.NudjLogo
 import com.tpc.nudj.ui.components.PasswordField
 import com.tpc.nudj.ui.components.PrimaryButton
 import com.tpc.nudj.ui.components.TertiaryButton
 import com.tpc.nudj.ui.theme.ClashDisplay
-import com.tpc.nudj.ui.theme.NudjTheme
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.ui.theme.LocalAppColors
+import com.tpc.nudj.ui.theme.NudjTheme
 import kotlinx.coroutines.launch
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.ui.platform.LocalContext
-import com.tpc.nudj.ui.components.NudjLogo
 
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    onSignInComplete: () -> Unit = {},
+    onNavigateToUserDetailsFetchLoadingScreen: () -> Unit = {},
     onNavigateToForgotPassword: () -> Unit = {},
 ) {
     val uiState by viewModel.loginUiState.collectAsState()
@@ -62,10 +62,10 @@ fun LoginScreen(
             viewModel.onForgetPasswordClicked(onNavigateToForgotPassword)
         },
         onLoginClicked = {
-            viewModel.onLoginClicked(onSignInComplete)
+            viewModel.onLoginClicked(onNavigateToUserDetailsFetchLoadingScreen)
         },
         onGoogleClicked = {
-            viewModel.onGoogleClicked(context, onSignInComplete)
+            viewModel.onGoogleClicked(context, onNavigateToUserDetailsFetchLoadingScreen)
         },
         clearToastMessage = viewModel::clearError
     )
