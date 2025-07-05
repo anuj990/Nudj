@@ -3,6 +3,7 @@ package com.tpc.nudj.ui.screens.auth.detailsInput
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.R
 import com.tpc.nudj.ui.components.NudjLogo
+import com.tpc.nudj.ui.components.TertiaryButton
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 
@@ -317,6 +320,13 @@ fun DetailsInputScreenLayout(
                     color = Color.White
                 )
             }
+            TertiaryButton(
+                text = "Rsgister as Club??",
+                onClick = {
+                //  navigate to club registration dashboard
+                },
+                isDarkModeEnabled = isSystemInDarkTheme()
+            )
         }
     }
 }
