@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     entryProvider = entryProvider {
                         entry<Screens.LoginScreen> {
                             LoginScreen(
-                                onSignInComplete = {
+                                onNavigateToUserDetailsFetchLoadingScreen = {
                                     //TODO: Update logic
                                     backstack.add(Screens.UserDetailsScreen)
                                 },
