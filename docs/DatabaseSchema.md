@@ -93,7 +93,7 @@ event_questions: {
   [eventId]: {
     messages: {
       [messageId]: {
-        senderId: string, // userId (normal or club)
+        senderId: string,
         senderType: "normal" | "club",
         text: string,
         timestamp: number

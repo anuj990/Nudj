@@ -9,6 +9,24 @@ import com.tpc.nudj.model.enums.Gender
 
 object FirestoreUtils {
 
+    inline fun <reified T : Enum<T>> enumValueOrDefault(value: String?, defaultValue: T): T {
+        return try {
+            if (value == null) defaultValue else enumValueOf<T>(value)
+        } catch (e: Exception) {
+            defaultValue
+        }
+    }
+
+
+    fun getEnumDisplayName(enum: Any?): String {
+        return when(enum) {
+            is Gender -> enum.genderName
+            is Branch -> enum.branchName
+            is ClubCategory -> enum.categoryName
+            else -> enum?.toString() ?: ""
+        }
+    }
+
     fun toMap(clubUser: ClubUser): Map<String, Any?> {
         return mapOf(
             "clubId" to clubUser.clubId,
@@ -18,6 +36,7 @@ object FirestoreUtils {
             "clubEmail" to clubUser.clubEmail,
             "clubLogo" to clubUser.clubLogo,
             "clubCategory" to clubUser.clubCategory.name, // Store enum as string
+            "clubCategoryName" to getEnumDisplayName(clubUser.clubCategory), // Store human-readable name
             "additionalDetails" to clubUser.additionalDetails
         )
     }
@@ -30,7 +49,9 @@ object FirestoreUtils {
             "lastname" to normalUser.lastname,
             "email" to normalUser.email,
             "gender" to normalUser.gender.name, // Store enum as string
+            "genderName" to getEnumDisplayName(normalUser.gender), // Store human-readable name
             "branch" to normalUser.branch.name, // Store enum as string
+            "branchName" to getEnumDisplayName(normalUser.branch), // Store human-readable name
             "batch" to normalUser.batch,
             "profilePictureUrl" to normalUser.profilePictureUrl,
             "bio" to normalUser.bio
@@ -46,11 +67,7 @@ object FirestoreUtils {
             achievements = (data["achievements"] as? String) ?: "",
             clubEmail = (data["clubEmail"] as? String) ?: "",
             clubLogo = data["clubLogo"] as? String,
-            clubCategory = try {
-                ClubCategory.valueOf(data["clubCategory"] as String)
-            } catch (e: Exception) {
-                ClubCategory.MISCELLANEOUS // Default value
-            },
+            clubCategory = enumValueOrDefault(data["clubCategory"] as? String, ClubCategory.MISCELLANEOUS),
             additionalDetails = (data["additionalDetails"] as? String) ?: ""
         )
     }
@@ -63,16 +80,8 @@ object FirestoreUtils {
             firstName = (data["firstName"] as? String) ?: "",
             lastname = (data["lastname"] as? String) ?: "",
             email = (data["email"] as? String) ?: "",
-            gender = try {
-                Gender.valueOf(data["gender"] as String)
-            } catch (e: Exception) {
-                Gender.PREFER_NOT_TO_DISCLOSE // Default value
-            },
-            branch = try {
-                Branch.valueOf(data["branch"] as String)
-            } catch (e: Exception) {
-                Branch.CSE // Default value
-            },
+            gender = enumValueOrDefault(data["gender"] as? String, Gender.PREFER_NOT_TO_DISCLOSE),
+            branch = enumValueOrDefault(data["branch"] as? String, Branch.CSE),
             batch = (data["batch"] as? Long)?.toInt() ?: 2024,
             profilePictureUrl = data["profilePictureUrl"] as? String,
             bio = (data["bio"] as? String) ?: ""
