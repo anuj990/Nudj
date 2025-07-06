@@ -1,5 +1,6 @@
-package com.tpc.nudj.FirestoreDetailsFetch
+package com.tpc.nudj.ui.screens.detailsFetch
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -82,7 +83,8 @@ fun UserDetailsFetchScreen(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewUserDetailsFetchScreen() {
     UserDetailsFetchScreen(

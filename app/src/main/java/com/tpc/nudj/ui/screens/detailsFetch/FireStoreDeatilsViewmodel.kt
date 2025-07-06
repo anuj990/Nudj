@@ -1,4 +1,4 @@
-package com.tpc.nudj.FirestoreDetailsFetch
+package com.tpc.nudj.ui.screens.detailsFetch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

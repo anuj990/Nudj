@@ -44,7 +44,6 @@ object FirestoreUtils {
     fun toMap(normalUser: NormalUser): Map<String, Any?> {
         return mapOf(
             "userid" to normalUser.userid,
-            "name" to normalUser.name,
             "firstName" to normalUser.firstName,
             "lastname" to normalUser.lastname,
             "email" to normalUser.email,
@@ -76,7 +75,6 @@ object FirestoreUtils {
     fun toNormalUser(data: Map<String, Any?>): NormalUser {
         return NormalUser(
             userid = (data["userid"] as? String) ?: "",
-            name = (data["name"] as? String) ?: "",
             firstName = (data["firstName"] as? String) ?: "",
             lastname = (data["lastname"] as? String) ?: "",
             email = (data["email"] as? String) ?: "",
@@ -88,8 +86,8 @@ object FirestoreUtils {
         )
     }
 
-    fun ClubUser.toMap(): Map<String, Any?> = FirestoreUtils.toMap(this)
+//    fun ClubUser.toMap(): Map<String, Any?> = FirestoreUtils.toMap(this)
 
 
-    fun NormalUser.toMap(): Map<String, Any?> = FirestoreUtils.toMap(this)
+//    fun NormalUser.toMap(): Map<String, Any?> = FirestoreUtils.toMap(this)
 }

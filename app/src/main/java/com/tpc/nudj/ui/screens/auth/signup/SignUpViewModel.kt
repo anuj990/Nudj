@@ -114,7 +114,6 @@ class SignUpViewModel @Inject constructor(
 
         val newUser = NormalUser(
             userid = uid,
-            name = "Anuj",
             firstName = "Anuj",
             lastname = "",
             email = email,
