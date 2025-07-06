@@ -45,41 +45,45 @@ fun UserDetailsFetchScreen(
         is UserDetailsViewModel.UserType.ClubUser -> onClubUser()
         is UserDetailsViewModel.UserType.NotFound -> onUserNotFound()
         is UserDetailsViewModel.UserType.Loading -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 250.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.userdetailsfetchimage),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .width(249.dp)
-                            .height(222.dp)
-                    )
-
-                    Text(
-                        text = text,
-                        fontSize = 18.sp,
-                        color = Orange,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-
-                Text(
-                    text = "Nudj",
-                    fontSize = 35.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Purple,
-                    modifier = Modifier
-                        .offset(x = 160.dp, y = 780.dp)
-                )
-            }
+            UserDetailsFetchScreenLayout(text)
         }
+    }
+}
+
+@Composable
+fun UserDetailsFetchScreenLayout(text: String) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 250.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.userdetailsfetchimage),
+                contentDescription = "",
+                modifier = Modifier
+                    .width(249.dp)
+                    .height(222.dp)
+            )
+
+            Text(
+                text = text,
+                fontSize = 18.sp,
+                color = Orange,
+                fontWeight = FontWeight.Medium
+            )
+        }
+
+        Text(
+            text = "Nudj",
+            fontSize = 35.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Purple,
+            modifier = Modifier
+                .offset(x = 160.dp, y = 780.dp)
+        )
     }
 }
 
@@ -87,10 +91,7 @@ fun UserDetailsFetchScreen(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewUserDetailsFetchScreen() {
-    UserDetailsFetchScreen(
-        text = "Hang in there!",
-        onNormalUser = {},
-        onClubUser = {},
-        onUserNotFound = {}
+    UserDetailsFetchScreenLayout(
+        text = "Hang in there!"
     )
 }

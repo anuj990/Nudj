@@ -90,7 +90,6 @@ class SignUpViewModel @Inject constructor(
 
                         when (authResult) {
                             is AuthResult.VerificationNeeded-> {
-                                saveUserToFirestore(email)
                                 goToEmailVerificationScreen()
                             }
                             else -> {}
@@ -109,24 +108,6 @@ class SignUpViewModel @Inject constructor(
         )
     }
 
-    private fun saveUserToFirestore(email: String) {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
-        val newUser = NormalUser(
-            userid = uid,
-            firstName = "Anuj",
-            lastname = "",
-            email = email,
-//            branch = "ECE",
-//            batch = "2026",
-            profilePictureUrl = "",
-            bio = "Hey there! I'm new to Nudj."
-        )
-
-        viewModelScope.launch {
-            val success = userRepository.saveUser(newUser)
-        }
-    }
 
 
     fun onGoogleClicked(context: Context, onSuccessfulSignIn: () -> Unit) {

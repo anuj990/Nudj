@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
@@ -26,11 +25,10 @@ import com.tpc.nudj.ui.screens.auth.forgotPassword.ForgetPasswordScreen
 import com.tpc.nudj.ui.screens.auth.forgotPassword.ResetLinkConfirmationScreen
 import com.tpc.nudj.ui.screens.auth.login.LoginScreen
 import com.tpc.nudj.ui.screens.auth.signup.SignUpScreen
-import com.tpc.nudj.ui.screens.auth.signup.SignUpViewModel
 import com.tpc.nudj.ui.screens.dashboard.DashboardScreen
+import com.tpc.nudj.ui.screens.detailsFetch.UserDetailsFetchScreen
 import com.tpc.nudj.ui.theme.NudjTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -49,6 +47,23 @@ class MainActivity : ComponentActivity() {
                         rememberViewModelStoreNavEntryDecorator(),
                     ),
                     entryProvider = entryProvider {
+                        entry<Screens.UserDetailsFetchLoadingScreen> {
+                            UserDetailsFetchScreen(
+                                text = "Hang in there!",
+                                onNormalUser = {
+                                    backstack.add(Screens.DashboardScreen)
+                                    backstack.remove(Screens.UserDetailsFetchLoadingScreen)
+                                },
+                                onClubUser = {
+                                    backstack.add(Screens.ClubDashboardScreen)
+                                    backstack.remove(Screens.UserDetailsFetchLoadingScreen)
+                                },
+                                onUserNotFound = {
+                                    backstack.add(Screens.UserDetailsScreen)
+                                    backstack.remove(Screens.UserDetailsFetchLoadingScreen)
+                                }
+                            )
+                        }
                         entry<Screens.LoginScreen> {
                             LoginScreen(
                                 onNavigateToUserDetailsFetchLoadingScreen = {
