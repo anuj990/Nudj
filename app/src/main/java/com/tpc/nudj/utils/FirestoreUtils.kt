@@ -88,8 +88,4 @@ object FirestoreUtils {
         )
     }
 
-    fun ClubUser.toMap(): Map<String, Any?> = FirestoreUtils.toMap(this)
-
-
-    fun NormalUser.toMap(): Map<String, Any?> = FirestoreUtils.toMap(this)
 }
