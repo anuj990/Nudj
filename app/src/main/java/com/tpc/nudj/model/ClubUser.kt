@@ -11,4 +11,18 @@ data class ClubUser(
     val clubLogo :String? = null,
     val clubCategory : ClubCategory = ClubCategory.MISCELLANEOUS,
     val additionalDetails: String = "",
-)
+){
+    constructor(): this("","","","","","", ClubCategory.MISCELLANEOUS,"")
+    fun toMapClub(): Map<out Any?, Any?>{
+        return mapOf(
+            "clubId" to clubId,
+            "clubName" to clubName,
+            "description" to description,
+            "achievements" to achievements,
+            "clubEmail" to clubEmail,
+            "clubLogo" to clubLogo,
+            "clubCategory" to clubCategory.name,
+            "additionalDetails" to additionalDetails
+        )
+    }
+}
