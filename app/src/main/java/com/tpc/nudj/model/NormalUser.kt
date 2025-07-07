@@ -5,7 +5,6 @@ import com.tpc.nudj.model.enums.Gender
 
 data class NormalUser(
     val userid :String = "",
-    val name :String = "",
     val firstName :String = "",
     val lastname :String = "",
     val email :String = "",
