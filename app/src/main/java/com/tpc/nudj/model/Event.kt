@@ -14,7 +14,8 @@ data class Event(
     val organizerContactNumber: String = "",
     val eventDates: List<EventDate> = emptyList(),
     val faqs: List<EventFAQ> = emptyList(),
-    val filterBatch: List<String> = emptyList(),
+    //Empty list means no filter applied, if filter is applied, it will be a non-empty list of batch numbers
+    val filterBatch: List<Int> = emptyList(),
     val isDeleted: Boolean = false,
     val creationTimestamp: Timestamp = Timestamp.now(),
     val lastUpdatedTimestamp: Timestamp = Timestamp.now()

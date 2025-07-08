@@ -113,7 +113,7 @@ object FirestoreUtils {
             } else null
         } ?: emptyList()
 
-        val filterBatch = (data["filterBatch"] as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
+        val filterBatch = (data["filterBatch"] as? List<*>)?.mapNotNull { it as? Int } ?: emptyList()
 
         return Event(
             eventId = (data["eventId"] as? String) ?: "",
