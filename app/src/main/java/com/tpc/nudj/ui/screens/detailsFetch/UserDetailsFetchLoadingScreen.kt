@@ -1,5 +1,6 @@
-package com.tpc.nudj.FirestoreDetailsFetch
+package com.tpc.nudj.ui.screens.detailsFetch
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,31 +13,46 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.R
+import com.tpc.nudj.ui.theme.Orange
+import com.tpc.nudj.ui.theme.Purple
 
 @Composable
 fun UserDetailsFetchScreen(
     text: String,
     onNormalUser: () -> Unit,
     onClubUser: () -> Unit,
-    onUserNotFound: () -> Unit
+    onUserNotFound: () -> Unit,
+    viewModel: UserDetailsViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(Unit) {
-        FireStoreDetails().checkusertypeandnavigate(
-            onNormalUser = onNormalUser,
-            onClubUser = onClubUser,
-            onUserNotFound = onUserNotFound
-        )
-    }
-    Box(modifier = Modifier.fillMaxSize()) {
+    val userType = viewModel.userTypeState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.checkUserType()
+    }
+
+    when (userType.value) {
+        is UserDetailsViewModel.UserType.NormalUser -> onNormalUser()
+        is UserDetailsViewModel.UserType.ClubUser -> onClubUser()
+        is UserDetailsViewModel.UserType.NotFound -> onUserNotFound()
+        is UserDetailsViewModel.UserType.Loading -> {
+            UserDetailsFetchScreenLayout(text)
+        }
+    }
+}
+
+@Composable
+fun UserDetailsFetchScreenLayout(text: String) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -55,7 +71,7 @@ fun UserDetailsFetchScreen(
             Text(
                 text = text,
                 fontSize = 18.sp,
-                color = Color(0xFFFF6F00),
+                color = Orange,
                 fontWeight = FontWeight.Medium
             )
         }
@@ -64,11 +80,18 @@ fun UserDetailsFetchScreen(
             text = "Nudj",
             fontSize = 35.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF4B0082),
+            color = Purple,
             modifier = Modifier
                 .offset(x = 160.dp, y = 780.dp)
-
         )
     }
 }
 
+@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewUserDetailsFetchScreen() {
+    UserDetailsFetchScreenLayout(
+        text = "Hang in there!"
+    )
+}

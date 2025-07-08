@@ -4,9 +4,12 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.tpc.nudj.model.AuthResult
+import com.tpc.nudj.model.NormalUser
 import com.tpc.nudj.repository.auth.AuthRepository
 import com.tpc.nudj.repository.auth.GoogleSignInClient
+import com.tpc.nudj.repository.user.UserRepository
 import com.tpc.nudj.utils.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,11 +18,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.sign
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _signUpUiState = MutableStateFlow(SignUpUiState())
     val signUpUiState: StateFlow<SignUpUiState> = _signUpUiState.asStateFlow()
@@ -104,6 +107,8 @@ class SignUpViewModel @Inject constructor(
             }
         )
     }
+
+
 
     fun onGoogleClicked(context: Context, onSuccessfulSignIn: () -> Unit) {
         _signUpUiState.update { it.copy(isLoading = true) }
