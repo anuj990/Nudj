@@ -10,7 +10,6 @@ import kotlinx.coroutines.tasks.await
 
 class ReviewRepositoryImpl @Inject constructor() : ReviewRepository {
     private val firestore = Firebase.firestore
-
     private val reviewsCollection = firestore.collection(FirestoreCollections.REVIEWS.path)
 
     override suspend fun addReview(review: Review) {
@@ -26,7 +25,9 @@ class ReviewRepositoryImpl @Inject constructor() : ReviewRepository {
     override suspend fun getReviewbyUser(userId: String): List<Review> {
         return try {
             val snapshot = reviewsCollection.whereEqualTo("userId", userId).get().await()
-            snapshot.toObjects(Review::class.java)
+            snapshot.documents.mapNotNull { doc ->
+                doc.data?.let { FirestoreUtils.toReview(it) }
+            }
         } catch (e: Exception) {
             emptyList()
         }
@@ -35,7 +36,9 @@ class ReviewRepositoryImpl @Inject constructor() : ReviewRepository {
     override suspend fun getReviewbyClub(clubId: String): List<Review> {
         return try {
             val snapshot = reviewsCollection.whereEqualTo("clubId", clubId).get().await()
-            snapshot.toObjects(Review::class.java)
+            snapshot.documents.mapNotNull { doc ->
+                doc.data?.let { FirestoreUtils.toReview(it) }
+            }
         } catch (e: Exception) {
             emptyList()
         }
@@ -45,7 +48,6 @@ class ReviewRepositoryImpl @Inject constructor() : ReviewRepository {
         try {
             reviewsCollection.document(reviewId).delete().await()
         } catch (e: Exception) {
-
         }
     }
 
@@ -56,7 +58,10 @@ class ReviewRepositoryImpl @Inject constructor() : ReviewRepository {
                 .whereEqualTo("userId", userId)
                 .get()
                 .await()
-            snapshot.toObjects(Review::class.java)
+
+            snapshot.documents.mapNotNull { doc ->
+                doc.data?.let { FirestoreUtils.toReview(it) }
+            }
         } catch (e: Exception) {
             emptyList()
         }
@@ -65,7 +70,9 @@ class ReviewRepositoryImpl @Inject constructor() : ReviewRepository {
     override suspend fun getReviewsbyEvent(eventId: String): List<Review> {
         return try {
             val snapshot = reviewsCollection.whereEqualTo("eventId", eventId).get().await()
-            snapshot.toObjects(Review::class.java)
+            snapshot.documents.mapNotNull { doc ->
+                doc.data?.let { FirestoreUtils.toReview(it) }
+            }
         } catch (e: Exception) {
             emptyList()
         }
