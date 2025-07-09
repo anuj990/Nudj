@@ -168,7 +168,7 @@ fun DetailsConfirmationScreenLayout(details: UserDetailsUIState) {
                 Spacer(modifier = Modifier.width(29.dp))
                 Button(
                     onClick = {
-                        " "
+
                     },
                     modifier = Modifier
                         .width(162.dp)
