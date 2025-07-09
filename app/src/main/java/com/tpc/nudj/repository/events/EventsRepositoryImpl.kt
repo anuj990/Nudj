@@ -1,5 +1,6 @@
 package com.tpc.nudj.repository.events
 
+import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tpc.nudj.model.Event
@@ -22,7 +23,7 @@ class EventsRepositoryImpl @Inject constructor() : EventsRepository {
             document.set(FirestoreUtils.toMap(setEventId)).await()
             true
         } catch (e: Exception) {
-            println("Failed to add the event: ${e.message}")
+            Log.e("EventsRepository","Failed to add the event: ${e.message}")
             false
         }
     }
@@ -42,7 +43,7 @@ class EventsRepositoryImpl @Inject constructor() : EventsRepository {
             }
             return false
         } catch (e: Exception) {
-            println("Failed to delete the event: ${e.message}")
+            Log.e("EventsRepository","Failed to delete the event: ${e.message}")
             false
         }
     }
@@ -67,6 +68,7 @@ class EventsRepositoryImpl @Inject constructor() : EventsRepository {
             }
 
         } catch (e: Exception) {
+            Log.e("EventsRepository","Failed to fetch all upcoming events: ${e.message}")
             emptyList()
         }
     }
@@ -88,6 +90,7 @@ class EventsRepositoryImpl @Inject constructor() : EventsRepository {
             }
             return null
         } catch (e: Exception) {
+            Log.e("EventsRepository","Failed to fetch the event by id: ${e.message}")
             null
         }
     }
@@ -110,6 +113,7 @@ class EventsRepositoryImpl @Inject constructor() : EventsRepository {
             }
 
         } catch (e: Exception) {
+            Log.e("EventsRepository","Failed to fetch all events: ${e.message}")
             emptyList()
         }
     }
@@ -122,7 +126,7 @@ class EventsRepositoryImpl @Inject constructor() : EventsRepository {
                 .await()
             true
         } catch (e: Exception) {
-            println("Failed to update the event: ${e.message}")
+            Log.e("EventsRepository","Failed to update the event: ${e.message}")
             false
         }
     }
@@ -149,6 +153,7 @@ class EventsRepositoryImpl @Inject constructor() : EventsRepository {
             }
 
         } catch (e: Exception) {
+            Log.e("EventsRepository","Failed to fetch all filtered upcoming events: ${e.message}")
             emptyList()
         }
     }
