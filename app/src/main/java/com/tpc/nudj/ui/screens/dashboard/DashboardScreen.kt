@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,6 +42,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.ui.theme.NudjTheme
 import kotlinx.coroutines.delay
 import com.tpc.nudj.R
@@ -48,6 +52,7 @@ import com.tpc.nudj.ui.navigation.Screens
 import com.tpc.nudj.ui.screens.homeScreen.HomeScreenLayout
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.LocalAppColors
+import com.tpc.nudj.ui.viewmodels.AppViewModel
 
 
 enum class BottomNavScreen(@StringRes val title: Int, @DrawableRes val icon: Int) {
@@ -58,7 +63,10 @@ enum class BottomNavScreen(@StringRes val title: Int, @DrawableRes val icon: Int
 }
 
 @Composable
-fun DashboardScreen(viewModel: DashBoardViewModel = viewModel()) {
+fun DashboardScreen(
+    viewModel: DashBoardViewModel = viewModel(),
+    appViewModel: AppViewModel = hiltViewModel()
+) {
     val uiState by viewModel.dashBoardUiState.collectAsState()
     val destination = listOf(
         BottomNavScreen.Home,
@@ -99,7 +107,10 @@ fun DashboardScreen(viewModel: DashBoardViewModel = viewModel()) {
                 BottomNavScreen.Home -> {
                     HomeScreenLayout()
                 }
-                else -> NavScreens(screen)
+                else -> NavScreens(
+                    screen = screen,
+                    onSignOut = { appViewModel.signOut() }
+                )
             }
         }
     }
@@ -107,19 +118,36 @@ fun DashboardScreen(viewModel: DashBoardViewModel = viewModel()) {
 
 @Composable
 fun NavScreens(
-    screen: BottomNavScreen
+    screen: BottomNavScreen,
+    onSignOut: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(LocalAppColors.current.background),
         contentAlignment = Alignment.Center
-
     ) {
-        Text(
-            text = stringResource(screen.title),
-            fontSize = 24.sp
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(screen.title),
+                fontSize = 24.sp,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            if (screen == BottomNavScreen.Profile) {
+                Button(
+                    onClick = onSignOut,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF5E00)
+                    ),
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text("Sign out")
+                }
+            }
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 package com.tpc.nudj.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -123,6 +124,41 @@ fun PasswordField(
 }
 
 
+
+@Composable
+fun NudjTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    readOnly: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null,
+) {
+    val shape = RoundedCornerShape(16.dp)
+    val borderColor = Color(0xFFFF5E00).copy(alpha = 0.5f)
+    val backgroundColor = LocalAppColors.current.editTextBackground
+
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier
+            .background(
+                color = backgroundColor,
+                shape = shape
+            ),
+        shape = shape,
+        readOnly = readOnly,
+        trailingIcon = trailingIcon,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color(0xFFFF5E00),
+            unfocusedBorderColor = borderColor,
+            focusedContainerColor = backgroundColor,
+            unfocusedContainerColor = backgroundColor,
+        ),
+        singleLine = true
+    )
+}
+
+
 @Preview(
     name = "EmailFieldPreview-LightTheme",
     showBackground = true
@@ -156,5 +192,20 @@ fun PasswordFieldPreview() {
     NudjTheme {
         var password by remember { mutableStateOf("") }
         PasswordField(password = password, onPasswordChange = { password = it }, label = "Password")
+    }
+}
+
+@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun NudjTextFieldPreview() {
+    NudjTheme {
+        var text by remember { mutableStateOf("Sample Text") }
+        NudjTextField(
+            value = text,
+            onValueChange = { text = it },
+            modifier = Modifier.fillMaxWidth(),
+
+        )
     }
 }

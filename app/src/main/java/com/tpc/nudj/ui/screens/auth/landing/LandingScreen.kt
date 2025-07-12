@@ -22,7 +22,10 @@ import com.tpc.nudj.ui.theme.NudjTheme
 
 
 @Composable
-fun LandingScreenLayout(){
+fun LandingScreen(
+    onClickLogin: ()-> Unit,
+    onClickSignup: ()-> Unit
+){
     val colors= LocalAppColors.current
 
     Box(
@@ -42,25 +45,22 @@ fun LandingScreenLayout(){
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(-16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 120.dp)
         ){
             SecondaryButton(
                 text = "Login",
-                onClick = {
-                    //Login Page
-                },
+                onClick = onClickLogin,
                 enabled = true,
                 isDarkModeEnabled = true
             )
 
+
             PrimaryButton(
                 text = "Sign up",
-                onClick = {
-                    //Sign up
-                },
+                onClick = onClickSignup,
                 enabled = true,
                 isDarkModeEnabled = true
 
@@ -74,7 +74,9 @@ fun LandingScreenLayout(){
 @Composable
 fun LandingScreenPreview(){
     NudjTheme {
-        LandingScreenLayout()
+        LandingScreen(
+            {},{}
+        )
     }
 }
 

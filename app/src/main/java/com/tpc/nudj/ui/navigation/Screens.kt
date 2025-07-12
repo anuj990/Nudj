@@ -1,42 +1,53 @@
 package com.tpc.nudj.ui.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.tpc.nudj.model.enums.Branch
 import kotlinx.serialization.Serializable
 
 sealed interface Screens: NavKey {
-    @Serializable
-    data object LoginScreen: Screens
+    sealed interface Auth : Screens {
+        @Serializable
+        data object LandingScreen : Auth
+
+        @Serializable
+        data object LoginScreen : Auth
+
+        @Serializable
+        data object SignUpScreen : Auth
+
+        @Serializable
+        data object EmailVerificationScreen : Auth
+
+        @Serializable
+        data object ForgotPasswordScreen : Auth
+
+        @Serializable
+        data object ResetConfirmationScreen : Auth
+
+    }
 
     @Serializable
-    data object DashboardScreen: Screens
+    data object UserDetailsScreen : Screens
 
     @Serializable
-    data object UserDetailsScreen: Screens
+    data class UserDetailsConfirmationScreen(
+        val firstName: String,
+        val lastName: String,
+        val branch: Branch,
+        val batch: Int,
+        val gender: String
+    ) : Screens
 
     @Serializable
-    data object ForgotPasswordScreen : Screens
+    data object DashboardScreen : Screens
 
     @Serializable
-    data object ResetConfirmationScreen : Screens
-
-    @Serializable
-    data object SignUpScreen : Screens
-
-    @Serializable
-    data object EmailVerificationScreen : Screens
-    @Serializable
-    object UserDetailsFetchLoadingScreen : Screens
-    //Users
-
-    @Serializable
-    data object UserDetailsConfirmationScreen : Screens
-
+    data object UserDetailsFetchLoadingScreen : Screens
 
     //Clubs
     @Serializable
     data object ClubRegistrationScreen : Screens
 
     @Serializable
-    data object ClubDashboardScreen: Screens
-
+    data object ClubDashboardScreen : Screens
 }
