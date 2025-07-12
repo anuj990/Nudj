@@ -2,6 +2,7 @@ package com.tpc.nudj.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.tpc.nudj.model.User
 import com.tpc.nudj.repository.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +31,12 @@ class AppViewModel @Inject constructor(
         )
 
     init {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            _authState.value = AuthState.Authenticated(User(user.uid, user.email ?: ""))
+        } else {
+            _authState.value = AuthState.Unauthenticated
+        }
         observeAuthState()
     }
 

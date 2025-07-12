@@ -1,4 +1,4 @@
-package com.tpc.nudj.repository.Review
+package com.tpc.nudj.repository.review
 
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase

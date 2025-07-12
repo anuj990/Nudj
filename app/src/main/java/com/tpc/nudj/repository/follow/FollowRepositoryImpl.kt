@@ -1,4 +1,4 @@
-package com.tpc.nudj.repository.Follow
+package com.tpc.nudj.repository.follow
 
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
@@ -11,7 +11,7 @@ import kotlinx.coroutines.tasks.await
 class FollowRepositoryImpl @Inject constructor() : FollowRepository {
     private val firestore = Firebase.firestore
     private val followsCollection = firestore.collection(FirestoreCollections.FOLLOWS.path)
-    override suspend fun FollowClub(userId: String, clubId: String): Boolean {
+    override suspend fun followClub(userId: String, clubId: String): Boolean {
         val follow = Follow(userId = userId, clubId = clubId)
         return try {
             followsCollection.document("$userId-$clubId").set(follow).await()
@@ -21,7 +21,7 @@ class FollowRepositoryImpl @Inject constructor() : FollowRepository {
         }
     }
 
-    override suspend fun UnfollowClub(userId: String, clubId: String): Boolean {
+    override suspend fun unfollowClub(userId: String, clubId: String): Boolean {
         return try {
             followsCollection.document("$userId-$clubId").delete().await()
             true
@@ -30,7 +30,7 @@ class FollowRepositoryImpl @Inject constructor() : FollowRepository {
         }
     }
 
-    override suspend fun FetchFollowingClubs(userId: String): List<Follow> {
+    override suspend fun fetchFollowingClubs(userId: String): List<Follow> {
         return try {
             val snapshot = followsCollection.whereEqualTo("userId", userId).get().await()
             snapshot.documents.mapNotNull { doc ->

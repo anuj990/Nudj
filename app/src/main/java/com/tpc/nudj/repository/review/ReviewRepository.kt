@@ -1,8 +1,6 @@
-package com.tpc.nudj.repository.Review
+package com.tpc.nudj.repository.review
 
 import com.tpc.nudj.model.Review
-import com.tpc.nudj.model.User
-import kotlinx.coroutines.flow.Flow
 
 interface ReviewRepository {
     suspend fun addReview(review: Review)
