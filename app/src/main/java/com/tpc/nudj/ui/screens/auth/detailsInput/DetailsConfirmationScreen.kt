@@ -1,6 +1,6 @@
 package com.tpc.nudj.ui.screens.auth.detailsInput
 
-import androidx.compose.foundation.Image
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -13,22 +13,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -38,158 +35,198 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.R
+import com.tpc.nudj.model.enums.Branch
+import com.tpc.nudj.model.enums.Gender
 import com.tpc.nudj.ui.components.NudjLogo
+import com.tpc.nudj.ui.components.PrimaryButton
+import com.tpc.nudj.ui.components.SecondaryButton
+import com.tpc.nudj.ui.navigation.Screens
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 
 
 @Composable
-fun DetailsConfirmationScreen(viewModel: UserDetailViewModel = hiltViewModel()) {
-    val userDetails = viewModel.userDetailsUIState.collectAsState()
-    DetailsConfirmationScreenLayout(userDetails.value)
+fun DetailsConfirmationScreen(
+    viewModel: UserDetailViewModel = hiltViewModel(),
+    navArgs: Screens.UserDetailsConfirmationScreen,
+    onEditClick: () -> Unit,
+    onSaveSuccess: () -> Unit
+) {
+    val uiState = viewModel.userDetailsUIState.collectAsState().value
+
+    // Load user details from navigation arguments when the screen is first created
+    LaunchedEffect(Unit) {
+        viewModel.loadUserDetailsFromArgs(
+            firstName = navArgs.firstName,
+            lastName = navArgs.lastName,
+            branch = navArgs.branch,
+            batch = navArgs.batch,
+            gender = try { Gender.valueOf(navArgs.gender) } catch (e: Exception) { Gender.PREFER_NOT_TO_DISCLOSE }
+        )
+    }
+
+    DetailsConfirmationScreenLayout(
+        details = uiState,
+        onEditClick = onEditClick,
+        onSaveClick = {
+            viewModel.saveUserDetails(onSuccess = onSaveSuccess)
+        }
+    )
 }
 
 @Composable
-fun DetailsConfirmationScreenLayout(details: UserDetailsUIState) {
-
+fun DetailsConfirmationScreenLayout(
+    details: UserDetailsUIState,
+    onEditClick: () -> Unit = {},
+    onSaveClick: () -> Unit = {}
+) {
     val clashDisplayFont = FontFamily(
         Font(R.font.clash_display_font, weight = FontWeight.Medium)
     )
+
+    val scrollState = rememberScrollState()
+
+    val isDark = isSystemInDarkTheme()
+    val boxBackgroundColor = if (isDark) Color.White.copy(alpha = 0.9f) else LocalAppColors.current.editTextBackground
+    val textColor = Color(0xFF3F1872)
+    val labelColor = Color(0xFFFF5E00)
+
     Scaffold(
         containerColor = LocalAppColors.current.background
-    ) {paddingValues->
+    ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             NudjLogo()
 
-            Spacer(modifier = Modifier.padding(top = 74.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             Text(
-                text = "You Entered:",
+                text = "Review Your Information",
                 fontFamily = clashDisplayFont,
                 fontWeight = FontWeight.Medium,
-                fontSize = 20.sp,
-                lineHeight = 20.sp,
+                fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
 
+            if (details.errorMessage != null) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = details.errorMessage,
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                )
+            }
+
             Box(
                 modifier = Modifier
-                    .padding(33.dp)
-                    .width(345.dp)
-                    .height(323.dp)
+                    .padding(horizontal = 24.dp, vertical = 24.dp)
+                    .fillMaxWidth()
                     .background(
-                        color = if (isSystemInDarkTheme()) {
-                            Color.White
-                        } else {
-                            LocalAppColors.current.editTextBackground
-                        },
-                        shape = RoundedCornerShape(16.dp)
+                        color = boxBackgroundColor,
+                        shape = RoundedCornerShape(20.dp)
                     )
                     .border(
                         width = 2.dp,
                         color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(20.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(start = 23.dp, top = 29.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 28.dp)
                 ) {
-                    Text(
-                        text = "First Name:   ${details.firstName}",
-                        color = Color(0xFF3F1872),
-                        fontSize = 20.sp,
-                        fontFamily = clashDisplayFont,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Start
-                    )
-                    Spacer(modifier = Modifier.height(60.dp))
-                    Text(
-                        text = "Last Name:   ${details.lastName}",
-                        color = Color(0xFF3F1872),
-                        fontSize = 20.sp,
-                        fontFamily = clashDisplayFont,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Start
-                    )
-                    Spacer(modifier = Modifier.height(60.dp))
-                    Text(
-                        text = "Branch:   ${details.branch}",
-                        color = Color(0xFF3F1872),
-                        fontSize = 20.sp,
-                        fontFamily = clashDisplayFont,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Start
-                    )
-                    Spacer(modifier = Modifier.height(60.dp))
-                    Text(
-                        text = "Batch:   ${details.batch}",
-                        color = Color(0xFF3F1872),
-                        fontSize = 20.sp,
-                        fontFamily = clashDisplayFont,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Start
-                    )
-                }
+                    InfoField(label = "First Name", value = details.firstName, labelColor = labelColor, valueColor = textColor)
 
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    InfoField(label = "Last Name", value = details.lastName, labelColor = labelColor, valueColor = textColor)
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    InfoField(label = "Branch", value = details.branch.branchName, labelColor = labelColor, valueColor = textColor)
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    InfoField(label = "Batch", value = details.batch.toString(), labelColor = labelColor, valueColor = textColor)
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    InfoField(label = "Gender", value = details.gender.genderName, labelColor = labelColor, valueColor = textColor)
+                }
             }
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             Row(
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
             ) {
-                Button(
-                    onClick = {
-                        " "
-                    },
-                    modifier = Modifier
-                        .width(131.dp)
-                        .height(54.dp).border(
-                            width = 2.dp,
-                            color = Color(0xFFFF5E00),
-                            shape = RoundedCornerShape(31.5.dp)
+                SecondaryButton(
+                    text = "Edit",
+                    onClick = onEditClick,
+                    isDarkModeEnabled = isSystemInDarkTheme(),
+                    enabled = !details.isLoading,
+                    modifier = Modifier.width(140.dp)
+                )
 
-                        ),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-                ) {
-                    Text(
-                        text = "Edit",
-                        fontSize = 20.sp,
-                        fontFamily = clashDisplayFont,
-                        color = Color(0xFFFF5E00),
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                Spacer(modifier = Modifier.width(29.dp))
-                Button(
-                    onClick = {
+                Spacer(modifier = Modifier.width(24.dp))
 
-                    },
-                    modifier = Modifier
-                        .width(162.dp)
-                        .height(54.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5E00))
-                ) {
-                    Text(
-                        text = "Save",
-                        fontSize = 20.sp,
-                        fontFamily = clashDisplayFont,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White
-                    )
-                }
+                PrimaryButton(
+                    text = "Save",
+                    onClick = onSaveClick,
+                    isDarkModeEnabled = false,
+                    enabled = !details.isLoading,
+                    isLoading = details.isLoading,
+                    modifier = Modifier.width(140.dp)
+                )
             }
         }
     }
 }
 
+@Composable
+fun InfoField(label: String, value: String, labelColor: Color, valueColor: Color) {
+    val clashDisplayFont = FontFamily(
+        Font(R.font.clash_display_font, weight = FontWeight.Medium)
+    )
+
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = label,
+            fontFamily = clashDisplayFont,
+            fontWeight = FontWeight.Medium,
+            fontSize = 16.sp,
+            color = labelColor,
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = value,
+            fontFamily = clashDisplayFont,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            color = valueColor,
+        )
+    }
+}
 
 @Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun DetailsConfirmationScreenPreview() {
     NudjTheme(darkTheme = true) {
@@ -197,8 +234,9 @@ fun DetailsConfirmationScreenPreview() {
             details = UserDetailsUIState(
                 firstName = "Anshu",
                 lastName = "Kashyap",
-                branch = "ECE",
-                batch = "2024"
+                branch = Branch.ECE,
+                batch = 2024,
+                gender = Gender.MALE
             )
         )
     }

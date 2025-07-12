@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -23,9 +25,9 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,8 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -47,29 +47,50 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.R
+import com.tpc.nudj.model.enums.Branch
+import com.tpc.nudj.model.enums.Gender
 import com.tpc.nudj.ui.components.NudjLogo
+import com.tpc.nudj.ui.components.NudjTextField
+import com.tpc.nudj.ui.components.PrimaryButton
 import com.tpc.nudj.ui.components.TertiaryButton
+import com.tpc.nudj.ui.navigation.Screens
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
-
+import java.time.Year
 
 @Composable
 fun DetailsInputScreen(
     viewModel: UserDetailViewModel = hiltViewModel(),
-    onNavigateToConfirmationScreen: () -> Unit
+    onNavigateToConfirmationScreen: (Screens.UserDetailsConfirmationScreen) -> Unit,
+    onNavigateToClubRegistration: () -> Unit = {}
 ) {
+    val uiState = viewModel.userDetailsUIState.collectAsState().value
+
     DetailsInputScreenLayout(
-        onSaveClick = {
-            onNavigateToConfirmationScreen()
-        },
+        firstName = uiState.firstName,
+        lastName = uiState.lastName,
+        branch = uiState.branch,
+        batch = uiState.batch,
+        gender = uiState.gender,
+        errorMessage = uiState.errorMessage,
         onFirstNameChange = { viewModel.updateFirstName(it) },
         onLastNameChange = { viewModel.updateLastName(it) },
         onBranchChange = { viewModel.updateBranch(it) },
         onBatchChange = { viewModel.updateBatch(it) },
-        firstName = viewModel.userDetailsUIState.collectAsState().value.firstName,
-        lastName = viewModel.userDetailsUIState.collectAsState().value.lastName,
-        branch = viewModel.userDetailsUIState.collectAsState().value.branch,
-        batch = viewModel.userDetailsUIState.collectAsState().value.batch
+        onGenderChange = { viewModel.updateGender(it) },
+        onSaveClick = {
+            if (viewModel.validateInputs()) {
+                val confirmationScreen = Screens.UserDetailsConfirmationScreen(
+                    firstName = uiState.firstName,
+                    lastName = uiState.lastName,
+                    branch = uiState.branch,
+                    batch = uiState.batch,
+                    gender = uiState.gender.name
+                )
+                onNavigateToConfirmationScreen(confirmationScreen)
+            }
+        },
+        onClubRegistrationClick = onNavigateToClubRegistration
     )
 }
 
@@ -78,21 +99,33 @@ fun DetailsInputScreen(
 @Composable
 fun DetailsInputScreenLayout(
     firstName: String = "",
-    onFirstNameChange: (String) -> Unit = {},
     lastName: String = "",
+    branch: Branch = Branch.CSE,
+    batch: Int = 2025,
+    gender: Gender = Gender.PREFER_NOT_TO_DISCLOSE,
+    errorMessage: String? = null,
+    onFirstNameChange: (String) -> Unit = {},
     onLastNameChange: (String) -> Unit = {},
-    branch: String = "",
-    onBranchChange: (String) -> Unit = {},
-    batch: String = "",
-    onBatchChange: (String) -> Unit = {},
-    onSaveClick: () -> Unit = {}
+    onBranchChange: (Branch) -> Unit = {},
+    onBatchChange: (Int) -> Unit = {},
+    onGenderChange: (Gender) -> Unit = {},
+    onSaveClick: () -> Unit = {},
+    onClubRegistrationClick: () -> Unit = {}
 ) {
     var branchExpanded by remember { mutableStateOf(false) }
     var batchExpanded by remember { mutableStateOf(false) }
+    var genderExpanded by remember { mutableStateOf(false) }
 
+    val scrollState = rememberScrollState()
 
-    val branchOptions = listOf("CSE", "ECE", "ME", "SM", "DS")
-    val batchOptions = listOf("2025", "2024", "2023", "2022")
+    val branchOptions = Branch.values().toList()
+
+    // Generate batch options for the last 6 years
+    val currentYear = Year.now().value
+    val batchOptions = (0..5).map { currentYear - it }.toList()
+
+    val genderOptions = Gender.values().toList()
+
     val clashDisplayFont = FontFamily(
         Font(R.font.clash_display_font, weight = FontWeight.Medium)
     )
@@ -104,13 +137,14 @@ fun DetailsInputScreenLayout(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             NudjLogo()
 
-            Spacer(modifier = Modifier.padding(top = 113.dp))
+            Spacer(modifier = Modifier.padding(top = 60.dp))
 
             Text(
                 text = "Hold up! A few more details...",
@@ -122,6 +156,18 @@ fun DetailsInputScreenLayout(
                 textAlign = TextAlign.Center
             )
 
+            if (errorMessage != null) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                )
+            }
+
+            // First name and last name row
             Row(
                 modifier = Modifier
                     .padding(top = 42.dp)
@@ -137,18 +183,9 @@ fun DetailsInputScreenLayout(
                         color = Color(0xFFFF5E00)
                     )
                     Spacer(modifier = Modifier.height(6.dp))
-                    OutlinedTextField(
+                    NudjTextField(
                         modifier = Modifier
-                            .size(width = 192.dp, height = 62.dp)
-                            .background(
-                                color = (LocalAppColors.current.editTextBackground),
-                                shape = RoundedCornerShape(16.dp)
-                            )
-                            .border(
-                                2.dp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                shape = RoundedCornerShape(16.dp)
-                            ),
+                            .size(width = 192.dp, height = 62.dp),
                         value = firstName,
                         onValueChange = onFirstNameChange
                     )
@@ -163,18 +200,9 @@ fun DetailsInputScreenLayout(
                         color = Color(0xFFFF5E00)
                     )
                     Spacer(modifier = Modifier.height(6.dp))
-                    OutlinedTextField(
+                    NudjTextField(
                         modifier = Modifier
-                            .size(width = 153.dp, height = 62.dp)
-                            .background(
-                                color = (LocalAppColors.current.editTextBackground),
-                                shape = RoundedCornerShape(16.dp)
-                            )
-                            .border(
-                                2.dp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                shape = RoundedCornerShape(16.dp)
-                            ),
+                            .size(width = 153.dp, height = 62.dp),
                         value = lastName,
                         onValueChange = onLastNameChange
                     )
@@ -183,7 +211,7 @@ fun DetailsInputScreenLayout(
 
             Row(
                 modifier = Modifier
-                    .padding(top = 44.dp)
+                    .padding(top = 24.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -200,22 +228,12 @@ fun DetailsInputScreenLayout(
                         expanded = branchExpanded,
                         onExpandedChange = { branchExpanded = !branchExpanded }
                     ) {
-                        OutlinedTextField(
+                        NudjTextField(
                             modifier = Modifier
                                 .size(width = 192.dp, height = 62.dp)
-                                .menuAnchor()
-
-                                .background(
-                                    color = (LocalAppColors.current.editTextBackground),
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                                .border(
-                                    2.dp,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    shape = RoundedCornerShape(16.dp)
-                                ),
-                            value = branch,
-                            onValueChange = onBranchChange,
+                                .menuAnchor(),
+                            value = branch.name,
+                            onValueChange = {},
                             trailingIcon = {
                                 Icon(
                                     painter = painterResource(id = R.drawable.dropdownicon),
@@ -230,11 +248,11 @@ fun DetailsInputScreenLayout(
                             expanded = branchExpanded,
                             onDismissRequest = { branchExpanded = false }
                         ) {
-                            branchOptions.forEach {
+                            branchOptions.forEach { branchOption ->
                                 DropdownMenuItem(
-                                    text = { Text(it) },
+                                    text = { Text(branchOption.name) },
                                     onClick = {
-                                        onBranchChange(it)
+                                        onBranchChange(branchOption)
                                         branchExpanded = false
                                     }
                                 )
@@ -256,21 +274,12 @@ fun DetailsInputScreenLayout(
                         expanded = batchExpanded,
                         onExpandedChange = { batchExpanded = !batchExpanded }
                     ) {
-                        OutlinedTextField(
+                        NudjTextField(
                             modifier = Modifier
                                 .size(width = 153.dp, height = 62.dp)
-                                .menuAnchor()
-                                .background(
-                                    color = (LocalAppColors.current.editTextBackground),
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                                .border(
-                                    2.dp,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    shape = RoundedCornerShape(16.dp)
-                                ),
-                            value = batch,
-                            onValueChange = onBatchChange,
+                                .menuAnchor(),
+                            value = batch.toString(),
+                            onValueChange = {},
                             trailingIcon = {
                                 Icon(
                                     painter = painterResource(id = R.drawable.dropdownicon),
@@ -285,11 +294,11 @@ fun DetailsInputScreenLayout(
                             expanded = batchExpanded,
                             onDismissRequest = { batchExpanded = false }
                         ) {
-                            batchOptions.forEach {
+                            batchOptions.forEach { batchYear ->
                                 DropdownMenuItem(
-                                    text = { Text(it) },
+                                    text = { Text(batchYear.toString()) },
                                     onClick = {
-                                        onBatchChange(it)
+                                        onBatchChange(batchYear)
                                         batchExpanded = false
                                     }
                                 )
@@ -299,46 +308,86 @@ fun DetailsInputScreenLayout(
                 }
             }
 
-
-            Spacer(modifier = Modifier.height(82.dp))
-
-
-            Button(
-                onClick = {
-                    onSaveClick()
-                },
+            // Gender row
+            Row(
                 modifier = Modifier
-                    .width(142.dp)
-                    .height(54.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5E00))
+                    .padding(top = 24.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = "Save",
-                    fontSize = 20.sp,
-                    fontFamily = clashDisplayFont,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.White
-                )
+                Column(modifier = Modifier.padding(start = 10.dp)) {
+                    Text(
+                        text = "Gender",
+                        fontFamily = clashDisplayFont,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 20.sp,
+                        color = Color(0xFFFF5E00)
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    ExposedDropdownMenuBox(
+                        expanded = genderExpanded,
+                        onExpandedChange = { genderExpanded = !genderExpanded }
+                    ) {
+                        NudjTextField(
+                            modifier = Modifier
+                                .size(width = 330.dp, height = 62.dp)
+                                .menuAnchor(),
+                            value = gender.genderName,
+                            onValueChange = {},
+                            trailingIcon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.dropdownicon),
+                                    contentDescription = "Dropdown Arrow",
+                                    tint = Color(0xFFFF5E00),
+                                    modifier = Modifier.size(42.dp)
+                                )
+                            },
+                            readOnly = true
+                        )
+                        ExposedDropdownMenu(
+                            expanded = genderExpanded,
+                            onDismissRequest = { genderExpanded = false }
+                        ) {
+                            genderOptions.forEach { genderOption ->
+                                DropdownMenuItem(
+                                    text = { Text(genderOption.genderName) },
+                                    onClick = {
+                                        onGenderChange(genderOption)
+                                        genderExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
             }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            PrimaryButton(
+                text = "Save",
+                onClick = onSaveClick,
+                isDarkModeEnabled = false,
+                modifier = Modifier.width(160.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             TertiaryButton(
-                text = "Rsgister as Club??",
-                onClick = {
-                //  navigate to club registration dashboard
-                },
+                text = "Register as Club?",
+                onClick = onClubRegistrationClick,
                 isDarkModeEnabled = isSystemInDarkTheme()
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DetailsInputScreePreview() {
+fun DetailsInputScreenPreview() {
     NudjTheme(darkTheme = false) {
         DetailsInputScreenLayout()
     }
 }
-
-
-
-
