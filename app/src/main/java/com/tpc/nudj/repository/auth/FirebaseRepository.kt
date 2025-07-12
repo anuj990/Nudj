@@ -82,6 +82,12 @@ class FirebaseAuthRepository(
             val firebaseUser = result.user
 
             if (firebaseUser != null) {
+                if(firebaseUser.email?.contains("iiitdmj.ac.in") == false) {
+                    firebaseAuth.currentUser?.delete()?.await()
+                    firebaseAuth.signOut()
+                    emit(AuthResult.Error("Use IIITDMJ email addresses only."))
+                    return@flow
+                }
                 emit(
                     AuthResult.Success(
                         User(

@@ -88,6 +88,7 @@ fun DashboardScreen(
         }
     }
     Scaffold(
+        containerColor = LocalAppColors.current.background,
         bottomBar = {
             BottomNavigationBar(
                 uiState = uiState,
