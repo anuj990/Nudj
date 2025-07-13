@@ -38,7 +38,7 @@ fun RSVPConfirmationScreen(){
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(LocalAppColors.current.confirmRSVPPageBackground)
+            .background(LocalAppColors.current.landingPageAppTitle)
             .padding(start = 16.dp, end = 16.dp)
     ) {
         TopBar()

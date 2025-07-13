@@ -33,7 +33,6 @@ data class AppColors(
     val editTextBorder: Color,
     val editTextBackground: Color,
     val fillButtonBackground: Color,
-    val confirmRSVPPageBackground: Color,
 
     // Other variables
     val forgetPasswordText: Color,
@@ -55,7 +54,6 @@ private val LightColorScheme = AppColors(
     editTextBorder = Purple,
     editTextBackground = EditTextBackgroundColorLight,
     fillButtonBackground = Orange,
-    confirmRSVPPageBackground = Orange,
 
     forgetPasswordText = Color.Black,
     resendEmailText = Purple
@@ -77,7 +75,6 @@ private val DarkColorScheme = AppColors(
     editTextBorder = Color.White,
     editTextBackground = EditTextBackgroundColorDark,
     fillButtonBackground = Orange,
-    confirmRSVPPageBackground = Purple,
 
     forgetPasswordText = Color.White,
     resendEmailText = Color.White

@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tpc.nudj.R
+import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 import java.time.LocalTime
@@ -57,7 +58,7 @@ fun ConfirmationCard(
             ),
         elevation = CardDefaults.cardElevation(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFFFF1E6)
+            containerColor = EditTextBackgroundColorLight
 
         )
 
