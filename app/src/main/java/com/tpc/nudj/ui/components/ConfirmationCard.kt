@@ -3,6 +3,7 @@ package com.tpc.nudj.ui.components
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tpc.nudj.R
+import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 import java.time.LocalTime
 
@@ -47,12 +49,18 @@ fun ConfirmationCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
-//            .heightIn(min = 60.dp, max = 1200.dp),
+            .padding(10.dp)
+            .border(
+                width = 1.dp,
+                color = Color.Black,
+                shape = RoundedCornerShape(12.dp)
+            ),
         elevation = CardDefaults.cardElevation(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = Color(0xFFFFF1E6)
+
         )
+
     ) {
         Column (
             modifier = Modifier
