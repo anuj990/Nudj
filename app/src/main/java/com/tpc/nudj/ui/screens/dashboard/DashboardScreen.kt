@@ -65,6 +65,7 @@ enum class BottomNavScreen(@StringRes val title: Int, @DrawableRes val icon: Int
 @Composable
 fun DashboardScreen(
     viewModel: DashBoardViewModel = viewModel(),
+    onNavigateToMyClubs:()->Unit = {},
     appViewModel: AppViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.dashBoardUiState.collectAsState()
@@ -110,6 +111,7 @@ fun DashboardScreen(
                 }
                 else -> NavScreens(
                     screen = screen,
+                    onNavigateToMyClubs = onNavigateToMyClubs,
                     onSignOut = { appViewModel.signOut() }
                 )
             }
@@ -117,9 +119,11 @@ fun DashboardScreen(
     }
 }
 
+//A temporary placeholder for other screens
 @Composable
 fun NavScreens(
     screen: BottomNavScreen,
+    onNavigateToMyClubs: ()-> Unit,
     onSignOut: () -> Unit = {}
 ) {
     Box(
@@ -146,6 +150,17 @@ fun NavScreens(
                     modifier = Modifier.padding(top = 16.dp)
                 ) {
                     Text("Sign out")
+                }
+            }
+            if(screen == BottomNavScreen.Clubs){
+                Button(
+                    onClick = onNavigateToMyClubs,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF5E00)
+                    ),
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text("Go to My Clubs")
                 }
             }
         }
