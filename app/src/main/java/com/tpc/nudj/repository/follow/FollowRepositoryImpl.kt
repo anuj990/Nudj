@@ -14,7 +14,7 @@ class FollowRepositoryImpl @Inject constructor() : FollowRepository {
     override suspend fun followClub(userId: String, clubId: String): Boolean {
         val follow = Follow(userId = userId, clubId = clubId)
         return try {
-            followsCollection.document("$userId-$clubId").set(follow).await()
+            followsCollection.document("$userId-$clubId").set(follow.copy(followId = "$userId-$clubId")).await()
             true
         } catch (e: Exception) {
             false
