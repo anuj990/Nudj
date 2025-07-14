@@ -42,12 +42,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,6 +69,7 @@ import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.theme.Orange
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -74,17 +80,18 @@ fun MyClubs(
     val sheetExpanded = remember { mutableStateOf(false) }
     val followedClubs = viewModel.selectedClubs.collectAsState().value
     val allClubs = viewModel.allClubsList.collectAsState().value
-    val isLoading = viewModel.isLoading.collectAsState().value
-    val isSaved = viewModel.isSaved.collectAsState().value
+    val uiState by viewModel.myClubsUiState.collectAsState()
 
     MyClubsLayout(
+        uiState = uiState,
         followedClubs = followedClubs,
-        isLoading = isLoading,
         onAddClicked = { sheetExpanded.value = true },
         onBack = { onBackClicked() },
-        isSaved = isSaved,
         onCancelClub = { viewModel.removeSelectedClub(it) },
-        onSaveClicked = { viewModel.onFollowClubs() }
+        clearToastMessage = { viewModel.clearToastMessage() },
+        onSaveClicked = {
+            viewModel.onFollowClubs(onBack = { onBackClicked() })
+        }
     )
 
     if (sheetExpanded.value) {
@@ -101,28 +108,39 @@ fun MyClubs(
 
 @Composable
 fun MyClubsLayout(
+    uiState: MyClubsUiState,
     followedClubs: List<ClubUser>,
-    isLoading: Boolean = false,
-    isSaved: Boolean = false,
     onAddClicked: () -> Unit,
     onBack: () -> Unit,
     onCancelClub: (String) -> Unit,
-    onSaveClicked: () -> Unit
+    onSaveClicked: () -> Unit,
+    clearToastMessage: () -> Unit,
 ) {
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalAppColors.current.background)
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(uiState.toastMessage) {
+        if (uiState.toastMessage != null) {
+            scope.launch {
+                snackBarHostState.showSnackbar(
+                    message = uiState.toastMessage
+                )
+            }
+            clearToastMessage()
+        }
+    }
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
+        containerColor = LocalAppColors.current.background
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(it),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.padding(20.dp))
             TopBar(
-                onBackClicked = { onBack() }
+                onBackClicked = { onBack() },
+                modifier = Modifier.padding(top = 20.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -178,7 +196,7 @@ fun MyClubsLayout(
                     ) {
                         Row {
                             AnimatedVisibility(
-                                visible = !isSaved,
+                                visible = !uiState.isSaved,
                                 enter = slideInHorizontally { it } + fadeIn(),
                                 exit = slideOutHorizontally { -it } + fadeOut()
                             ) {
@@ -194,7 +212,7 @@ fun MyClubsLayout(
                         }
                         Row {
                             AnimatedVisibility(
-                                visible = isSaved,
+                                visible = uiState.isSaved,
                                 enter = slideInHorizontally { it } + fadeIn(),
                                 exit = slideOutHorizontally { -it } + fadeOut()
                             ) {
@@ -232,7 +250,7 @@ fun MyClubsLayout(
             }
             Spacer(modifier = Modifier.padding(24.dp))
         }
-        if (isLoading) {
+        if (uiState.isLoading) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -407,10 +425,11 @@ fun AllClubsBottomSheetLayout(
 
 @Composable
 fun TopBar(
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
         Text(
@@ -505,7 +524,9 @@ fun MyClubScreenPreview() {
             onAddClicked = {},
             onBack = {},
             onCancelClub = {},
-            onSaveClicked = {}
+            onSaveClicked = {},
+            uiState = MyClubsUiState(),
+            clearToastMessage = {}
         )
     }
 }

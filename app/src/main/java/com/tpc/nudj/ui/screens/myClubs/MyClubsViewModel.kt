@@ -1,6 +1,5 @@
 package com.tpc.nudj.ui.screens.myClubs
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,6 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -33,15 +33,20 @@ class MyClubsViewModel @Inject constructor(
 
     private val _followedClubIds = MutableStateFlow<List<String>>(emptyList())
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
-    private val _isSaved = MutableStateFlow(false)
-    val isSaved: StateFlow<Boolean> = _isSaved.asStateFlow()
+    private val _myClubsUiState = MutableStateFlow(MyClubsUiState())
+    val myClubsUiState: StateFlow<MyClubsUiState> = _myClubsUiState.asStateFlow()
     private val firestore = FirebaseFirestore.getInstance()
 
     init {
         fetchFollowedClubs()
+    }
+
+    fun clearToastMessage(){
+        _myClubsUiState.update {
+            it.copy(
+                toastMessage = null
+            )
+        }
     }
 
     fun addSelectedClub(club: ClubUser) {
@@ -63,7 +68,11 @@ class MyClubsViewModel @Inject constructor(
 
     fun fetchAllClubs() {
         viewModelScope.launch {
-            _isLoading.value = true
+            _myClubsUiState.update {
+                it.copy(
+                    isLoading = true,
+                )
+            }
             try {
                 val selectedClubIds = _selectedClubs.value.map { it.clubId }
                 val clubCollection = firestore.collection(FirestoreCollections.CLUBS.path)
@@ -76,9 +85,18 @@ class MyClubsViewModel @Inject constructor(
                 }
                 _allClubsList.value = clubs
             } catch (e: Exception) {
-                Log.e("MyClubsViewModel", "Failed to fetch all clubs: ${e.message}")
+                _myClubsUiState.update {
+                    it.copy(
+                        toastMessage = e.message,
+                        isLoading = false,
+                    )
+                }
             } finally {
-                _isLoading.value = false
+                _myClubsUiState.update {
+                    it.copy(
+                        isLoading = false,
+                    )
+                }
             }
         }
     }
@@ -86,11 +104,20 @@ class MyClubsViewModel @Inject constructor(
 
     fun fetchFollowedClubs() {
         viewModelScope.launch {
-            _isLoading.value = true
+            _myClubsUiState.update {
+                it.copy(
+                    isLoading = true,
+                )
+            }
             try {
                 val currentUser = userRepository.fetchCurrentUser()
                 if (currentUser == null) {
-                    Log.e("MyClubsViewModel", "No user found")
+                    _myClubsUiState.update {
+                        it.copy(
+                            toastMessage = "No User Found",
+                            isLoading = false,
+                        )
+                    }
                     return@launch
                 }
                 val followedClubs = followRepository.fetchFollowingClubs(currentUser.userid)
@@ -104,37 +131,74 @@ class MyClubsViewModel @Inject constructor(
                 }
                 fetchAllClubs()
             } catch (e: Exception) {
-                Log.e("MyClubsViewModel", "Failed to fetch followed clubs: ${e.message}")
+                _myClubsUiState.update {
+                    it.copy(
+                        toastMessage = e.message,
+                        isLoading = false,
+                    )
+                }
             } finally {
-                _isLoading.value = false
+                _myClubsUiState.update {
+                    it.copy(
+                        isLoading = false,
+                    )
+                }
             }
         }
     }
 
 
-    fun onFollowClubs() {
+    fun onFollowClubs(onBack: () -> Unit) {
         viewModelScope.launch {
-            _isLoading.value = true
-            val currentUser = userRepository.fetchCurrentUser()
-            if (currentUser == null) {
-                Log.e("MyClubsViewModel", "No user found")
-                return@launch
+            _myClubsUiState.update {
+                it.copy(
+                    isLoading = true,
+                )
             }
-            val selectedIds = _selectedClubs.value.map { it.clubId }
-            val initialIds = _followedClubIds.value
-            val toFollow = selectedIds.filter { !initialIds.contains(it) }
-            val toUnfollow = initialIds.filter { !selectedIds.contains(it) }
-            toFollow.forEach { clubId ->
-                followRepository.followClub(currentUser.userid, clubId)
+            try {
+                val currentUser = userRepository.fetchCurrentUser()
+                if (currentUser == null) {
+                    _myClubsUiState.update {
+                        it.copy(
+                            toastMessage = "No User Found",
+                            isLoading = false,
+                        )
+                    }
+                    return@launch
+                }
+                val selectedIds = _selectedClubs.value.map { it.clubId }
+                val initialIds = _followedClubIds.value
+                val toFollow = selectedIds.filter { !initialIds.contains(it) }
+                val toUnfollow = initialIds.filter { !selectedIds.contains(it) }
+                toFollow.forEach { clubId ->
+                    followRepository.followClub(currentUser.userid, clubId)
+                }
+                toUnfollow.forEach { clubId ->
+                    followRepository.unfollowClub(currentUser.userid, clubId)
+                }
+                _followedClubIds.value = selectedIds
+            } catch (e: Exception) {
+                _myClubsUiState.update {
+                    it.copy(
+                        toastMessage = e.message,
+                        isLoading = false,
+                    )
+                }
+            } finally {
+                _myClubsUiState.update {
+                    it.copy(
+                        isLoading = false,
+                        isSaved = true,
+                    )
+                }
+                delay(1000)
+                _myClubsUiState.update {
+                    it.copy(
+                        isSaved = false,
+                    )
+                }
+                onBack()
             }
-            toUnfollow.forEach { clubId ->
-                followRepository.unfollowClub(currentUser.userid, clubId)
-            }
-            _followedClubIds.value = selectedIds
-            _isLoading.value = false
-            _isSaved.value = true
-            delay(2000)
-            _isSaved.value = false
         }
     }
 
