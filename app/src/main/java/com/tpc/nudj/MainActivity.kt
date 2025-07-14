@@ -31,6 +31,7 @@ import com.tpc.nudj.ui.screens.auth.login.LoginScreen
 import com.tpc.nudj.ui.screens.auth.signup.SignUpScreen
 import com.tpc.nudj.ui.screens.dashboard.DashboardScreen
 import com.tpc.nudj.ui.screens.detailsFetch.UserDetailsFetchScreen
+import com.tpc.nudj.ui.screens.myClubs.MyClubs
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.viewmodels.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,6 +63,7 @@ class MainActivity : ComponentActivity() {
                                 backstack.removeIf { it !is Screens.Auth.LandingScreen }
                             }
                         }
+
                         else -> {}
                     }
                 }
@@ -162,8 +164,8 @@ class MainActivity : ComponentActivity() {
                             DetailsConfirmationScreen(
                                 navArgs = navArgs,
                                 onEditClick = {
-                                    if(backstack.contains(Screens.UserDetailsScreen)) {
-                                        backstack.removeIf{ it is Screens.UserDetailsConfirmationScreen }
+                                    if (backstack.contains(Screens.UserDetailsScreen)) {
+                                        backstack.removeIf { it is Screens.UserDetailsConfirmationScreen }
                                     }
                                 },
                                 onSaveSuccess = {
@@ -196,6 +198,11 @@ class MainActivity : ComponentActivity() {
                                     style = MaterialTheme.typography.headlineLarge
                                 )
                             }
+                        }
+                        entry<Screens.MyClubsScreen> {
+                            MyClubs(
+                                onBackClicked = { backstack.removeLastOrNull() }
+                            )
                         }
                     }
                 )
