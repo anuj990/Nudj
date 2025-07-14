@@ -147,7 +147,11 @@ class MainActivity : ComponentActivity() {
                             ResetLinkConfirmationScreen()
                         }
                         entry<Screens.DashboardScreen> {
-                            DashboardScreen()
+                            DashboardScreen(
+                                onNavigateToMyClubs = {
+                                    backstack.add(Screens.MyClubsScreen)
+                                }
+                            )
                         }
                         entry<Screens.UserDetailsScreen> {
                             DetailsInputScreen(
