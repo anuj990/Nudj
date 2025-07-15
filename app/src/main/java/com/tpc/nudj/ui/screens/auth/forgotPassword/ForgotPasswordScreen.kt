@@ -35,13 +35,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun ForgetPasswordScreen(
     viewModel: ForgetPasswordScreenModel = hiltViewModel(),
-    onNavigateToResetConfirmation: () -> Unit = {}
+    onNavigateToVerifyEmail: () -> Unit = {}
 ) {
     val uiState by viewModel.forgetPasswordUiState.collectAsState()
     ForgetPasswordScreenLayout(
         uiState = uiState,
         onEmailInput = viewModel::emailInput,
-        onSendClicked = { viewModel.onSendEmailClicked(onNavigateToResetConfirmation) },
+        onSendClicked = { viewModel.onSendEmailClicked(onNavigateToVerifyEmail) },
         onClearToastMessage = viewModel::clearError
     )
 }

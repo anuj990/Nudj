@@ -33,10 +33,6 @@ class ForgetPasswordScreenModel @Inject constructor(
         }
     }
 
-    fun onCheckInboxClicked(){
-
-    }
-
     fun resendEmail() {
         onSendEmailClicked {}
     }

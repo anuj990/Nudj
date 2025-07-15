@@ -21,8 +21,6 @@ sealed interface Screens: NavKey {
         @Serializable
         data object ForgotPasswordScreen : Auth
 
-        @Serializable
-        data object ResetConfirmationScreen : Auth
 
     }
 

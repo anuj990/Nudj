@@ -1,5 +1,6 @@
 package com.tpc.nudj
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,7 +27,6 @@ import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsConfirmationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsInputScreen
 import com.tpc.nudj.ui.screens.auth.emailVerification.EmailVerificationScreen
 import com.tpc.nudj.ui.screens.auth.forgotPassword.ForgetPasswordScreen
-import com.tpc.nudj.ui.screens.auth.forgotPassword.ResetLinkConfirmationScreen
 import com.tpc.nudj.ui.screens.auth.landing.LandingScreen
 import com.tpc.nudj.ui.screens.auth.login.LoginScreen
 import com.tpc.nudj.ui.screens.auth.signup.SignUpScreen
@@ -38,20 +39,33 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val latestIntent = mutableStateOf<Intent?>(null)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        latestIntent.value = intent
         enableEdgeToEdge()
         setContent {
             NudjTheme {
                 val appViewModel: AppViewModel = hiltViewModel()
                 val authState by appViewModel.authState.collectAsState()
-
                 val backstack = rememberNavBackStack(
                     when (authState) {
                         is AppViewModel.AuthState.Authenticated -> Screens.UserDetailsFetchLoadingScreen
                         else -> Screens.Auth.LandingScreen
                     }
                 )
+                val currentIntent = latestIntent.value
+                LaunchedEffect(currentIntent) {
+                    val data = currentIntent?.data
+                    val mode = data?.getQueryParameter("mode")
+                    val oobCode = data?.getQueryParameter("oobCode")
+
+                    if (!mode.isNullOrEmpty() && !oobCode.isNullOrEmpty()) {
+                        EmailVerificationCredentials.mode = mode
+                        EmailVerificationCredentials.oobCode = oobCode
+                    }
+                }
+
 
                 LaunchedEffect(authState) {
                     when (authState) {
@@ -100,6 +114,10 @@ class MainActivity : ComponentActivity() {
                                 onUserNotFound = {
                                     backstack.add(Screens.UserDetailsScreen)
                                     backstack.remove(Screens.UserDetailsFetchLoadingScreen)
+                                },
+                                onEmailNotVerified = {
+                                    backstack.clear()
+                                    backstack.add(Screens.Auth.EmailVerificationScreen)
                                 }
                             )
                         }
@@ -112,6 +130,9 @@ class MainActivity : ComponentActivity() {
                                 onNavigateToForgotPassword = {
                                     backstack.add(Screens.Auth.ForgotPasswordScreen)
                                 },
+                                onNavigateToEmailVerification = {
+                                    backstack.add(Screens.Auth.EmailVerificationScreen)
+                                }
                             )
                         }
                         entry<Screens.Auth.SignUpScreen> {
@@ -130,21 +151,21 @@ class MainActivity : ComponentActivity() {
                         entry<Screens.Auth.EmailVerificationScreen> {
                             EmailVerificationScreen(
                                 viewModel = hiltViewModel(),
-                                goToLoginScreen = {
-                                    backstack.add(Screens.Auth.LoginScreen)
+                                toDetailsFetchScreen = {
+                                    backstack.add(Screens.UserDetailsFetchLoadingScreen)
                                     backstack.remove(Screens.Auth.EmailVerificationScreen)
+                                },
+                                toResetPasswordScreen = {
+                                    // Reset Password Screen will come here
                                 }
                             )
                         }
                         entry<Screens.Auth.ForgotPasswordScreen> {
                             ForgetPasswordScreen(
-                                onNavigateToResetConfirmation = {
-                                    backstack.add(Screens.Auth.ResetConfirmationScreen)
+                                onNavigateToVerifyEmail = {
+                                    backstack.add(Screens.Auth.EmailVerificationScreen)
                                 }
                             )
-                        }
-                        entry<Screens.Auth.ResetConfirmationScreen> {
-                            ResetLinkConfirmationScreen()
                         }
                         entry<Screens.DashboardScreen> {
                             DashboardScreen(
@@ -213,4 +234,16 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        latestIntent.value = intent
+    }
+}
+
+
+object EmailVerificationCredentials {
+    var mode: String = ""
+    var oobCode: String = ""
 }

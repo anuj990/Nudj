@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -156,7 +157,11 @@ fun SignUpScreenLayout(
                 PrimaryButton(
                     text = "Sign Up",
                     onClick = onSignUpClick,
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .align(
+                            Alignment.CenterHorizontally
+                        )
+                        .padding(horizontal = 10.dp),
                     enabled = uiState.email.isNotBlank() &&
                             uiState.confirmPassword == uiState.password &&
                             !uiState.isLoading,

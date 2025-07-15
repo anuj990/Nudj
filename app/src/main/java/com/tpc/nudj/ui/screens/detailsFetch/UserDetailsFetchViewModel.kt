@@ -2,6 +2,7 @@ package com.tpc.nudj.ui.screens.detailsFetch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.tpc.nudj.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +17,16 @@ class UserDetailsViewModel @Inject constructor(
 
     private val _userType = MutableStateFlow<UserType>(UserType.Loading)
     val userTypeState: StateFlow<UserType> = _userType
-
-    fun checkUserType() {
+    fun checkUserType(
+        onEmailNotVerified: () -> Unit
+    ) {
         viewModelScope.launch {
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            currentUser?.reload()
+            if (currentUser == null || currentUser.isEmailVerified.not()) {
+                onEmailNotVerified()
+                return@launch
+            }
             userRepository.checkUserTypeAndNavigate(
                 onNormalUser = { _userType.value = UserType.NormalUser },
                 onClubUser = { _userType.value = UserType.ClubUser },
