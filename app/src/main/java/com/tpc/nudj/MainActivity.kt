@@ -76,7 +76,12 @@ class MainActivity : ComponentActivity() {
                     ),
                     entryProvider = entryProvider {
                         entry<Screens.Auth.PreHomeScreen> {
-                            PreHomeScreen()
+                            PreHomeScreen(
+                                onCompleted = {
+                                    backstack.add(Screens.DashboardScreen)
+                                    backstack.remove(Screens.Auth.PreHomeScreen)
+                                }
+                            )
                         }
                         entry<Screens.Auth.LandingScreen> {
                             LandingScreen(

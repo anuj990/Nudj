@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,10 +34,17 @@ import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.theme.Purple
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.nio.file.WatchEvent
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @Composable
-fun PreHomeScreen() {
+fun PreHomeScreen(
+    onCompleted: () -> Unit
+) {
     val viewModel: PreHomeScreenViewModel = hiltViewModel()
+
+    val isLoading by viewModel.isLoading.collectAsState()
 
     val scope = rememberCoroutineScope()
 
@@ -52,10 +61,15 @@ fun PreHomeScreen() {
         buttonText = buttonText,
         onClickFollow = {
             scope.launch{
-                viewModel.onClickFollow()
+                viewModel.onClickFollow(
+                    onCompleted = onCompleted
+                )
             }
         }
     )
+    if (isLoading) {
+        CustomLoadingOverlay()
+    }
 }
 
 @Composable
@@ -130,7 +144,7 @@ fun PreHomeScreenLayout(
             PrimaryButton(
                 text = buttonText,
                 onClick = {
-                    onClickFollow
+                    onClickFollow()
                 },
                 modifier = Modifier
                     .padding(bottom = 19.dp, top = 6.dp)
@@ -229,4 +243,30 @@ fun PreHomeScreenLayoutPreview() {
             onClickFollow = {}
         )
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun CustomLoadingOverlay() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier.size(150.dp),
+            shape = RoundedCornerShape(percent = 20)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+
+            ){
+                CircularProgressIndicator()
+            }
+        }
+    }
+
 }
