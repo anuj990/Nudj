@@ -2,7 +2,6 @@ package com.tpc.nudj.ui.screens.auth.emailVerification
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +20,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,16 +29,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.auth.FirebaseAuth
+import com.tpc.nudj.EmailVerificationCredentials
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.theme.Purple
@@ -55,14 +50,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun EmailVerificationScreen(
     viewModel: EmailVerificationViewModel = hiltViewModel(),
-    goToLoginScreen : () -> Unit
+    toDetailsFetchScreen: () -> Unit,
+    toResetPasswordScreen: () -> Unit
 ) {
-    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // Show snackbar for messages
     LaunchedEffect(uiState.message) {
         uiState.message?.let {
             scope.launch {
@@ -71,29 +65,22 @@ fun EmailVerificationScreen(
             }
         }
     }
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                Log.i("EmailVerificationScreen", "Checking user verification status")
-                viewModel.checkCurrentUserVerificationStatus(goToLoginScreen)
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-
-
     LaunchedEffect(Unit) {
         viewModel.sendVerificationEmail()
         while (true) {
-            delay(1000)
-            val user = FirebaseAuth.getInstance().currentUser
-            user?.reload()
-            if (user?.isEmailVerified == true) {
-                goToLoginScreen()
+            delay(100)
+            val mode = EmailVerificationCredentials.mode
+            val oobCode = EmailVerificationCredentials.oobCode
+
+            if (mode.isNotBlank() && oobCode.isNotBlank()) {
+                viewModel.checkCurrentUserVerificationStatus(
+                    emailVerified = {
+                        toDetailsFetchScreen()
+                    },
+                    toResetPasswordScreen = {
+                        toResetPasswordScreen()
+                    }
+                )
                 break
             }
         }
@@ -108,7 +95,7 @@ fun EmailVerificationScreen(
             viewModel.sendVerificationEmail()
         },
         onCheckVerification = {
-            viewModel.checkCurrentUserVerificationStatus(goToLoginScreen)
+            viewModel.checkCurrentUserVerificationStatus(toDetailsFetchScreen)
         },
         snackbarHostState = snackbarHostState
     )
@@ -129,7 +116,7 @@ fun EmailVerificationScreenLayout(
     Scaffold(
         containerColor = LocalAppColors.current.background,
         snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) {paddingValues->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

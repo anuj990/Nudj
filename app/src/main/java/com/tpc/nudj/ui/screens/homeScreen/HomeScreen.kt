@@ -406,7 +406,8 @@ fun TopBar(
             Icon(
                 imageVector = Icons.Default.ArrowBackIosNew,
                 contentDescription = stringResource(R.string.back_navigation),
-                modifier = Modifier.size(25.dp)
+                modifier = Modifier.size(25.dp),
+                tint = LocalAppColors.current.appTitle
             )
         }
     }

@@ -64,42 +64,62 @@ class SignUpViewModel @Inject constructor(
             }
         }
 
-        Validator.isValidEmail(email, onSuccess = {
-            if (passwordValid) {
-                _signUpUiState.update {
-                    it.copy(
-                        isLoading = true
-                    )
-                }
-                viewModelScope.launch {
-                    authRepository.createUserWithEmailAndPassword(
-                        email = email,
-                        password = password,
-                        displayName = "New User"
-                    ).collect { authResult->
-                        _signUpUiState.update {
-                            it.copy(
-                                isLoading = false,
-                                toastMessage = when (authResult) {
-                                    is AuthResult.Success -> "Successfully created an account!"
-                                    is AuthResult.Error -> authResult.message
-                                    else -> null
+        Validator.isValidEmail(
+            email, onSuccess = {
+                if (passwordValid) {
+                    _signUpUiState.update {
+                        it.copy(
+                            isLoading = true
+                        )
+                    }
+                    viewModelScope.launch {
+                        authRepository.createUserWithEmailAndPassword(
+                            email = email,
+                            password = password,
+                            displayName = "New User"
+                        ).collect { authResult ->
+                            when (authResult) {
+                                is AuthResult.Loading -> {
+                                    _signUpUiState.update { it.copy(isLoading = true) }
                                 }
-                            )
-                        }
 
-                        when (authResult) {
-                            is AuthResult.VerificationNeeded-> {
-                                goToEmailVerificationScreen()
+                                is AuthResult.Success -> {
+                                    _signUpUiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            toastMessage = "Successfully created an account!"
+                                        )
+                                    }
+                                }
+
+                                is AuthResult.Error -> {
+                                    _signUpUiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            toastMessage = authResult.message
+                                        )
+                                    }
+                                }
+
+                                is AuthResult.VerificationNeeded -> {
+                                    _signUpUiState.update {
+                                        it.copy(isLoading = false)
+                                    }
+                                    goToEmailVerificationScreen()
+                                }
+
+                                else -> {
+                                    _signUpUiState.update {
+                                        it.copy(isLoading = false)
+                                    }
+                                }
                             }
-                            else -> {}
                         }
                     }
                 }
-            }
-        },
+            },
             onFailure = { error ->
-            _signUpUiState.update {
+                _signUpUiState.update {
                     it.copy(
                         toastMessage = error
                     )
@@ -107,8 +127,6 @@ class SignUpViewModel @Inject constructor(
             }
         )
     }
-
-
 
     fun onGoogleClicked(context: Context, onSuccessfulSignIn: () -> Unit) {
         _signUpUiState.update { it.copy(isLoading = true) }
@@ -127,7 +145,10 @@ class SignUpViewModel @Inject constructor(
                     when (result) {
                         is AuthResult.Success -> {
                             _signUpUiState.update {
-                                it.copy(isLoading = false, toastMessage = "Sign in successful")
+                                it.copy(
+                                    isLoading = false,
+                                    toastMessage = "Sign in successful"
+                                )
                             }
                             onSuccessfulSignIn()
                         }

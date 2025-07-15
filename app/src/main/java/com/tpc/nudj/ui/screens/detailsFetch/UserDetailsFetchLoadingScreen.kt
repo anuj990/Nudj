@@ -33,12 +33,15 @@ fun UserDetailsFetchScreen(
     onNormalUser: () -> Unit,
     onClubUser: () -> Unit,
     onUserNotFound: () -> Unit,
+    onEmailNotVerified: () -> Unit,
     viewModel: UserDetailsViewModel = hiltViewModel()
 ) {
     val userType = viewModel.userTypeState.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.checkUserType()
+        viewModel.checkUserType(
+            onEmailNotVerified = { onEmailNotVerified() }
+        )
     }
 
     when (userType.value) {

@@ -50,6 +50,7 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     onNavigateToUserDetailsFetchLoadingScreen: () -> Unit = {},
     onNavigateToForgotPassword: () -> Unit = {},
+    onNavigateToEmailVerification: () -> Unit = {}
 ) {
     val uiState by viewModel.loginUiState.collectAsState()
     val context = LocalContext.current
@@ -62,7 +63,10 @@ fun LoginScreen(
             viewModel.onForgetPasswordClicked(onNavigateToForgotPassword)
         },
         onLoginClicked = {
-            viewModel.onLoginClicked(onNavigateToUserDetailsFetchLoadingScreen)
+            viewModel.onLoginClicked(
+                onNavigateToUserDetailsFetchLoadingScreen = { onNavigateToUserDetailsFetchLoadingScreen() },
+                goToEmailVerificationScreen = { onNavigateToEmailVerification() }
+            )
         },
         onGoogleClicked = {
             viewModel.onGoogleClicked(context, onNavigateToUserDetailsFetchLoadingScreen)
@@ -97,9 +101,12 @@ private fun LoginScreenLayout(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = LocalAppColors.current.background
-    ) { it->
-        Box(modifier = Modifier.fillMaxSize()
-            .padding(it)) {
+    ) { it ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -129,7 +136,7 @@ private fun LoginScreenLayout(
                         .align(
                             Alignment.CenterHorizontally
                         )
-                        .width(130.dp),
+                        .padding(horizontal = 10.dp),
                     isLoading = uiState.isLoading
                 )
                 Spacer(modifier = Modifier.height(40.dp))

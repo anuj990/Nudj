@@ -38,7 +38,10 @@ class LoginViewModel @Inject constructor(
         onNavigateToForgotPassword()
     }
 
-    fun onLoginClicked(onNavigateToUserDetailsFetchLoadingScreen: () -> Unit) {
+    fun onLoginClicked(
+        onNavigateToUserDetailsFetchLoadingScreen: () -> Unit,
+        goToEmailVerificationScreen: () -> Unit
+    ) {
         val email = _loginUiState.value.email
         val password = _loginUiState.value.password
 
@@ -62,15 +65,22 @@ class LoginViewModel @Inject constructor(
                             onNavigateToUserDetailsFetchLoadingScreen()
                         } else {
                             _loginUiState.update {
-                                it.copy(isLoading = false, toastMessage = "Please verify your email")
+                                it.copy(
+                                    isLoading = false,
+                                    toastMessage = "Please verify your email"
+                                )
                             }
                         }
                     }
 
                     is AuthResult.VerificationNeeded -> {
                         _loginUiState.update {
-                            it.copy(isLoading = false, toastMessage = "Email not verified. Please verify.")
+                            it.copy(
+                                isLoading = false,
+                                toastMessage = "Email not verified. Please verify."
+                            )
                         }
+                        goToEmailVerificationScreen()
                     }
 
                     is AuthResult.Error -> {

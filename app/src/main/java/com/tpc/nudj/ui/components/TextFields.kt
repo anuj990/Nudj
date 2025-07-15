@@ -61,6 +61,7 @@ fun EmailField(
                 .background(colors.editTextBackground, shape = RoundedCornerShape(24.dp))
                 .fillMaxWidth()
                 .height(60.dp),
+            singleLine = true,
             textStyle = androidx.compose.ui.text.TextStyle(fontSize = 20.sp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
@@ -106,6 +107,7 @@ fun PasswordField(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent
             ),
+            singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 Text(
