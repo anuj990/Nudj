@@ -13,8 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,28 +26,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tpc.nudj.ui.components.*
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tpc.nudj.model.ClubUser
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.theme.Purple
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import java.nio.file.WatchEvent
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 
 @Composable
-fun PreHomeScreen(
-    onCompleted: () -> Unit
-) {
+fun PreHomeScreen(onCompleted: () -> Unit) {
     val viewModel: PreHomeScreenViewModel = hiltViewModel()
-
-    val isLoading by viewModel.isLoading.collectAsState()
-
-    val scope = rememberCoroutineScope()
-
+    val isLoading = viewModel.isLoading.collectAsState()
     val buttonText = if (viewModel.selectedCount.value > 0)
         "Follow ${viewModel.selectedCount.value} club${if (viewModel.selectedCount.value > 1) "s" else ""}"
     else
@@ -60,15 +48,14 @@ fun PreHomeScreen(
         onClubSelected = { list, index -> viewModel.ClubSelection(list, index) },
         buttonText = buttonText,
         onClickFollow = {
-            scope.launch{
-                viewModel.onClickFollow(
-                    onCompleted = onCompleted
-                )
-            }
+            viewModel.onClickFollow(
+                onCompleted
+            )
         }
     )
-    if (isLoading) {
-        CustomLoadingOverlay()
+
+    if (isLoading.value) {
+        LoadingScreenOverlay()
     }
 }
 
@@ -247,26 +234,22 @@ fun PreHomeScreenLayoutPreview() {
 
 @Composable
 @Preview(showBackground = true)
-fun CustomLoadingOverlay() {
+fun LoadingScreenOverlay() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f)),
+        modifier = Modifier.fillMaxSize()
+            .background(color = Color.Black.copy(alpha = 0.5f)),
         contentAlignment = Alignment.Center
     ) {
         Card(
-            modifier = Modifier.size(150.dp),
-            shape = RoundedCornerShape(percent = 20)
+            modifier = Modifier
+                .size(150.dp),
+            shape = RoundedCornerShape(percent = 15)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
+            Box(modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
-
-            ){
+            ) {
                 CircularProgressIndicator()
             }
         }
     }
-
 }
