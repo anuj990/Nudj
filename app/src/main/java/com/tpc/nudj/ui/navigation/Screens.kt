@@ -6,6 +6,10 @@ import kotlinx.serialization.Serializable
 
 sealed interface Screens: NavKey {
     sealed interface Auth : Screens {
+
+        @Serializable
+        data object PreHomeScreen : Auth
+
         @Serializable
         data object LandingScreen : Auth
 

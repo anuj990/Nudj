@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,14 +24,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tpc.nudj.ui.components.*
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.tpc.nudj.model.ClubUser
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.theme.Purple
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun PreHomeScreen() {
     val viewModel: PreHomeScreenViewModel = hiltViewModel()
+
+    val scope = rememberCoroutineScope()
 
     val buttonText = if (viewModel.selectedCount.value > 0)
         "Follow ${viewModel.selectedCount.value} club${if (viewModel.selectedCount.value > 1) "s" else ""}"
@@ -42,7 +49,12 @@ fun PreHomeScreen() {
         technicalClubs = viewModel.technicalClubsState,
         sportsClubs = viewModel.sportsClubsState,
         onClubSelected = { list, index -> viewModel.ClubSelection(list, index) },
-        buttonText = buttonText
+        buttonText = buttonText,
+        onClickFollow = {
+            scope.launch{
+                viewModel.onClickFollow()
+            }
+        }
     )
 }
 
@@ -52,7 +64,8 @@ fun PreHomeScreenLayout(
     technicalClubs: ClubCategoryState,
     sportsClubs: ClubCategoryState,
     onClubSelected: (SnapshotStateList<ClubCardState>, Int) -> Unit,
-    buttonText: String
+    buttonText: String,
+    onClickFollow: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -116,7 +129,9 @@ fun PreHomeScreenLayout(
 
             PrimaryButton(
                 text = buttonText,
-                onClick = { },
+                onClick = {
+                    onClickFollow
+                },
                 modifier = Modifier
                     .padding(bottom = 19.dp, top = 6.dp)
                     .width(300.dp)
@@ -177,7 +192,7 @@ fun ClubCategorySection(
 @Composable
 @Preview(showBackground = true)
 fun PreHomeScreenLayoutPreview() {
-    val dummyClubs = listOf("Club A", "Club B", "Club C", "Club D")
+    val dummyClubs = listOf(ClubUser(clubName = "Club 1"), ClubUser(clubName = "Club 2"), ClubUser(clubName = "Club 3"), ClubUser(clubName = "Club 4"))
 
 
     val dummyList = mutableStateListOf<ClubCardState>().apply {
@@ -210,7 +225,8 @@ fun PreHomeScreenLayoutPreview() {
             technicalClubs = technical,
             sportsClubs = sports,
             onClubSelected = { _, _ -> },
-            buttonText = "Follow 0 clubs"
+            buttonText = "Follow 0 clubs",
+            onClickFollow = {}
         )
     }
 }

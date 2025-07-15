@@ -21,6 +21,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.tpc.nudj.ui.navigation.Screens
+import com.tpc.nudj.ui.screens.auth.PreHomeScreen.PreHomeScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsConfirmationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsInputScreen
 import com.tpc.nudj.ui.screens.auth.emailVerification.EmailVerificationScreen
@@ -47,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
                 val backstack = rememberNavBackStack(
                     when (authState) {
-                        is AppViewModel.AuthState.Authenticated -> Screens.UserDetailsFetchLoadingScreen
+                        is AppViewModel.AuthState.Authenticated -> Screens.Auth.PreHomeScreen
                         else -> Screens.Auth.LandingScreen
                     }
                 )
@@ -74,6 +75,9 @@ class MainActivity : ComponentActivity() {
                         rememberViewModelStoreNavEntryDecorator(),
                     ),
                     entryProvider = entryProvider {
+                        entry<Screens.Auth.PreHomeScreen> {
+                            PreHomeScreen()
+                        }
                         entry<Screens.Auth.LandingScreen> {
                             LandingScreen(
                                 onClickLogin = {

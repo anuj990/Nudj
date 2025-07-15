@@ -1,6 +1,7 @@
 package com.tpc.nudj.repository.user
 
 import com.google.firebase.auth.FirebaseAuth
+import kotlin.Result
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tpc.nudj.model.ClubUser
@@ -99,6 +100,24 @@ class UserRepositoryImpl @Inject constructor() : UserRepository {
     override suspend fun fetchCurrentClub(): ClubUser? {
         val currentUser = auth.currentUser ?: return null
         return fetchClubById(currentUser.uid)
+    }
+
+    override suspend fun fetchAllClubs(): List<ClubUser> {
+        try {
+            val querySnapshot = firestore.collection(FirestoreCollections.CLUBS.path)
+                .get()
+                .await()
+
+            val clubList = querySnapshot.documents.mapNotNull { document->
+                document.data?.let { data->
+                    FirestoreUtils.toClubUser(data)
+                }
+
+            }
+            return clubList
+        } catch (e: Exception) {
+            return emptyList()
+        }
     }
 
     override suspend fun userExists(userId: String): Boolean {
