@@ -19,6 +19,7 @@ import com.tpc.nudj.ui.theme.Purple
 import com.tpc.nudj.utils.FirestoreCollections
 import com.tpc.nudj.utils.FirestoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -112,14 +113,16 @@ class PreHomeScreenViewModel @Inject constructor(
         (_culturalClubs + _technicalClubs + _sportsClubs).count { it.isSelected }
     }
 
-    suspend fun onClickFollow() {
-        val list = (_culturalClubs + _technicalClubs + _sportsClubs)
-        val userId = firebaseAuth.currentUser?.uid
-        if (userId != null) {
-            list.forEach { club ->
-                if (club.isSelected) {
-                    followRepository.followClub(userId, club.club.clubId)
-                } else { }
+    fun onClickFollow() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = (_culturalClubs + _technicalClubs + _sportsClubs)
+            val userId = firebaseAuth.currentUser?.uid
+            if (userId != null) {
+                list.forEach { club ->
+                    if (club.isSelected) {
+                        followRepository.followClub(userId, club.club.clubId)
+                    }
+                }
             }
         }
 

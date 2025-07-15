@@ -36,9 +36,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun PreHomeScreen() {
     val viewModel: PreHomeScreenViewModel = hiltViewModel()
-
-    val scope = rememberCoroutineScope()
-
     val buttonText = if (viewModel.selectedCount.value > 0)
         "Follow ${viewModel.selectedCount.value} club${if (viewModel.selectedCount.value > 1) "s" else ""}"
     else
@@ -51,9 +48,7 @@ fun PreHomeScreen() {
         onClubSelected = { list, index -> viewModel.ClubSelection(list, index) },
         buttonText = buttonText,
         onClickFollow = {
-            scope.launch{
-                viewModel.onClickFollow()
-            }
+            viewModel.onClickFollow()
         }
     )
 }
@@ -130,7 +125,7 @@ fun PreHomeScreenLayout(
             PrimaryButton(
                 text = buttonText,
                 onClick = {
-                    onClickFollow
+                    onClickFollow()
                 },
                 modifier = Modifier
                     .padding(bottom = 19.dp, top = 6.dp)
