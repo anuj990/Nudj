@@ -45,6 +45,7 @@ fun PreHomeScreen(onCompleted: () -> Unit) {
         culturalClubs = viewModel.culturalClubsState,
         technicalClubs = viewModel.technicalClubsState,
         sportsClubs = viewModel.sportsClubsState,
+        misc = viewModel.miscState,
         onClubSelected = { list, index -> viewModel.ClubSelection(list, index) },
         buttonText = buttonText,
         onClickFollow = {
@@ -64,6 +65,7 @@ fun PreHomeScreenLayout(
     culturalClubs: ClubCategoryState,
     technicalClubs: ClubCategoryState,
     sportsClubs: ClubCategoryState,
+    misc: ClubCategoryState,
     onClubSelected: (SnapshotStateList<ClubCardState>, Int) -> Unit,
     buttonText: String,
     onClickFollow: () -> Unit
@@ -122,6 +124,9 @@ fun PreHomeScreenLayout(
                             }
                             item {
                                 ClubCategorySection(sportsClubs, onClubSelected)
+                            }
+                            item {
+                                ClubCategorySection(misc, onClubSelected)
                             }
                         }
                     }
@@ -218,6 +223,12 @@ fun PreHomeScreenLayoutPreview() {
         baseColor = Color.Yellow,
         textColor = Color.Black
     )
+    val misc = ClubCategoryState(
+        category = "Miscellaneous",
+        clubList = dummyList,
+        baseColor = Purple,
+        textColor = Color.White
+    )
 
 
     NudjTheme {
@@ -225,6 +236,7 @@ fun PreHomeScreenLayoutPreview() {
             culturalClubs = cultural,
             technicalClubs = technical,
             sportsClubs = sports,
+            misc = misc,
             onClubSelected = { _, _ -> },
             buttonText = "Follow 0 clubs",
             onClickFollow = {}

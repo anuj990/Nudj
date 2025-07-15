@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tpc.nudj.model.ClubUser
+import com.tpc.nudj.model.enums.ClubCategory
 import com.tpc.nudj.repository.follow.FollowRepository
 import com.tpc.nudj.repository.follow.FollowRepositoryImpl
 import com.tpc.nudj.repository.user.UserRepository
@@ -58,14 +59,17 @@ class PreHomeScreenViewModel @Inject constructor(
     private var _culturalClubs = mutableStateListOf<ClubCardState>()
     private var _technicalClubs = mutableStateListOf<ClubCardState>()
     private var _sportsClubs = mutableStateListOf<ClubCardState>()
+
+    private var _misc = mutableStateListOf<ClubCardState>()
     private fun loadAndMapClubs(){
         viewModelScope.launch {
             delay(1000)
             _isLoading.value = true
             val clubs = userRepository.fetchAllClubs()
-            val culturalClubUsers: List<ClubUser> = clubs.filter { it.clubCategory.categoryName == "Cultural" }
-            val technicalClubUsers: List<ClubUser> = clubs.filter { it.clubCategory.categoryName == "Technical" }
-            val sportsClubUsers: List<ClubUser> = clubs.filter { it.clubCategory.categoryName == "Sports" }
+            val culturalClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.CULTURAL }
+            val technicalClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.TECHNICAL }
+            val sportsClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.SPORTS }
+            val miscUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.MISCELLANEOUS }
 
             _culturalClubs.clear()
             _culturalClubs.addAll(culturalClubUsers.map { ClubCardState(it) })
@@ -75,6 +79,10 @@ class PreHomeScreenViewModel @Inject constructor(
 
             _sportsClubs.clear()
             _sportsClubs.addAll(sportsClubUsers.map { ClubCardState(it) })
+
+            _misc.clear()
+            _misc.addAll(miscUsers.map { ClubCardState(it) })
+
             _isLoading.value = false
         }
     }
@@ -102,8 +110,15 @@ class PreHomeScreenViewModel @Inject constructor(
         textColor = Color.White
     )
 
+    val miscState = ClubCategoryState(
+        category = "Miscellaneous",
+        clubList = _misc,
+        baseColor = Purple,
+        textColor = Color.White
+    )
+
     val selectedCount = derivedStateOf {
-        (_culturalClubs + _technicalClubs + _sportsClubs).count { it.isSelected }
+        (_culturalClubs + _technicalClubs + _sportsClubs + _misc).count { it.isSelected }
     }
 
     fun onClickFollow(
@@ -111,7 +126,7 @@ class PreHomeScreenViewModel @Inject constructor(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
-            val list = (_culturalClubs + _technicalClubs + _sportsClubs)
+            val list = (_culturalClubs + _technicalClubs + _sportsClubs + _misc)
             val userId = firebaseAuth.currentUser?.uid
             if (userId != null) {
                 list.forEach { club ->
