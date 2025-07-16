@@ -49,11 +49,6 @@ class PreHomeScreenViewModel @Inject constructor(
     val isLoading = _isLoading.asStateFlow()
 
     private val firestore = FirebaseFirestore.getInstance()
-
-    init {
-        loadAndMapClubs()
-    }
-
     private val firebaseAuth: FirebaseAuth= FirebaseAuth.getInstance()
 
     private var _culturalClubs = mutableStateListOf<ClubCardState>()
@@ -61,33 +56,6 @@ class PreHomeScreenViewModel @Inject constructor(
     private var _sportsClubs = mutableStateListOf<ClubCardState>()
 
     private var _misc = mutableStateListOf<ClubCardState>()
-    private fun loadAndMapClubs(){
-        viewModelScope.launch {
-            delay(1000)
-            _isLoading.value = true
-            val clubs = userRepository.fetchAllClubs()
-            val culturalClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.CULTURAL }
-            val technicalClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.TECHNICAL }
-            val sportsClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.SPORTS }
-            val miscUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.MISCELLANEOUS }
-
-            _culturalClubs.clear()
-            _culturalClubs.addAll(culturalClubUsers.map { ClubCardState(it) })
-
-            _technicalClubs.clear()
-            _technicalClubs.addAll(technicalClubUsers.map { ClubCardState(it) })
-
-            _sportsClubs.clear()
-            _sportsClubs.addAll(sportsClubUsers.map { ClubCardState(it) })
-
-            _misc.clear()
-            _misc.addAll(miscUsers.map { ClubCardState(it) })
-
-            _isLoading.value = false
-        }
-    }
-
-
 
     val culturalClubsState = ClubCategoryState(
         category = "Cultural clubs",
@@ -121,6 +89,36 @@ class PreHomeScreenViewModel @Inject constructor(
         (_culturalClubs + _technicalClubs + _sportsClubs + _misc).count { it.isSelected }
     }
 
+
+    init {
+        loadAndMapClubs()
+    }
+
+    private fun loadAndMapClubs(){
+        viewModelScope.launch {
+            _isLoading.value = true
+            val clubs = userRepository.fetchAllClubs()
+            val culturalClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.CULTURAL }
+            val technicalClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.TECHNICAL }
+            val sportsClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.SPORTS }
+            val miscUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.MISCELLANEOUS }
+
+            _culturalClubs.clear()
+            _culturalClubs.addAll(culturalClubUsers.map { ClubCardState(it) })
+
+            _technicalClubs.clear()
+            _technicalClubs.addAll(technicalClubUsers.map { ClubCardState(it) })
+
+            _sportsClubs.clear()
+            _sportsClubs.addAll(sportsClubUsers.map { ClubCardState(it) })
+
+            _misc.clear()
+            _misc.addAll(miscUsers.map { ClubCardState(it) })
+
+            _isLoading.value = false
+        }
+    }
+
     fun onClickFollow(
         onCompleted: () -> Unit
     ) {
@@ -141,7 +139,6 @@ class PreHomeScreenViewModel @Inject constructor(
             _isLoading.value = false
             onCompleted()
         }
-
     }
 
     fun ClubSelection(clubList: SnapshotStateList<ClubCardState>, index: Int) {

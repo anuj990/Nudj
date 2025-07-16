@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
                 val backstack = rememberNavBackStack(
                     when (authState) {
-                        is AppViewModel.AuthState.Authenticated -> Screens.Auth.PreHomeScreen
+                        is AppViewModel.AuthState.Authenticated -> Screens.UserDetailsFetchLoadingScreen
                         else -> Screens.Auth.LandingScreen
                     }
                 )
@@ -176,7 +176,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 onSaveSuccess = {
-                                    backstack.add(Screens.DashboardScreen)
+                                    backstack.add(Screens.Auth.PreHomeScreen)
                                     backstack.removeIf { it is Screens.UserDetailsConfirmationScreen }
                                     backstack.remove(Screens.UserDetailsScreen)
                                 }
