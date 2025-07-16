@@ -8,6 +8,8 @@ import com.tpc.nudj.repository.follow.FollowRepository
 import com.tpc.nudj.repository.follow.FollowRepositoryImpl
 import com.tpc.nudj.repository.rsvp.RsvpRepository
 import com.tpc.nudj.repository.rsvp.RsvpRepositoryImpl
+import com.tpc.nudj.repository.user.UserRepository
+import com.tpc.nudj.repository.user.UserRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,7 +32,6 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideReviewRepository(): ReviewRepository = ReviewRepositoryImpl()
-
     @Provides
     @Singleton
     fun provideFollowRepository(): FollowRepository = FollowRepositoryImpl()

@@ -7,10 +7,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -23,15 +26,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tpc.nudj.ui.components.*
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tpc.nudj.model.ClubUser
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.theme.Purple
 
 @Composable
-fun PreHomeScreen() {
+fun PreHomeScreen(onCompleted: () -> Unit) {
     val viewModel: PreHomeScreenViewModel = hiltViewModel()
-
+    val isLoading = viewModel.isLoading.collectAsState()
     val buttonText = if (viewModel.selectedCount.value > 0)
         "Follow ${viewModel.selectedCount.value} club${if (viewModel.selectedCount.value > 1) "s" else ""}"
     else
@@ -41,9 +45,19 @@ fun PreHomeScreen() {
         culturalClubs = viewModel.culturalClubsState,
         technicalClubs = viewModel.technicalClubsState,
         sportsClubs = viewModel.sportsClubsState,
+        misc = viewModel.miscState,
         onClubSelected = { list, index -> viewModel.ClubSelection(list, index) },
-        buttonText = buttonText
+        buttonText = buttonText,
+        onClickFollow = {
+            viewModel.onClickFollow(
+                onCompleted
+            )
+        }
     )
+
+    if (isLoading.value) {
+        LoadingScreenOverlay()
+    }
 }
 
 @Composable
@@ -51,8 +65,10 @@ fun PreHomeScreenLayout(
     culturalClubs: ClubCategoryState,
     technicalClubs: ClubCategoryState,
     sportsClubs: ClubCategoryState,
+    misc: ClubCategoryState,
     onClubSelected: (SnapshotStateList<ClubCardState>, Int) -> Unit,
-    buttonText: String
+    buttonText: String,
+    onClickFollow: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -109,6 +125,9 @@ fun PreHomeScreenLayout(
                             item {
                                 ClubCategorySection(sportsClubs, onClubSelected)
                             }
+                            item {
+                                ClubCategorySection(misc, onClubSelected)
+                            }
                         }
                     }
                 }
@@ -116,7 +135,9 @@ fun PreHomeScreenLayout(
 
             PrimaryButton(
                 text = buttonText,
-                onClick = { },
+                onClick = {
+                    onClickFollow()
+                },
                 modifier = Modifier
                     .padding(bottom = 19.dp, top = 6.dp)
                     .width(300.dp)
@@ -177,7 +198,7 @@ fun ClubCategorySection(
 @Composable
 @Preview(showBackground = true)
 fun PreHomeScreenLayoutPreview() {
-    val dummyClubs = listOf("Club A", "Club B", "Club C", "Club D")
+    val dummyClubs = listOf(ClubUser(clubName = "Club 1"), ClubUser(clubName = "Club 2"), ClubUser(clubName = "Club 3"), ClubUser(clubName = "Club 4"))
 
 
     val dummyList = mutableStateListOf<ClubCardState>().apply {
@@ -202,6 +223,12 @@ fun PreHomeScreenLayoutPreview() {
         baseColor = Color.Yellow,
         textColor = Color.Black
     )
+    val misc = ClubCategoryState(
+        category = "Miscellaneous",
+        clubList = dummyList,
+        baseColor = Purple,
+        textColor = Color.White
+    )
 
 
     NudjTheme {
@@ -209,8 +236,32 @@ fun PreHomeScreenLayoutPreview() {
             culturalClubs = cultural,
             technicalClubs = technical,
             sportsClubs = sports,
+            misc = misc,
             onClubSelected = { _, _ -> },
-            buttonText = "Follow 0 clubs"
+            buttonText = "Follow 0 clubs",
+            onClickFollow = {}
         )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun LoadingScreenOverlay() {
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(color = Color.Black.copy(alpha = 0.5f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier
+                .size(150.dp),
+            shape = RoundedCornerShape(percent = 15)
+        ) {
+            Box(modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
     }
 }

@@ -23,6 +23,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.tpc.nudj.ui.navigation.Screens
+import com.tpc.nudj.ui.screens.auth.PreHomeScreen.PreHomeScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsConfirmationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsInputScreen
 import com.tpc.nudj.ui.screens.auth.emailVerification.EmailVerificationScreen
@@ -90,6 +91,14 @@ class MainActivity : ComponentActivity() {
                         rememberViewModelStoreNavEntryDecorator(),
                     ),
                     entryProvider = entryProvider {
+                        entry<Screens.Auth.PreHomeScreen> {
+                            PreHomeScreen(
+                                onCompleted = {
+                                    backstack.add(Screens.DashboardScreen)
+                                    backstack.remove(Screens.Auth.PreHomeScreen)
+                                }
+                            )
+                        }
                         entry<Screens.Auth.LandingScreen> {
                             LandingScreen(
                                 onClickLogin = {
@@ -194,7 +203,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 onSaveSuccess = {
-                                    backstack.add(Screens.DashboardScreen)
+                                    backstack.add(Screens.Auth.PreHomeScreen)
                                     backstack.removeIf { it is Screens.UserDetailsConfirmationScreen }
                                     backstack.remove(Screens.UserDetailsScreen)
                                 }

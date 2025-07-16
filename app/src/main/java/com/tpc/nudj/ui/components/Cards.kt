@@ -38,7 +38,7 @@ fun ClubNameCard(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = club.clubName,
+            text = club.club.clubName,
             fontFamily = ClashDisplay,
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.W600,

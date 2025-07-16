@@ -5,14 +5,32 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.tpc.nudj.model.ClubUser
+import com.tpc.nudj.model.enums.ClubCategory
+import com.tpc.nudj.repository.follow.FollowRepository
+import com.tpc.nudj.repository.follow.FollowRepositoryImpl
+import com.tpc.nudj.repository.user.UserRepository
+import com.tpc.nudj.repository.user.UserRepositoryImpl
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.Orange
 import com.tpc.nudj.ui.theme.Purple
+import com.tpc.nudj.utils.FirestoreCollections
+import com.tpc.nudj.utils.FirestoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlin.collections.map
 
 data class ClubCardState(
-    val clubName: String,
+    val club: ClubUser,
     var isSelected: Boolean = false
 )
 data class ClubCategoryState(
@@ -23,33 +41,21 @@ data class ClubCategoryState(
 )
 
 @HiltViewModel
-class PreHomeScreenViewModel @Inject constructor() : ViewModel() {
+class PreHomeScreenViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val followRepository: FollowRepository
+) : ViewModel() {
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
 
-    private val _culturalClubs = mutableStateListOf<ClubCardState>().apply {
-        addAll(
-            listOf("Aavartan", "Abhivyakti", "Jazbaat", "Saaz", "Samvaad", "Shutterbox")
-                .map { ClubCardState(it) }
-        )
-    }
+    private val firestore = FirebaseFirestore.getInstance()
+    private val firebaseAuth: FirebaseAuth= FirebaseAuth.getInstance()
 
-    private val _technicalClubs = mutableStateListOf<ClubCardState>().apply {
-        addAll(
-            listOf(
-                "Astronomy and Physics Society", "Aero Fabrication", "Business and Management",
-                "CAD and 3D Printing", "Electronics and Robotics Society", "IIITDMJ Racing Club",
-                "The Programming Club"
-            ).map { ClubCardState(it) }
-        )
-    }
+    private var _culturalClubs = mutableStateListOf<ClubCardState>()
+    private var _technicalClubs = mutableStateListOf<ClubCardState>()
+    private var _sportsClubs = mutableStateListOf<ClubCardState>()
 
-    private val _sportsClubs = mutableStateListOf<ClubCardState>().apply {
-        addAll(
-            listOf(
-                "Athletics", "Badminton", "Basketball", "Chess", "Carrom", "Cricket",
-                "Football", "Gymnasium", "Kabaddi", "Lawn Tennis", "Table Tennis", "Volleyball"
-            ).map { ClubCardState(it) }
-        )
-    }
+    private var _misc = mutableStateListOf<ClubCardState>()
 
     val culturalClubsState = ClubCategoryState(
         category = "Cultural clubs",
@@ -72,8 +78,67 @@ class PreHomeScreenViewModel @Inject constructor() : ViewModel() {
         textColor = Color.White
     )
 
+    val miscState = ClubCategoryState(
+        category = "Miscellaneous",
+        clubList = _misc,
+        baseColor = Purple,
+        textColor = Color.White
+    )
+
     val selectedCount = derivedStateOf {
-        (_culturalClubs + _technicalClubs + _sportsClubs).count { it.isSelected }
+        (_culturalClubs + _technicalClubs + _sportsClubs + _misc).count { it.isSelected }
+    }
+
+
+    init {
+        loadAndMapClubs()
+    }
+
+    private fun loadAndMapClubs(){
+        viewModelScope.launch {
+            _isLoading.value = true
+            val clubs = userRepository.fetchAllClubs()
+            val culturalClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.CULTURAL }
+            val technicalClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.TECHNICAL }
+            val sportsClubUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.SPORTS }
+            val miscUsers: List<ClubUser> = clubs.filter { it.clubCategory == ClubCategory.MISCELLANEOUS }
+
+            _culturalClubs.clear()
+            _culturalClubs.addAll(culturalClubUsers.map { ClubCardState(it) })
+
+            _technicalClubs.clear()
+            _technicalClubs.addAll(technicalClubUsers.map { ClubCardState(it) })
+
+            _sportsClubs.clear()
+            _sportsClubs.addAll(sportsClubUsers.map { ClubCardState(it) })
+
+            _misc.clear()
+            _misc.addAll(miscUsers.map { ClubCardState(it) })
+
+            _isLoading.value = false
+        }
+    }
+
+    fun onClickFollow(
+        onCompleted: () -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _isLoading.value = true
+            val list = (_culturalClubs + _technicalClubs + _sportsClubs + _misc)
+            val userId = firebaseAuth.currentUser?.uid
+            if (userId != null) {
+                list.forEach { club ->
+                    if (club.isSelected) {
+                        followRepository.followClub(userId, club.club.clubId)
+                    }
+                    else {
+                        followRepository.unfollowClub(userId,club.club.clubId)
+                    }
+                }
+            }
+            _isLoading.value = false
+            onCompleted()
+        }
     }
 
     fun ClubSelection(clubList: SnapshotStateList<ClubCardState>, index: Int) {

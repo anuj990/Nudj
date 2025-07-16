@@ -20,6 +20,8 @@ interface UserRepository {
 
     suspend fun fetchClubById(clubId: String): ClubUser?
 
+    suspend fun fetchAllClubs(): List<ClubUser>
+
     suspend fun fetchCurrentClub(): ClubUser?
 
     suspend fun userExists(userId: String): Boolean
