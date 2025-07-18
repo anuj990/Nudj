@@ -6,7 +6,7 @@ data class ClubUser(
     val clubId :String = "",
     val clubName :String = "",
     val description: String = "",
-    val achievements: String = "",
+    val achievementsList: List<String> = emptyList(),
     val clubEmail:String = "",
     val clubLogo :String? = null,
     val clubCategory : ClubCategory = ClubCategory.MISCELLANEOUS,
