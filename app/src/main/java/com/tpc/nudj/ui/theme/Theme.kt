@@ -37,6 +37,7 @@ data class AppColors(
     // Other variables
     val forgetPasswordText: Color,
     val resendEmailText: Color,
+    val announcementcircle: Color,
 )
 
 private val LightColorScheme = AppColors(
@@ -56,7 +57,8 @@ private val LightColorScheme = AppColors(
     fillButtonBackground = Orange,
 
     forgetPasswordText = Color.Black,
-    resendEmailText = Purple
+    resendEmailText = Purple,
+    announcementcircle = Color.LightGray
 )
 
 
@@ -77,7 +79,8 @@ private val DarkColorScheme = AppColors(
     fillButtonBackground = Orange,
 
     forgetPasswordText = Color.White,
-    resendEmailText = Color.White
+    resendEmailText = Color.White,
+    announcementcircle = EditTextBackgroundColorDark
 )
 
 @Composable

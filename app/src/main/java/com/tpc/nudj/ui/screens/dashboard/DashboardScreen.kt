@@ -49,6 +49,8 @@ import com.tpc.nudj.ui.theme.NudjTheme
 import kotlinx.coroutines.delay
 import com.tpc.nudj.R
 import com.tpc.nudj.ui.navigation.Screens
+import com.tpc.nudj.ui.screens.dashboard.announcement.AnnouncementScreen
+import com.tpc.nudj.ui.screens.dashboard.announcement.recentAnnouncement
 import com.tpc.nudj.ui.screens.homeScreen.HomeScreenLayout
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.LocalAppColors
@@ -108,6 +110,13 @@ fun DashboardScreen(
             when (screen) {
                 BottomNavScreen.Home -> {
                     HomeScreenLayout()
+                }
+                BottomNavScreen.Clubs -> {
+                    AnnouncementScreen(
+                        recentAnnouncements = recentAnnouncement,
+                        onBackClicked = {},
+                        navigateToMyClub = onNavigateToMyClubs
+                    )
                 }
                 else -> NavScreens(
                     screen = screen,
