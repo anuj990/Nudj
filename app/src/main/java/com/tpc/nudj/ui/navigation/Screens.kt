@@ -55,4 +55,5 @@ sealed interface Screens: NavKey {
 
     @Serializable
     data object MyClubsScreen : Screens
+
 }
