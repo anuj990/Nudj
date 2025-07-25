@@ -1,4 +1,4 @@
-package com.tpc.nudj.ui.screens.announcement
+package com.tpc.nudj.ui.screens.dashboard.announcement
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,25 +42,25 @@ import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 
-val recentAnnouncement = listOf<String>(" "," "," "," ")
+val recentAnnouncement = listOf<String>("Announcement 1","Announcement 2","Announcement 3","Announcement 4")
 @Composable
 fun AnnouncementScreen(
-    recentannouncements: List<String> = recentAnnouncement,
+    recentAnnouncements: List<String> = recentAnnouncement,
     onBackClicked: () -> Unit,
-    NavigatetoMyClub : () -> Unit
+    navigateToMyClub : () -> Unit
 ){
     AnnouncementScreenContent(
-        recentannouncements = recentannouncements,
+        recentAnnouncements = recentAnnouncements,
         onBackClicked = onBackClicked,
-        NavigatetoMyClub = NavigatetoMyClub
+        navigatetoMyClub = navigateToMyClub
     )
 }
 
 @Composable
 fun AnnouncementScreenContent(
-    recentannouncements: List<String>,
+    recentAnnouncements: List<String>,
     onBackClicked: () -> Unit,
-    NavigatetoMyClub : () -> Unit
+    navigatetoMyClub : () -> Unit
 ){
     Column (
         modifier = Modifier
@@ -77,7 +78,8 @@ fun AnnouncementScreenContent(
                     width = 1.dp,
                     color = Color.Black,
                     shape = RoundedCornerShape(10.dp)
-                    ),
+                    )
+                .weight(1f),
             colors = CardDefaults.cardColors(
                 containerColor = EditTextBackgroundColorLight,)
         ){
@@ -94,17 +96,19 @@ fun AnnouncementScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                items(recentannouncements){announcement ->
+                items(recentAnnouncements){ announcement ->
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(start = 30.dp, bottom = 15.dp)
+                            .padding(start = 30.dp, bottom = 15.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ){
                         Box(
                             modifier = Modifier
-                                .size(50.dp)
+                                .size(40.dp)
                                 .background(LocalAppColors.current.announcementcircle, shape = RoundedCornerShape(25.dp))
                         )
+                        Spacer(Modifier.width(4.dp))
                         Text(
                             text = announcement,
                             modifier = Modifier.padding(start = 5.dp),
@@ -120,7 +124,7 @@ fun AnnouncementScreenContent(
         }
         Spacer(modifier = Modifier.height(5.dp))
         Button(
-            onClick = NavigatetoMyClub,
+            onClick = navigatetoMyClub,
             colors = ButtonDefaults.buttonColors(
                 containerColor = LocalAppColors.current.appTitle
             ),
@@ -129,6 +133,7 @@ fun AnnouncementScreenContent(
                 .fillMaxWidth()
                 .height(65.dp)
                 .padding(horizontal = 20.dp)
+                .padding(bottom = 8.dp)
                 .align(Alignment.CenterHorizontally),
         ) {
             Text(
@@ -179,6 +184,6 @@ fun TopBar(
 @Composable
 fun AnnouncementScreenPreview(){
     NudjTheme {
-        AnnouncementScreenContent(recentannouncements = recentAnnouncement, onBackClicked = {}, NavigatetoMyClub = {})
+        AnnouncementScreenContent(recentAnnouncements = recentAnnouncement, onBackClicked = {}, navigatetoMyClub = {})
     }
 }
