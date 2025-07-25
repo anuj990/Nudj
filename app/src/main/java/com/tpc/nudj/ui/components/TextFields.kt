@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -49,15 +50,20 @@ fun EmailField(
             text = "Email",
             modifier = Modifier
                 .align(Alignment.Start),
-            fontSize = 18.sp,
-            fontFamily = ClashDisplay,
-            color = colors.viewText
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontFamily = ClashDisplay,
+                color = colors.viewText
+            ),
         )
         OutlinedTextField(
             value = email,
             onValueChange = onEmailChange,
             modifier = modifier
-                .border(width = 1.8F.dp, color = colors.editTextBorder,shape = RoundedCornerShape(16.dp))
+                .border(
+                    width = 1.8F.dp,
+                    color = colors.editTextBorder,
+                    shape = RoundedCornerShape(16.dp)
+                )
                 .background(colors.editTextBackground, shape = RoundedCornerShape(24.dp))
                 .fillMaxWidth()
                 .height(60.dp),
@@ -88,17 +94,17 @@ fun PasswordField(
         Text(
             text = label,
             modifier = Modifier
-                .align(Alignment.Start) ,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.W400,
-            fontFamily = ClashDisplay,
-            color = colors.viewText
+                .align(Alignment.Start),
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontFamily = ClashDisplay,
+                color = colors.viewText
+            ),
         )
         OutlinedTextField(
             value = password,
             onValueChange = onPasswordChange,
             modifier = modifier
-                .border(width = 1.8F.dp, colors.editTextBorder,shape = RoundedCornerShape(16.dp))
+                .border(width = 1.8F.dp, colors.editTextBorder, shape = RoundedCornerShape(16.dp))
                 .background(colors.editTextBackground, shape = RoundedCornerShape(24.dp))
                 .fillMaxWidth()
                 .height(60.dp),
@@ -126,7 +132,6 @@ fun PasswordField(
 }
 
 
-
 @Composable
 fun NudjTextField(
     value: String,
@@ -134,6 +139,7 @@ fun NudjTextField(
     modifier: Modifier = Modifier,
     readOnly: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
+    singleLine: Boolean = true
 ) {
     val shape = RoundedCornerShape(16.dp)
     val borderColor = Color(0xFFFF5E00).copy(alpha = 0.5f)
@@ -149,6 +155,7 @@ fun NudjTextField(
             ),
         shape = shape,
         readOnly = readOnly,
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 20.sp),
         trailingIcon = trailingIcon,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Color(0xFFFF5E00),
@@ -156,7 +163,7 @@ fun NudjTextField(
             focusedContainerColor = backgroundColor,
             unfocusedContainerColor = backgroundColor,
         ),
-        singleLine = true
+        singleLine = singleLine
     )
 }
 
@@ -208,6 +215,6 @@ fun NudjTextFieldPreview() {
             onValueChange = { text = it },
             modifier = Modifier.fillMaxWidth(),
 
-        )
+            )
     }
 }

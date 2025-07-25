@@ -39,7 +39,7 @@ object FirestoreUtils {
             "clubId" to clubUser.clubId,
             "clubName" to clubUser.clubName,
             "description" to clubUser.description,
-            "achievements" to clubUser.achievements,
+            "achievements" to clubUser.achievementsList,
             "clubEmail" to clubUser.clubEmail,
             "clubLogo" to clubUser.clubLogo,
             "clubCategory" to clubUser.clubCategory.name, // Store enum as string
@@ -150,7 +150,7 @@ object FirestoreUtils {
             clubId = (data["clubId"] as? String) ?: "",
             clubName = (data["clubName"] as? String) ?: "",
             description = (data["description"] as? String) ?: "",
-            achievements = (data["achievements"] as? String) ?: "",
+            achievementsList = (data["achievementsList"] as? List<String>) ?: emptyList(),
             clubEmail = (data["clubEmail"] as? String) ?: "",
             clubLogo = data["clubLogo"] as? String,
             clubCategory = enumValueOrDefault(data["clubCategory"] as? String, ClubCategory.MISCELLANEOUS),

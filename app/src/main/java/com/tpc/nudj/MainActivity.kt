@@ -24,6 +24,7 @@ import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.tpc.nudj.ui.navigation.Screens
 import com.tpc.nudj.ui.screens.auth.PreHomeScreen.PreHomeScreen
+import com.tpc.nudj.ui.screens.auth.clubRegistration.ClubRegistrationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsConfirmationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsInputScreen
 import com.tpc.nudj.ui.screens.auth.emailVerification.EmailVerificationScreen
@@ -210,16 +211,14 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         entry<Screens.ClubRegistrationScreen> {
-                            // Placeholder for Club Registration Screen
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    "Club Registration Screen",
-                                    style = MaterialTheme.typography.headlineLarge
-                                )
-                            }
+                            ClubRegistrationScreen(
+                                toDashboardScreen = {
+                                    backstack.add(Screens.DashboardScreen)
+                                },
+                                onBackClicked = {
+                                    backstack.removeLastOrNull()
+                                }
+                            )
                         }
                         entry<Screens.ClubDashboardScreen> {
                             // Placeholder for Club Dashboard Screen
