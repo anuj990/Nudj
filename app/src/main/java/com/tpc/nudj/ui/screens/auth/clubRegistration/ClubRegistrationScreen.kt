@@ -68,7 +68,6 @@ fun ClubRegistrationScreen(
     ClubRegistrationLayout(
         uiState = uiState,
         onNameInput = viewModel::clubNameInput,
-        onEmailInput = {},
         onImagePicked = viewModel::clubLogoImageInput,
         onAdditionalDetailsInput = viewModel::clubAdditionalDetailsInput,
         onCategoryInput = viewModel::clubCategoryInput,
@@ -89,7 +88,6 @@ fun ClubRegistrationLayout(
     uiState: ClubRegistrationUIState,
     onNameInput: (String) -> Unit,
     onBackClicked: () -> Unit,
-    onEmailInput: (String) -> Unit,
     onImagePicked: (Uri?) -> Unit,
     onAdditionalDetailsInput: (String) -> Unit,
     onCategoryInput: (ClubCategory) -> Unit,
@@ -162,7 +160,6 @@ fun ClubRegistrationLayout(
                             ClubsRegisterScreen1(
                                 uiState = uiState,
                                 onNameInput = onNameInput,
-                                onEmailInput = {},
                                 onCategoryInput = onCategoryInput,
                                 onDescriptionInput = onDescriptionInput,
                                 onAddAchievement = onAddAchievement,
@@ -309,7 +306,6 @@ fun ClubRegistrationScreenPreview() {
     NudjTheme {
         ClubRegistrationLayout(
             onNameInput = {},
-            onEmailInput = {},
             onCategoryInput = {},
             onDescriptionInput = {},
             onAddAchievement = {},

@@ -63,7 +63,6 @@ import com.tpc.nudj.ui.theme.Orange
 fun ClubsRegisterScreen1(
     uiState: ClubRegistrationUIState,
     onNameInput: (String) -> Unit,
-    onEmailInput: (String) -> Unit,
     onCategoryInput: (ClubCategory) -> Unit,
     onDescriptionInput: (String) -> Unit,
     onAddAchievement: (String) -> Unit,
@@ -114,11 +113,6 @@ fun ClubsRegisterScreen1(
                         )
                 )
             }
-            Spacer(modifier = Modifier.padding(10.dp))
-            EmailField(
-                email = uiState.clubEmail,
-                onEmailChange = { onEmailInput(it) },
-            )
             Spacer(modifier = Modifier.padding(10.dp))
             Column(
                 modifier = Modifier
@@ -343,7 +337,6 @@ fun Screen1Preview() {
             onAddAchievement = {},
             onRemoveAchievement = {},
             onNameInput = {},
-            onEmailInput = {},
             onDescriptionInput = {},
             onCategoryInput = {},
             uiState = ClubRegistrationUIState()

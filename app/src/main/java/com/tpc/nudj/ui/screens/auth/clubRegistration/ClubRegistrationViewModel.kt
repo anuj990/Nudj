@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import com.tpc.nudj.model.ClubUser
 import com.tpc.nudj.model.enums.ClubCategory
@@ -66,13 +67,6 @@ class ClubRegistrationViewModel @Inject constructor(
         }
     }
 
-//    fun clubEmailInput(input: String) {
-//        _clubRegistrationUiState.update {
-//            it.copy(
-//                clubEmail = input
-//            )
-//        }
-//    }
 
     fun clubCategoryInput(input: ClubCategory) {
         _clubRegistrationUiState.update {
@@ -131,8 +125,9 @@ class ClubRegistrationViewModel @Inject constructor(
     }
 
     fun onSaveClicked(toDashboardScreen: () -> Unit) {
+        val firebase = FirebaseAuth.getInstance()
         val clubName = _clubRegistrationUiState.value.clubName
-        val clubEmail = _clubRegistrationUiState.value.clubEmail
+        val clubEmail = firebase.currentUser?.email
         val clubCategory = _clubRegistrationUiState.value.clubCategory
         val clubLogo = _clubRegistrationUiState.value.clubLogo
         val clubDescription = _clubRegistrationUiState.value.clubDescription
@@ -140,6 +135,11 @@ class ClubRegistrationViewModel @Inject constructor(
         val clubAdditionalDetails = _clubRegistrationUiState.value.clubAdditionalDetails
 
         when {
+            clubEmail.isNullOrBlank() -> {
+                emitError("No user email found.")
+                return
+            }
+
             clubName.isBlank() -> {
                 emitError("Club name cannot be empty.")
                 return
@@ -154,11 +154,6 @@ class ClubRegistrationViewModel @Inject constructor(
                 emitError("Club description cannot be empty.")
                 return
             }
-
-            clubAchievementsList.isEmpty() -> {
-                emitError("Please enter at least one achievement.")
-                return
-            }
         }
 
         _clubRegistrationUiState.update {
@@ -168,45 +163,35 @@ class ClubRegistrationViewModel @Inject constructor(
         }
         clearErrorFlow()
         clearMsgFlow()
-        Validator.isValidEmail(email = clubEmail, onSuccess = {
-            viewModelScope.launch {
-                try {
-                    val clubId = clubName
-                        .trim()
-                        .replace(" ", "").lowercase() + "_id"
-                    val clubDetails = ClubUser(
-                        clubId = clubId,
-                        clubName = clubName,
-                        clubEmail = clubEmail,
-                        clubCategory = clubCategory,
-                        clubLogo = clubLogo,
-                        description = clubDescription,
-                        achievementsList = clubAchievementsList,
-                        additionalDetails = clubAdditionalDetails
-                    )
-                    userRepository.saveClub(clubDetails)
-                    _clubRegistrationUiState.update {
-                        it.copy(
-                            isLoading = false
-                        )
-                    }
-                    viewModelScope.launch {
-                        emitMsg("Club saved Successfully, Welcome to Nudj")
-                        delay(1000)
-                        toDashboardScreen()
-                    }
-                } catch (e: Exception) {
-                    emitError("Failed to save club details, please try again")
-                }
-            }
-        }, onFailure = {
-            _clubRegistrationUiState.update {
-                it.copy(
-                    isLoading = false,
+        viewModelScope.launch {
+            try {
+                val clubId = clubName
+                    .trim()
+                    .replace(" ", "").lowercase() + "_id"
+                val clubDetails = ClubUser(
+                    clubId = clubId,
+                    clubName = clubName,
+                    clubEmail = clubEmail,
+                    clubCategory = clubCategory,
+                    clubLogo = clubLogo,
+                    description = clubDescription,
+                    achievementsList = clubAchievementsList,
+                    additionalDetails = clubAdditionalDetails
                 )
+                userRepository.saveClub(clubDetails)
+                _clubRegistrationUiState.update {
+                    it.copy(
+                        isLoading = false
+                    )
+                }
+                viewModelScope.launch {
+                    emitMsg("Club saved Successfully, Welcome to Nudj")
+                    delay(1000)
+                    toDashboardScreen()
+                }
+            } catch (e: Exception) {
+                emitError("Failed to save club details, please try again")
             }
-            emitError("Please enter a valid college email id")
-        })
-
+        }
     }
 }

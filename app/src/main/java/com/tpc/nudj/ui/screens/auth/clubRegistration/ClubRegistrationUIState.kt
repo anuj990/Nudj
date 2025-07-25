@@ -4,7 +4,6 @@ import com.tpc.nudj.model.enums.ClubCategory
 
 data class ClubRegistrationUIState(
     val clubName: String = "",
-    val clubEmail: String = "@iiitdmj.ac.in",
     val clubCategory: ClubCategory = ClubCategory.MISCELLANEOUS,
     val clubDescription: String = "",
     val clubAchievementsList: List<String> = emptyList(),
