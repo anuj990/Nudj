@@ -12,6 +12,7 @@ data class Event(
     val eventBannerUrl: String? = null,
     val organizerName: String = "",
     val organizerContactNumber: String = "",
+    val eventVenue:String = "",
     val eventDates: List<EventDate> = emptyList(),
     val faqs: List<EventFAQ> = emptyList(),
     //Empty list means no filter applied, if filter is applied, it will be a non-empty list of batch numbers
