@@ -54,21 +54,34 @@ import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.theme.Orange
 import java.time.LocalDateTime
+import java.time.Month
 
 @Composable
 fun EventRegisterScreen3(
     uiState: EventRegistrationUiState,
-    onImagePicked:(Uri?)->Unit,
-    changeBatchSelection:(String,Set<String>)->Unit,
+    onImagePicked: (Uri?) -> Unit,
+    changeBatchSelection: (String, Set<String>) -> Unit,
 ) {
     val currentYear = LocalDateTime.now().year
-    val batchList = setOf(
-        "All Batches",
-        currentYear.toString(),
-        (currentYear - 1).toString(),
-        (currentYear - 2).toString(),
-        (currentYear - 3).toString()
-    )
+    val currentMonth = LocalDateTime.now().month
+    val batchList =
+        if (currentMonth >= Month.AUGUST) {
+            setOf(
+                "All Batches",
+                currentYear.toString(),
+                (currentYear - 1).toString(),
+                (currentYear - 2).toString(),
+                (currentYear - 3).toString()
+            )
+        } else {
+            setOf(
+                "All Batches",
+                (currentYear - 1).toString(),
+                (currentYear - 2).toString(),
+                (currentYear - 3).toString(),
+                (currentYear - 4).toString()
+            )
+        }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     val pickImageLauncher = rememberLauncherForActivityResult(
@@ -116,12 +129,12 @@ fun EventRegisterScreen3(
                                     shape = RoundedCornerShape(10.dp)
                                 )
                                 .clickable {
-                                    changeBatchSelection(batch,batchList)
+                                    changeBatchSelection(batch, batchList)
                                 }
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .background(if(isSelected) Orange else LocalAppColors.current.editTextBackground)
+                                    .background(if (isSelected) Orange else LocalAppColors.current.editTextBackground)
                                     .padding(horizontal = 16.dp, vertical = 12.dp),
                                 contentAlignment = Alignment.Center
                             ) {

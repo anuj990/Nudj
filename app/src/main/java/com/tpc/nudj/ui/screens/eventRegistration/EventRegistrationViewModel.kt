@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.Month
 import javax.inject.Inject
 
 @HiltViewModel
@@ -161,12 +162,22 @@ class EventRegistrationViewModel @Inject constructor(
             .toMutableList()
         if (batchesList.isEmpty()) {
             val currentYear = LocalDateTime.now().year
-            val yearList = listOf(
-                currentYear,
-                currentYear - 1,
-                currentYear - 2,
-                currentYear - 3
-            )
+            val currentMonth = LocalDateTime.now().month
+            val yearList =  if (currentMonth >= Month.AUGUST) {
+                listOf(
+                    currentYear,
+                    (currentYear - 1),
+                    (currentYear - 2),
+                    (currentYear - 3)
+                )
+            } else {
+                listOf(
+                    (currentYear - 1),
+                    (currentYear - 2),
+                    (currentYear - 3),
+                    (currentYear - 4)
+                )
+            }
             batchesList.addAll(yearList)
         }
         return batchesList
