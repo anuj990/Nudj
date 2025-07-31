@@ -29,7 +29,9 @@ sealed interface Screens: NavKey {
     }
 
     @Serializable
-    data object EventDetailsScreen : Screens
+    data class EventDetailsScreen(
+        val eventId: String
+    ) : Screens
 
     @Serializable
     data object UserDetailsScreen : Screens

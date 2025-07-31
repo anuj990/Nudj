@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 val authState by appViewModel.authState.collectAsState()
                 val backstack = rememberNavBackStack(
                     when (authState) {
-                        is AppViewModel.AuthState.Authenticated -> Screens.EventDetailsScreen
+                        is AppViewModel.AuthState.Authenticated -> Screens.UserDetailsFetchLoadingScreen
                         else -> Screens.Auth.LandingScreen
                     }
                 )
@@ -107,11 +107,6 @@ class MainActivity : ComponentActivity() {
                                 onClickSignup = {
                                     backstack.add(Screens.Auth.SignUpScreen)
                                 }
-                            )
-                        }
-                        entry<Screens.EventDetailsScreen> {
-                            EventDetailsScreen(
-                                eventId = "7Aogg5DVvZpExDPgwVop"
                             )
                         }
                         entry<Screens.UserDetailsFetchLoadingScreen> {

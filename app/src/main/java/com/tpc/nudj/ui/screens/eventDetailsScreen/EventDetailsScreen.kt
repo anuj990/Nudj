@@ -1,6 +1,6 @@
 package com.tpc.nudj.ui.screens.eventDetailsScreen
 
-import android.R
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -59,6 +59,7 @@ import com.tpc.nudj.ui.components.PrimaryButton
 import java.util.Locale
 import com.tpc.nudj.ui.components.SecondaryButton
 import com.tpc.nudj.ui.screens.auth.PreHomeScreen.LoadingScreenOverlay
+import com.tpc.nudj.ui.theme.CardBackgroundColor
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.Orange
@@ -155,7 +156,7 @@ fun EventDetailsScreenLayout(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Card(
-                    colors = CardDefaults.cardColors(Color(0xFFFFF1E6)),
+                    colors = CardDefaults.cardColors(CardBackgroundColor),
                     border = BorderStroke(width = 1.dp, color = if (isSystemInDarkTheme()) {Color.White} else {Color.Black})
                 ) {
                     Column(

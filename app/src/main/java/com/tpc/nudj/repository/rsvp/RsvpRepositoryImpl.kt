@@ -44,6 +44,7 @@ class RsvpRepositoryImpl @Inject constructor() : RsvpRepository {
                 .await()
             documentSnapshot.exists()
         } catch (e: Exception) {
+            Log.e("RsvpRepository", "Failed to check rsvp status: ${e.message}")
             false
         }
     }
