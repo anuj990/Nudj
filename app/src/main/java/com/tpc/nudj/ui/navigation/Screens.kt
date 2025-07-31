@@ -29,6 +29,9 @@ sealed interface Screens: NavKey {
     }
 
     @Serializable
+    data object EventDetailsScreen : Screens
+
+    @Serializable
     data object UserDetailsScreen : Screens
 
     @Serializable

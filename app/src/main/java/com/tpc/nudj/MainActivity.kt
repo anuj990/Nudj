@@ -31,6 +31,7 @@ import com.tpc.nudj.ui.screens.auth.signup.SignUpScreen
 import com.tpc.nudj.ui.screens.clubDashboard.ClubDashboardScreen
 import com.tpc.nudj.ui.screens.dashboard.DashboardScreen
 import com.tpc.nudj.ui.screens.detailsFetch.UserDetailsFetchScreen
+import com.tpc.nudj.ui.screens.eventDetailsScreen.EventDetailsScreen
 import com.tpc.nudj.ui.screens.eventRegistration.EventRegistrationScreen
 import com.tpc.nudj.ui.screens.myClubs.MyClubs
 import com.tpc.nudj.ui.theme.NudjTheme
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 val authState by appViewModel.authState.collectAsState()
                 val backstack = rememberNavBackStack(
                     when (authState) {
-                        is AppViewModel.AuthState.Authenticated -> Screens.UserDetailsFetchLoadingScreen
+                        is AppViewModel.AuthState.Authenticated -> Screens.EventDetailsScreen
                         else -> Screens.Auth.LandingScreen
                     }
                 )
@@ -106,6 +107,11 @@ class MainActivity : ComponentActivity() {
                                 onClickSignup = {
                                     backstack.add(Screens.Auth.SignUpScreen)
                                 }
+                            )
+                        }
+                        entry<Screens.EventDetailsScreen> {
+                            EventDetailsScreen(
+                                eventId = "7Aogg5DVvZpExDPgwVop"
                             )
                         }
                         entry<Screens.UserDetailsFetchLoadingScreen> {
