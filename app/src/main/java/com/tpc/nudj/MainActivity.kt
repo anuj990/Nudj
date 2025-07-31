@@ -211,7 +211,7 @@ class MainActivity : ComponentActivity() {
                         entry<Screens.ClubRegistrationScreen> {
                             ClubRegistrationScreen(
                                 toDashboardScreen = {
-                                    backstack.add(Screens.DashboardScreen)
+                                    backstack.add(Screens.ClubDashboardScreen)
                                 },
                                 onBackClicked = {
                                     backstack.removeLastOrNull()
