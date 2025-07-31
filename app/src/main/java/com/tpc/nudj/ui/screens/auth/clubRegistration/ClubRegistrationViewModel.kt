@@ -165,9 +165,7 @@ class ClubRegistrationViewModel @Inject constructor(
         clearMsgFlow()
         viewModelScope.launch {
             try {
-                val clubId = clubName
-                    .trim()
-                    .replace(" ", "").lowercase() + "_id"
+                val clubId = firebase.currentUser?.uid ?: throw IllegalStateException("User not logged in")
                 val clubDetails = ClubUser(
                     clubId = clubId,
                     clubName = clubName,
