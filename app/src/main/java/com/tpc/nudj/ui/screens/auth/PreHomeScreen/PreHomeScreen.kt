@@ -92,8 +92,7 @@ fun PreHomeScreenLayout(
                 Box(
                     modifier = Modifier
                         .padding(10.dp)
-                        .width(391.dp)
-                        .height(695.dp)
+                        .fillMaxWidth(0.97f)
                         .background(color = Color.White, shape = RoundedCornerShape(16.dp))
                 ) {
                     Column(
@@ -132,19 +131,17 @@ fun PreHomeScreenLayout(
                     }
                 }
             }
-
             PrimaryButton(
                 text = buttonText,
                 onClick = {
                     onClickFollow()
                 },
                 modifier = Modifier
-                    .padding(bottom = 19.dp, top = 6.dp)
-                    .width(300.dp)
-                    .height(62.dp),
+                    .fillMaxWidth(0.8f),
                 enabled = true,
                 isDarkModeEnabled = false
             )
+            Spacer(modifier = Modifier.padding(10.dp))
         }
     }
 }
