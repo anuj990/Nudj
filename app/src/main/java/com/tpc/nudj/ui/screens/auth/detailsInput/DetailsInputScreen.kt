@@ -56,6 +56,8 @@ import com.tpc.nudj.ui.components.TertiaryButton
 import com.tpc.nudj.ui.navigation.Screens
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
+import java.time.LocalDateTime
+import java.time.Month
 import java.time.Year
 
 @Composable
@@ -101,7 +103,7 @@ fun DetailsInputScreenLayout(
     firstName: String = "",
     lastName: String = "",
     branch: Branch = Branch.CSE,
-    batch: Int = 2025,
+    batch: Int = if (LocalDateTime.now().month >= Month.AUGUST) LocalDateTime.now().year else LocalDateTime.now().year - 1,
     gender: Gender = Gender.PREFER_NOT_TO_DISCLOSE,
     errorMessage: String? = null,
     onFirstNameChange: (String) -> Unit = {},
@@ -120,9 +122,23 @@ fun DetailsInputScreenLayout(
 
     val branchOptions = Branch.values().toList()
 
-    // Generate batch options for the last 6 years
     val currentYear = Year.now().value
-    val batchOptions = (0..5).map { currentYear - it }.toList()
+    val currentMonth = LocalDateTime.now().month
+    val batchOptions = if (currentMonth >= Month.AUGUST) {
+        listOf(
+            currentYear,
+            currentYear - 1,
+            currentYear - 2,
+            currentYear - 3
+        )
+    } else {
+        listOf(
+            currentYear - 1,
+            currentYear - 2,
+            currentYear - 3,
+            currentYear - 4
+        )
+    }
 
     val genderOptions = Gender.values().toList()
 
