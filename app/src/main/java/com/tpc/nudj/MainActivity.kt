@@ -240,6 +240,11 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
+                        entry<Screens.EventDetailsScreen>{
+                            EventDetailsScreen(
+                                eventId = it.eventId
+                            )
+                        }
                     }
                 )
             }
