@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 val authState by appViewModel.authState.collectAsState()
                 val backstack = rememberNavBackStack(
                     when (authState) {
-                        is AppViewModel.AuthState.Authenticated -> Screens.MyClubsScreen
+                        is AppViewModel.AuthState.Authenticated -> Screens.UserDetailsFetchLoadingScreen
                         else -> Screens.Auth.LandingScreen
                     }
                 )
@@ -91,11 +91,6 @@ class MainActivity : ComponentActivity() {
                         rememberViewModelStoreNavEntryDecorator(),
                     ),
                     entryProvider = entryProvider {
-                        entry<Screens.EventDetailsScreen> {
-                            EventDetailsScreen(
-                                eventId = "7Aogg5DVvZpExDPgwVop"
-                            )
-                        }
                         entry<Screens.Auth.PreHomeScreen> {
                             PreHomeScreen(
                                 onCompleted = {
