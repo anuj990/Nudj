@@ -19,7 +19,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.tpc.nudj.ui.navigation.Screens
-import com.tpc.nudj.ui.screens.auth.PreHomeScreen.PreHomeScreen
+import com.tpc.nudj.ui.screens.auth.preHomeScreen.PreHomeScreen
 import com.tpc.nudj.ui.screens.auth.clubRegistration.ClubRegistrationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsConfirmationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsInputScreen
@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 val authState by appViewModel.authState.collectAsState()
                 val backstack = rememberNavBackStack(
                     when (authState) {
-                        is AppViewModel.AuthState.Authenticated -> Screens.UserDetailsFetchLoadingScreen
+                        is AppViewModel.AuthState.Authenticated -> Screens.MyClubsScreen
                         else -> Screens.Auth.LandingScreen
                     }
                 )
@@ -91,6 +91,11 @@ class MainActivity : ComponentActivity() {
                         rememberViewModelStoreNavEntryDecorator(),
                     ),
                     entryProvider = entryProvider {
+                        entry<Screens.EventDetailsScreen> {
+                            EventDetailsScreen(
+                                eventId = "7Aogg5DVvZpExDPgwVop"
+                            )
+                        }
                         entry<Screens.Auth.PreHomeScreen> {
                             PreHomeScreen(
                                 onCompleted = {
@@ -238,12 +243,6 @@ class MainActivity : ComponentActivity() {
                                 onBackClicked = {
                                     backstack.removeLastOrNull()
                                 }
-                            )
-                        }
-
-                        entry<Screens.EventDetailsScreen>{
-                            EventDetailsScreen(
-                                eventId = it.eventId
                             )
                         }
                     }

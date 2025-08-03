@@ -1,4 +1,4 @@
-package com.tpc.nudj.ui.screens.auth.PreHomeScreen
+package com.tpc.nudj.ui.screens.auth.preHomeScreen
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -11,21 +11,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.tpc.nudj.model.ClubUser
 import com.tpc.nudj.model.enums.ClubCategory
 import com.tpc.nudj.repository.follow.FollowRepository
-import com.tpc.nudj.repository.follow.FollowRepositoryImpl
 import com.tpc.nudj.repository.user.UserRepository
-import com.tpc.nudj.repository.user.UserRepositoryImpl
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.Orange
 import com.tpc.nudj.ui.theme.Purple
-import com.tpc.nudj.utils.FirestoreCollections
-import com.tpc.nudj.utils.FirestoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.collections.map
 
