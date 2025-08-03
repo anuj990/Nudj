@@ -1,7 +1,12 @@
 package com.tpc.nudj.ui.screens.eventDetailsScreen
 
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,11 +26,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -39,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,25 +49,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.tpc.nudj.model.Event
-import com.tpc.nudj.ui.components.PrimaryButton
-import java.util.Locale
 import com.tpc.nudj.ui.components.SecondaryButton
-import com.tpc.nudj.ui.screens.auth.PreHomeScreen.LoadingScreenOverlay
 import com.tpc.nudj.ui.theme.CardBackgroundColor
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.Orange
 import com.tpc.nudj.ui.theme.Purple
 import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun EventDetailsScreen(
@@ -73,19 +72,34 @@ fun EventDetailsScreen(
 ) {
     val event = viewModel.event.collectAsState()
     val isRsvped = viewModel.isRsvped.collectAsState()
-    val isLoading = viewModel.isLoading.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.fetchEvent(eventId)
         viewModel.isRsvped(eventId)
     }
-    EventDetailsScreenLayout(
-        eventId = eventId,
-        isRsvped = isRsvped.value,
-        viewModel = viewModel,
-        event = event.value
-    )
-    if (isLoading.value) {
-        LoadingScreenOverlay()
+    Scaffold(
+        containerColor = LocalAppColors.current.background
+    ) { paddingValues ->
+        AnimatedContent(
+            targetState = isLoading,
+            transitionSpec = {
+                slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(300)) togetherWith
+                        fadeOut(animationSpec = tween(90))
+            }
+        ) { isContentLoading ->
+            key(isContentLoading) {
+                if (isContentLoading) {
+                    LoadingScreenOverlay()
+                } else {
+                    EventDetailsScreenLayout(
+                        eventId = eventId,
+                        isRsvped = isRsvped.value,
+                        viewModel = viewModel,
+                        event = event.value
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -162,96 +176,81 @@ fun EventDetailsScreenLayout(
                     Column(
                         modifier = Modifier.padding(15.dp)
                     ) {
-                        Row {
-                            Text(
-                                text = "Event Dates: ",
-                                color = Orange,
-                                fontFamily = ClashDisplay
-                            )
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Column(
-                                Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.End,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                eventDates?.forEach {
-                                    val date = it.startDateTime.toDate()
-                                    val calendar = Calendar.getInstance()
-                                    calendar.time = date
-                                    val year = calendar.get(Calendar.YEAR)
-                                    val monthName = calendar.getDisplayName(
-                                        Calendar.MONTH,
-                                        Calendar.SHORT,
-                                        Locale.getDefault()
-                                    )
-                                    val day = calendar.get(Calendar.DAY_OF_MONTH)
-                                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                                    val minute = calendar.get(Calendar.MINUTE)
-                                    val dayName = calendar.getDisplayName(
-                                        Calendar.DAY_OF_WEEK,
-                                        Calendar.LONG,
-                                        Locale.getDefault()
-                                    )
+                        Text(
+                            text = "Event Dates: ",
+                            color = Orange,
+                            fontFamily = ClashDisplay
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column(
+                            Modifier
+                                .padding(5.dp),
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            eventDates?.forEach {
+                                val date = it.startDateTime.toDate()
+                                val calendar = Calendar.getInstance()
+                                calendar.time = date
+                                val year = calendar.get(Calendar.YEAR)
+                                val monthName = calendar.getDisplayName(
+                                    Calendar.MONTH,
+                                    Calendar.SHORT,
+                                    Locale.getDefault()
+                                )
+                                val day = calendar.get(Calendar.DAY_OF_MONTH)
+                                val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                                val minute = calendar.get(Calendar.MINUTE)
+                                val dayName = calendar.getDisplayName(
+                                    Calendar.DAY_OF_WEEK,
+                                    Calendar.LONG,
+                                    Locale.getDefault()
+                                )
 
-                                    Column(
-                                        horizontalAlignment = Alignment.End,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-
-                                            Text(
-                                                text = "$day $monthName $year",
-                                                fontFamily = ClashDisplay
-                                            )
-                                        }
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-
-                                        ) {
-                                            Text(
-                                                text = "Day: ",
-                                                color = Orange,
-                                                fontFamily = ClashDisplay
-                                            )
-                                            Text(
-                                                text = "$dayName",
-                                                fontFamily = ClashDisplay
-                                            )
-                                        }
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-
-                                        ) {
-                                            Text(
-                                                text = "Time: ",
-                                                color = Orange,
-                                                fontFamily = ClashDisplay
-                                            )
-                                            Text(
-                                                text = "$hour:$minute",
-                                                fontFamily = ClashDisplay
-                                            )
-                                        }
-                                        Spacer(Modifier.height(10.dp))
+                                Column() {
+                                    Row() {
+                                        Text(
+                                            text = "$day $monthName $year",
+                                            fontFamily = ClashDisplay
+                                        )
                                     }
+                                    Row() {
+                                        Text(
+                                            text = "Day: ",
+                                            color = Orange,
+                                            fontFamily = ClashDisplay
+                                        )
+                                        Spacer(modifier = Modifier.width(5.dp))
+                                        Text(
+                                            text = "$dayName",
+                                            fontFamily = ClashDisplay
+                                        )
+                                    }
+                                    Row() {
+                                        Text(
+                                            text = "Time: ",
+                                            color = Orange,
+                                            fontFamily = ClashDisplay
+                                        )
+                                        Spacer(modifier = Modifier.width(5.dp))
+                                        Text(
+                                            text = "$hour:$minute",
+                                            fontFamily = ClashDisplay
+                                        )
+                                    }
+                                    Spacer(Modifier.height(10.dp))
                                 }
                             }
                         }
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
+
+                        Row() {
                             Text(
                                 text = "Venue: ",
                                 color = Orange,
                                 fontFamily = ClashDisplay
                             )
+                            Spacer(modifier = Modifier.width(5.dp))
                             Text(
                                 text = venue?: "Not Available",
                                 fontFamily = ClashDisplay
@@ -302,6 +301,7 @@ fun EventDetailsScreenLayout(
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth(),
+                                fontWeight = FontWeight.Bold,
                                 text = it.question,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -368,20 +368,15 @@ fun EventDetailsScreenLayout(
 @Preview(showBackground = true)
 fun LoadingScreenOverlay() {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(color = Color.Black.copy(alpha = 0.5f)),
         contentAlignment = Alignment.Center
     ) {
-        Card(
-            modifier = Modifier
-                .size(150.dp),
-            shape = RoundedCornerShape(percent = 15)
-        ) {
-            Box(modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+        CircularProgressIndicator(
+            modifier = Modifier.size(50.dp),
+            color = LocalAppColors.current.appTitle,
+            strokeWidth = 6.dp
+        )
     }
 }
