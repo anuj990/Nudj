@@ -20,11 +20,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.ui.screens.ClubDashBoard.Data.BottomNavItem
-import com.tpc.nudj.ui.screens.ClubDashBoard.Data.Screens
+import com.tpc.nudj.ui.screens.ClubDashBoard.Data.ClubDashBoardScreens
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.LocalAppColors
 
@@ -32,11 +31,11 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun ClubDashScreen(
+fun ClubDashBoardScreen(
     viewModel: ClubDashBottomNavViewModel = hiltViewModel()
 
 ) {
-    val screens = listOf(Screens.Home, Screens.Event, Screens.Profile)
+    val screens = listOf(ClubDashBoardScreens.Home, ClubDashBoardScreens.Event, ClubDashBoardScreens.Profile)
     val pagerState = rememberPagerState(
         initialPage = viewModel.selectedPage,
         pageCount = { screens.size }
@@ -75,9 +74,9 @@ fun ClubDashScreen(
                 .padding(padding)
         ) { page ->
             when (screens[page]) {
-                is Screens.Home -> HomeScreenLayout()
-                is Screens.Event -> EventScreenLayout()
-                is Screens.Profile -> ProfileScreenLayout()
+                is ClubDashBoardScreens.Home -> HomeScreenLayout()
+                is ClubDashBoardScreens.Event -> EventScreenLayout()
+                is ClubDashBoardScreens.Profile -> ProfileScreenLayout()
             }
         }
     }
