@@ -1,5 +1,10 @@
-package com.tpc.nudj.ui.screens.auth.PreHomeScreen
+package com.tpc.nudj.ui.screens.auth.preHomeScreen
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,13 +12,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -35,28 +40,43 @@ import com.tpc.nudj.ui.theme.Purple
 @Composable
 fun PreHomeScreen(onCompleted: () -> Unit) {
     val viewModel: PreHomeScreenViewModel = hiltViewModel()
-    val isLoading = viewModel.isLoading.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     val buttonText = if (viewModel.selectedCount.value > 0)
         "Follow ${viewModel.selectedCount.value} club${if (viewModel.selectedCount.value > 1) "s" else ""}"
     else
         "Let's Go!"
 
-    PreHomeScreenLayout(
-        culturalClubs = viewModel.culturalClubsState,
-        technicalClubs = viewModel.technicalClubsState,
-        sportsClubs = viewModel.sportsClubsState,
-        misc = viewModel.miscState,
-        onClubSelected = { list, index -> viewModel.ClubSelection(list, index) },
-        buttonText = buttonText,
-        onClickFollow = {
-            viewModel.onClickFollow(
-                onCompleted
-            )
-        }
-    )
 
-    if (isLoading.value) {
-        LoadingScreenOverlay()
+    Scaffold(
+        containerColor = LocalAppColors.current.background
+    ) { paddingValues ->
+        AnimatedContent(
+            targetState = isLoading,
+            transitionSpec = {
+                slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(300)) togetherWith
+                        fadeOut(animationSpec = tween(90))
+            }
+        ) { isContentLoading ->
+            key(isContentLoading) {
+                if (isContentLoading) {
+                    LoadingScreenOverlay()
+                } else {
+                    PreHomeScreenLayout(
+                        culturalClubs = viewModel.culturalClubsState,
+                        technicalClubs = viewModel.technicalClubsState,
+                        sportsClubs = viewModel.sportsClubsState,
+                        misc = viewModel.miscState,
+                        onClubSelected = { list, index -> viewModel.ClubSelection(list, index) },
+                        buttonText = buttonText,
+                        onClickFollow = {
+                            viewModel.onClickFollow(
+                                onCompleted
+                            )
+                        }
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -238,27 +258,5 @@ fun PreHomeScreenLayoutPreview() {
             buttonText = "Follow 0 clubs",
             onClickFollow = {}
         )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun LoadingScreenOverlay() {
-    Box(
-        modifier = Modifier.fillMaxSize()
-            .background(color = Color.Black.copy(alpha = 0.5f)),
-        contentAlignment = Alignment.Center
-    ) {
-        Card(
-            modifier = Modifier
-                .size(150.dp),
-            shape = RoundedCornerShape(percent = 15)
-        ) {
-            Box(modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
     }
 }

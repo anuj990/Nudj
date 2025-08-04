@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.tpc.nudj.model.Event
+import com.tpc.nudj.ui.components.LoadingScreenOverlay
 import com.tpc.nudj.ui.components.SecondaryButton
 import com.tpc.nudj.ui.theme.CardBackgroundColor
 import com.tpc.nudj.ui.theme.ClashDisplay
@@ -364,19 +365,3 @@ fun EventDetailsScreenLayout(
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun LoadingScreenOverlay() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Black.copy(alpha = 0.5f)),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.size(50.dp),
-            color = LocalAppColors.current.appTitle,
-            strokeWidth = 6.dp
-        )
-    }
-}

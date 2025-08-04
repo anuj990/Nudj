@@ -13,12 +13,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tpc.nudj.ui.screens.auth.PreHomeScreen.ClubCardState
+import com.tpc.nudj.ui.screens.auth.preHomeScreen.ClubCardState
 import com.tpc.nudj.ui.theme.ClashDisplay
-import com.tpc.nudj.ui.theme.Purple
 
 @Composable
 fun ClubNameCard(
