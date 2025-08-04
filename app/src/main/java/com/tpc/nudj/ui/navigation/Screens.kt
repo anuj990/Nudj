@@ -29,6 +29,11 @@ sealed interface Screens: NavKey {
     }
 
     @Serializable
+    data class EventDetailsScreen(
+        val eventId: String
+    ) : Screens
+
+    @Serializable
     data object UserDetailsScreen : Screens
 
     @Serializable
@@ -55,5 +60,8 @@ sealed interface Screens: NavKey {
 
     @Serializable
     data object MyClubsScreen : Screens
+
+    @Serializable
+    data object EventRegistrationScreen :Screens
 
 }

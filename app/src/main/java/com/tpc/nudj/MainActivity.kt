@@ -29,8 +29,11 @@ import com.tpc.nudj.ui.screens.auth.forgotPassword.ForgetPasswordScreen
 import com.tpc.nudj.ui.screens.auth.landing.LandingScreen
 import com.tpc.nudj.ui.screens.auth.login.LoginScreen
 import com.tpc.nudj.ui.screens.auth.signup.SignUpScreen
+import com.tpc.nudj.ui.screens.clubDashboard.ClubDashboardScreen
 import com.tpc.nudj.ui.screens.dashboard.DashboardScreen
 import com.tpc.nudj.ui.screens.detailsFetch.UserDetailsFetchScreen
+import com.tpc.nudj.ui.screens.eventDetailsScreen.EventDetailsScreen
+import com.tpc.nudj.ui.screens.eventRegistration.EventRegistrationScreen
 import com.tpc.nudj.ui.screens.myClubs.MyClubs
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.viewmodels.AppViewModel
@@ -210,7 +213,7 @@ class MainActivity : ComponentActivity() {
                         entry<Screens.ClubRegistrationScreen> {
                             ClubRegistrationScreen(
                                 toDashboardScreen = {
-                                    backstack.add(Screens.DashboardScreen)
+                                    backstack.add(Screens.ClubDashboardScreen)
                                 },
                                 onBackClicked = {
                                     backstack.removeLastOrNull()
@@ -218,7 +221,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         entry<Screens.ClubDashboardScreen> {
-                            // Placeholder for Club Dashboard Screen
                             ClubDashBoardScreen(
                                 viewModel = hiltViewModel()
                             )
@@ -226,6 +228,19 @@ class MainActivity : ComponentActivity() {
                         entry<Screens.MyClubsScreen> {
                             MyClubs(
                                 onBackClicked = { backstack.removeLastOrNull() }
+                            )
+                        }
+
+                        entry<Screens.EventRegistrationScreen> {
+                            EventRegistrationScreen(
+                                onBackClicked = {
+                                    backstack.removeLastOrNull()
+                                }
+                            )
+                        }
+                        entry<Screens.EventDetailsScreen>{
+                            EventDetailsScreen(
+                                eventId = it.eventId
                             )
                         }
                     }

@@ -1,11 +1,14 @@
 package com.tpc.nudj.ui.screens.myClubs
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,6 +53,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -63,6 +67,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.model.ClubUser
 import com.tpc.nudj.model.enums.ClubCategory
+import com.tpc.nudj.ui.components.LoadingScreenOverlay
+import com.tpc.nudj.ui.screens.auth.preHomeScreen.PreHomeScreenLayout
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorDark
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
@@ -82,18 +88,6 @@ fun MyClubs(
     val allClubs = viewModel.allClubsList.collectAsState().value
     val uiState by viewModel.myClubsUiState.collectAsState()
 
-    MyClubsLayout(
-        uiState = uiState,
-        followedClubs = followedClubs,
-        onAddClicked = { sheetExpanded.value = true },
-        onBack = { onBackClicked() },
-        onCancelClub = { viewModel.removeSelectedClub(it) },
-        clearToastMessage = { viewModel.clearToastMessage() },
-        onSaveClicked = {
-            viewModel.onFollowClubs(onBack = { onBackClicked() })
-        }
-    )
-
     if (sheetExpanded.value) {
         AllClubsBottomSheetLayout(
             onDismiss = { sheetExpanded.value = false },
@@ -103,6 +97,38 @@ fun MyClubs(
             }
         )
     }
+
+    Scaffold(
+        containerColor = LocalAppColors.current.background
+    ) { paddingValues ->
+        AnimatedContent(
+            targetState = uiState.isLoading,
+            transitionSpec = {
+                slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(300)) togetherWith
+                        fadeOut(animationSpec = tween(90))
+            }
+        ) { isContentLoading ->
+            key(isContentLoading) {
+                if (isContentLoading) {
+                    LoadingScreenOverlay()
+                } else {
+                    MyClubsLayout(
+                        uiState = uiState,
+                        followedClubs = followedClubs,
+                        onAddClicked = { sheetExpanded.value = true },
+                        onBack = { onBackClicked() },
+                        onCancelClub = { viewModel.removeSelectedClub(it) },
+                        clearToastMessage = { viewModel.clearToastMessage() },
+                        onSaveClicked = {
+                            viewModel.onFollowClubs(onBack = { onBackClicked() })
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+
 }
 
 
@@ -250,20 +276,7 @@ fun MyClubsLayout(
             }
             Spacer(modifier = Modifier.padding(24.dp))
         }
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f)),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(50.dp),
-                    color = LocalAppColors.current.appTitle,
-                    strokeWidth = 6.dp
-                )
-            }
-        }
+
     }
 }
 

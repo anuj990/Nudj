@@ -138,6 +138,8 @@ fun NudjTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     readOnly: Boolean = false,
+    leadingIcon: @Composable (()->Unit)? = null,
+    placeholder: @Composable (()->Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true
 ) {
@@ -155,6 +157,8 @@ fun NudjTextField(
             ),
         shape = shape,
         readOnly = readOnly,
+        leadingIcon = leadingIcon,
+        placeholder = placeholder,
         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 20.sp),
         trailingIcon = trailingIcon,
         colors = OutlinedTextFieldDefaults.colors(
