@@ -98,37 +98,22 @@ fun MyClubs(
         )
     }
 
-    Scaffold(
-        containerColor = LocalAppColors.current.background
-    ) { paddingValues ->
-        AnimatedContent(
-            targetState = uiState.isLoading,
-            transitionSpec = {
-                slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(300)) togetherWith
-                        fadeOut(animationSpec = tween(90))
-            }
-        ) { isContentLoading ->
-            key(isContentLoading) {
-                if (isContentLoading) {
-                    LoadingScreenOverlay()
-                } else {
-                    MyClubsLayout(
-                        uiState = uiState,
-                        followedClubs = followedClubs,
-                        onAddClicked = { sheetExpanded.value = true },
-                        onBack = { onBackClicked() },
-                        onCancelClub = { viewModel.removeSelectedClub(it) },
-                        clearToastMessage = { viewModel.clearToastMessage() },
-                        onSaveClicked = {
-                            viewModel.onFollowClubs(onBack = { onBackClicked() })
-                        }
-                    )
-                }
-            }
+    MyClubsLayout(
+        uiState = uiState,
+        followedClubs = followedClubs,
+        onAddClicked = { sheetExpanded.value = true },
+        onBack = { onBackClicked() },
+        onCancelClub = { viewModel.removeSelectedClub(it) },
+        clearToastMessage = { viewModel.clearToastMessage() },
+        onSaveClicked = {
+            viewModel.onFollowClubs(onBack = { onBackClicked() })
         }
+    )
+
+
+    if (uiState.isLoading) {
+        LoadingScreenOverlay()
     }
-
-
 }
 
 
