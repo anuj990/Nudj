@@ -20,7 +20,6 @@ import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.tpc.nudj.ui.navigation.Screens
 import com.tpc.nudj.ui.screens.ClubDashBoard.ClubDashBoardScreen
-import com.tpc.nudj.ui.screens.auth.PreHomeScreen.PreHomeScreen
 import com.tpc.nudj.ui.screens.auth.clubRegistration.ClubRegistrationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsConfirmationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsInputScreen
@@ -28,8 +27,8 @@ import com.tpc.nudj.ui.screens.auth.emailVerification.EmailVerificationScreen
 import com.tpc.nudj.ui.screens.auth.forgotPassword.ForgetPasswordScreen
 import com.tpc.nudj.ui.screens.auth.landing.LandingScreen
 import com.tpc.nudj.ui.screens.auth.login.LoginScreen
+import com.tpc.nudj.ui.screens.auth.preHomeScreen.PreHomeScreen
 import com.tpc.nudj.ui.screens.auth.signup.SignUpScreen
-import com.tpc.nudj.ui.screens.clubDashboard.ClubDashboardScreen
 import com.tpc.nudj.ui.screens.dashboard.DashboardScreen
 import com.tpc.nudj.ui.screens.detailsFetch.UserDetailsFetchScreen
 import com.tpc.nudj.ui.screens.eventDetailsScreen.EventDetailsScreen

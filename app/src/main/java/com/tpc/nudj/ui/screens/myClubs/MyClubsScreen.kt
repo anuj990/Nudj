@@ -68,6 +68,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.model.ClubUser
 import com.tpc.nudj.model.enums.ClubCategory
 import com.tpc.nudj.ui.components.LoadingScreenOverlay
+import com.tpc.nudj.ui.components.TopBar
 import com.tpc.nudj.ui.screens.auth.preHomeScreen.PreHomeScreenLayout
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorDark
@@ -420,38 +421,6 @@ fun AllClubsBottomSheetLayout(
         }
     }
 }
-
-@Composable
-fun TopBar(
-    onBackClicked: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.displayMedium.copy(
-                fontFamily = ClashDisplay,
-                color = LocalAppColors.current.appTitle
-            ),
-            modifier = Modifier.align(Alignment.Center)
-        )
-        IconButton(
-            onClick = { onBackClicked() }
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBackIosNew,
-                contentDescription = stringResource(R.string.back_navigation),
-                modifier = Modifier.size(25.dp),
-                tint = LocalAppColors.current.appTitle
-            )
-        }
-    }
-}
-
-
 @Preview
 @Composable
 fun ClubCardPreview() {

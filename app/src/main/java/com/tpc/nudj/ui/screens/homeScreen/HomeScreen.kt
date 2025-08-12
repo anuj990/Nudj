@@ -70,6 +70,7 @@ import com.tpc.nudj.ui.theme.Purple
 import java.text.SimpleDateFormat
 import java.util.*
 import com.tpc.nudj.R
+import com.tpc.nudj.ui.components.TopBar
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorDark
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 
@@ -383,35 +384,6 @@ fun EventCardMainContent(
     }
 }
 
-@Composable
-fun TopBar(
-    onBackClicked: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.displayMedium.copy(
-                fontFamily = ClashDisplay,
-                color = LocalAppColors.current.appTitle
-            ),
-            modifier = Modifier.align(Alignment.Center)
-        )
-        IconButton(
-            onClick = { onBackClicked() }
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBackIosNew,
-                contentDescription = stringResource(R.string.back_navigation),
-                modifier = Modifier.size(25.dp),
-                tint = LocalAppColors.current.appTitle
-            )
-        }
-    }
-}
 
 @Composable
 fun SearchBar(
