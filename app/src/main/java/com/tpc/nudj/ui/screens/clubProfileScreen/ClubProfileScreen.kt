@@ -170,7 +170,7 @@ fun ClubProfileLayout(
                         ) {
                             Spacer(modifier = Modifier.padding(4.dp))
                             Text(
-                                text = uiState.clubName,
+                                text = if(uiState.clubName!="") uiState.clubName else "Club Name",
                                 style = MaterialTheme.typography.headlineMedium.copy(
                                     fontFamily = ClashDisplay,
                                     color = Color.White
@@ -304,49 +304,51 @@ fun ClubProfileLayout(
                         )
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth(0.9f)
-                            .border(
-                                width = 1.8F.dp,
-                                LocalAppColors.current.editTextBorder,
-                                shape = RoundedCornerShape(10.dp)
+                    if (uiState.achievementsList.isNotEmpty()) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth(0.9f)
+                                .border(
+                                    width = 1.8F.dp,
+                                    LocalAppColors.current.editTextBorder,
+                                    shape = RoundedCornerShape(10.dp)
+                                ),
+                            colors = CardDefaults.cardColors(
+                                containerColor = LocalAppColors.current.editTextBackground
                             ),
-                        colors = CardDefaults.cardColors(
-                            containerColor = LocalAppColors.current.editTextBackground
-                        ),
-                    ) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        uiState.achievementsList.forEach { achievement ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp)
-                            ) {
-                                Text(
-                                    text = "•",
-                                    style = MaterialTheme.typography.titleLarge.copy(
-                                        fontFamily = ClashDisplay,
-                                        color = Orange
-                                    ),
-                                    modifier = Modifier.padding(end = 6.dp)
-                                )
-                                Spacer(modifier = Modifier.width(3.dp))
-                                Text(
-                                    text = achievement,
-                                    style = MaterialTheme.typography.titleLarge.copy(
-                                        fontFamily = ClashDisplay,
-                                        color = Orange
-                                    ),
+                        ) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            uiState.achievementsList.forEach { achievement ->
+                                Row(
                                     modifier = Modifier
-                                        .weight(1f)
-                                        .padding(end = 8.dp),
-                                    textAlign = TextAlign.Start
-                                )
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp)
+                                ) {
+                                    Text(
+                                        text = "•",
+                                        style = MaterialTheme.typography.titleLarge.copy(
+                                            fontFamily = ClashDisplay,
+                                            color = Orange
+                                        ),
+                                        modifier = Modifier.padding(end = 6.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(3.dp))
+                                    Text(
+                                        text = achievement,
+                                        style = MaterialTheme.typography.titleLarge.copy(
+                                            fontFamily = ClashDisplay,
+                                            color = Orange
+                                        ),
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(end = 8.dp),
+                                        textAlign = TextAlign.Start
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(12.dp))
                             }
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
-                        Spacer(modifier = Modifier.height(4.dp))
                     }
                     Spacer(modifier = Modifier.padding(6.dp))
                     Row(
@@ -389,8 +391,9 @@ fun ClubProfileLayout(
                                 Text(
                                     text = timestampFormatConverter(eventDetails.eventDate),
                                     style = MaterialTheme.typography.headlineSmall.copy(
+                                        fontSize = (MaterialTheme.typography.headlineSmall.fontSize.value - 2).sp,
                                         fontFamily = ClashDisplay,
-                                        color = LocalAppColors.current.background
+                                        color = LocalAppColors.current.landingPageAppTitle
                                     ),
                                 )
                                 Spacer(modifier = Modifier.padding(12.dp))
@@ -398,7 +401,7 @@ fun ClubProfileLayout(
                                     text = eventDetails.eventName,
                                     style = MaterialTheme.typography.headlineMedium.copy(
                                         fontFamily = ClashDisplay,
-                                        color = LocalAppColors.current.background
+                                        color = LocalAppColors.current.landingPageAppTitle
                                     ),
                                 )
                                 Spacer(modifier = Modifier.padding(10.dp))
@@ -406,7 +409,7 @@ fun ClubProfileLayout(
                                     text = "${eventDetails.rsvp} RSVPs",
                                     style = MaterialTheme.typography.headlineSmall.copy(
                                         fontFamily = ClashDisplay,
-                                        color = LocalAppColors.current.background
+                                        color = LocalAppColors.current.landingPageAppTitle
                                     ),
                                 )
                                 Spacer(modifier = Modifier.padding(10.dp))
@@ -454,7 +457,7 @@ fun ClubProfileLayout(
 }
 
 private fun timestampFormatConverter(eventDate: Timestamp): String {
-    val dateFormatter = SimpleDateFormat("MMMM dd yyyy", Locale.getDefault())
+    val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
     val formattedDate = dateFormatter.format(eventDate.toDate())
     return formattedDate
 }
