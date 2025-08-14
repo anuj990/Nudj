@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tpc.nudj.R
+import com.tpc.nudj.ui.components.TopBar
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.LocalAppColors
@@ -148,35 +149,6 @@ fun AnnouncementScreenContent(
     }
 }
 
-@Composable
-fun TopBar(
-    onBackClicked:()->Unit
-){
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp)
-    ){
-        IconButton(
-            onClick = onBackClicked
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBackIosNew,
-                contentDescription = "Back Arrow",
-                tint= LocalAppColors.current.appTitle,
-                modifier = Modifier.size(25.dp)
-            )
-        }
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.displayMedium.copy(
-                fontFamily = ClashDisplay,
-                color = LocalAppColors.current.appTitle,
-            ),
-            modifier= Modifier.align(Alignment.Center)
-        )
-    }
-}
 
 
 @Preview

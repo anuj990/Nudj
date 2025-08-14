@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tpc.nudj.ui.components.ConfirmationCard
+import com.tpc.nudj.ui.components.TopBar
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
@@ -41,7 +42,9 @@ fun RSVPConfirmationScreen(){
             .background(LocalAppColors.current.landingPageAppTitle)
             .padding(start = 16.dp, end = 16.dp)
     ) {
-        TopBar()
+        TopBar(
+            onBackClicked = {}
+        )
 
         Spacer(modifier = Modifier.height(36.dp))
 
@@ -75,37 +78,6 @@ fun RSVPConfirmationScreen(){
     }
 
 
-}
-
-
-
-@Composable
-fun TopBar(
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 32.dp)
-    ) {
-        Text(
-            text = stringResource(com.tpc.nudj.R.string.app_name),
-            style = MaterialTheme.typography.displayMedium.copy(
-                fontFamily = ClashDisplay,
-                color = LocalAppColors.current.appTitle
-            ),
-            modifier = Modifier.align(Alignment.Center)
-        )
-
-        Icon(
-            imageVector = Icons.Default.ArrowBackIosNew,
-            contentDescription = stringResource(com.tpc.nudj.R.string.back_navigation),
-            modifier = Modifier
-                .size(25.dp)
-                .align(Alignment.CenterStart),
-            tint = LocalAppColors.current.appTitle
-        )
-
-    }
 }
 
 @Preview
