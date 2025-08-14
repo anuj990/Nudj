@@ -37,9 +37,6 @@ sealed interface Screens: NavKey {
     data object UserDetailsScreen : Screens
 
     @Serializable
-    data object UserProfileScreen : Screens
-
-    @Serializable
     data class UserDetailsConfirmationScreen(
         val firstName: String,
         val lastName: String,

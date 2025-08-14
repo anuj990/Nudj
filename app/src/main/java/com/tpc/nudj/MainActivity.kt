@@ -158,9 +158,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        entry<Screens.UserProfileScreen> {
-                            UserProfileScreen()
-                        }
                         entry<Screens.Auth.EmailVerificationScreen> {
                             EmailVerificationScreen(
                                 viewModel = hiltViewModel(),
