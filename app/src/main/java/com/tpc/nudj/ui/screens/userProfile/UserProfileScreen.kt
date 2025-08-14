@@ -181,7 +181,6 @@ fun UserProfileScreenLayout(
         topBar = {
             TopBar(
                 onBackClicked = {},
-                modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
             )
         }
     ) { contentPadding ->
