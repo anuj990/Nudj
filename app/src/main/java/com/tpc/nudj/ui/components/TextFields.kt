@@ -37,7 +37,6 @@ fun EmailField(
     modifier: Modifier = Modifier,
     email: String = "",
     onEmailChange: (String) -> Unit
-
 ) {
     val colors = LocalAppColors.current
 
@@ -141,18 +140,19 @@ fun NudjTextField(
     leadingIcon: @Composable (()->Unit)? = null,
     placeholder: @Composable (()->Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    color:Color = LocalAppColors.current.editTextBackground,
+    textColor: Color = MaterialTheme.colorScheme.onBackground
 ) {
     val shape = RoundedCornerShape(16.dp)
     val borderColor = Color(0xFFFF5E00).copy(alpha = 0.5f)
-    val backgroundColor = LocalAppColors.current.editTextBackground
 
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier
             .background(
-                color = backgroundColor,
+                color = color,
                 shape = shape
             ),
         shape = shape,
@@ -164,8 +164,10 @@ fun NudjTextField(
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Color(0xFFFF5E00),
             unfocusedBorderColor = borderColor,
-            focusedContainerColor = backgroundColor,
-            unfocusedContainerColor = backgroundColor,
+            focusedContainerColor = color,
+            unfocusedContainerColor = color,
+            unfocusedTextColor = textColor,
+            focusedTextColor = textColor
         ),
         singleLine = singleLine
     )

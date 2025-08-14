@@ -93,6 +93,36 @@ class RsvpRepositoryImpl @Inject constructor() : RsvpRepository {
         }
     }
 
+    override suspend fun fetchPastRsvpEvents(userId: String): List<Event> {
+        return try {
+            val rsvpCollection = firestore.collection(FirestoreCollections.RSVP.path)
+                .whereEqualTo("userId", userId)
+                .get()
+                .await()
+
+            val eventIds = rsvpCollection.documents.mapNotNull {
+                it.getString("eventId")
+            }
+
+            val rsvpEvents = eventIds.mapNotNull { eventId ->
+                val eventSnapshot = firestore.collection(FirestoreCollections.EVENTS.path)
+                    .document(eventId)
+                    .get()
+                    .await()
+
+                val data = eventSnapshot.data
+                data?.let { FirestoreUtils.toEvent(it) }
+            }.filter { event ->
+                event.eventDates.any { it.startDateTime.toDate().before(Timestamp.now().toDate()) }
+            }
+
+            rsvpEvents
+        } catch (e: Exception) {
+            Log.e("RsvpRepository", "Failed to fetch all past rsvp events : ${e.message}")
+            emptyList()
+        }
+    }
+
     override suspend fun fetchUpcomingRsvpEventsOfFollowedClubs(userId: String): List<Event> {
         return try {
 

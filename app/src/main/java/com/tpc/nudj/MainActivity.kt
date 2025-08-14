@@ -20,7 +20,7 @@ import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.tpc.nudj.ui.navigation.Screens
 import com.tpc.nudj.ui.screens.ClubDashBoard.ClubDashBoardScreen
-import com.tpc.nudj.ui.screens.auth.PreHomeScreen.PreHomeScreen
+import com.tpc.nudj.ui.screens.auth.preHomeScreen.PreHomeScreen
 import com.tpc.nudj.ui.screens.auth.clubRegistration.ClubRegistrationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsConfirmationScreen
 import com.tpc.nudj.ui.screens.auth.detailsInput.DetailsInputScreen
@@ -29,12 +29,12 @@ import com.tpc.nudj.ui.screens.auth.forgotPassword.ForgetPasswordScreen
 import com.tpc.nudj.ui.screens.auth.landing.LandingScreen
 import com.tpc.nudj.ui.screens.auth.login.LoginScreen
 import com.tpc.nudj.ui.screens.auth.signup.SignUpScreen
-import com.tpc.nudj.ui.screens.clubDashboard.ClubDashboardScreen
 import com.tpc.nudj.ui.screens.dashboard.DashboardScreen
 import com.tpc.nudj.ui.screens.detailsFetch.UserDetailsFetchScreen
 import com.tpc.nudj.ui.screens.eventDetailsScreen.EventDetailsScreen
 import com.tpc.nudj.ui.screens.eventRegistration.EventRegistrationScreen
 import com.tpc.nudj.ui.screens.myClubs.MyClubs
+import com.tpc.nudj.ui.screens.userProfile.UserProfileScreen
 import com.tpc.nudj.ui.theme.NudjTheme
 import com.tpc.nudj.ui.viewmodels.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -157,6 +157,9 @@ class MainActivity : ComponentActivity() {
                                     backstack.remove(Screens.Auth.SignUpScreen)
                                 }
                             )
+                        }
+                        entry<Screens.UserProfileScreen> {
+                            UserProfileScreen()
                         }
                         entry<Screens.Auth.EmailVerificationScreen> {
                             EmailVerificationScreen(
