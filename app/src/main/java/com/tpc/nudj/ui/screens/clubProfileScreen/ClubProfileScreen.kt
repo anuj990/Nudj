@@ -170,7 +170,7 @@ fun ClubProfileLayout(
                         ) {
                             Spacer(modifier = Modifier.padding(4.dp))
                             Text(
-                                text = if(uiState.clubName!="") uiState.clubName else "Club Name",
+                                text = if (uiState.clubName != "") uiState.clubName else "Club Name",
                                 style = MaterialTheme.typography.headlineMedium.copy(
                                     fontFamily = ClashDisplay,
                                     color = Color.White
@@ -254,57 +254,59 @@ fun ClubProfileLayout(
                         }
                     }
                     Spacer(modifier = Modifier.padding(6.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(0.9f),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Description",
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                fontFamily = ClashDisplay,
+                    if (uiState.description.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Description",
+                                style = MaterialTheme.typography.headlineMedium.copy(
+                                    fontFamily = ClashDisplay,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            HorizontalDivider(
+                                thickness = 2.dp,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
-                        HorizontalDivider(
-                            thickness = 2.dp,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(4.dp))
-                    Box(
-                        modifier = Modifier.fillMaxWidth(0.9f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = uiState.description,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontSize = 24.sp,
-                                fontFamily = ClashDisplay,
-                                color = Orange
-                            ),
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(6.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(0.9f),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Achievements",
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                fontFamily = ClashDisplay,
-                                color = MaterialTheme.colorScheme.onBackground
+                        }
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Box(
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = uiState.description,
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontSize = 24.sp,
+                                    fontFamily = ClashDisplay,
+                                    color = Orange
+                                ),
                             )
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
-                        HorizontalDivider(
-                            thickness = 2.dp,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
+                        }
+                        Spacer(modifier = Modifier.padding(6.dp))
                     }
-                    Spacer(modifier = Modifier.padding(4.dp))
                     if (uiState.achievementsList.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Achievements",
+                                style = MaterialTheme.typography.headlineMedium.copy(
+                                    fontFamily = ClashDisplay,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            HorizontalDivider(
+                                thickness = 2.dp,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(4.dp))
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth(0.9f)
@@ -351,103 +353,107 @@ fun ClubProfileLayout(
                         }
                     }
                     Spacer(modifier = Modifier.padding(6.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(0.9f),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Past Events",
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                fontFamily = ClashDisplay,
+                    if(uiState.clubEvents.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Past Events",
+                                style = MaterialTheme.typography.headlineMedium.copy(
+                                    fontFamily = ClashDisplay,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            HorizontalDivider(
+                                thickness = 2.dp,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
-                        HorizontalDivider(
-                            thickness = 2.dp,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(4.dp))
-                    uiState.clubEvents.forEach { eventDetails ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth(0.9f)
-                                .clickable {
-                                    onPastEventClicked(eventDetails.eventId)
-                                },
-                            shape = RoundedCornerShape(20.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = LocalAppColors.current.appTitle
-                            ),
-                        ) {
-                            Column(
+                        }
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        uiState.clubEvents.forEach { eventDetails ->
+                            Card(
                                 modifier = Modifier
                                     .fillMaxWidth(0.9f)
-                                    .align(Alignment.CenterHorizontally),
-                                horizontalAlignment = Alignment.Start,
+                                    .clickable {
+                                        onPastEventClicked(eventDetails.eventId)
+                                    },
+                                shape = RoundedCornerShape(20.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = LocalAppColors.current.appTitle
+                                ),
                             ) {
-                                Spacer(modifier = Modifier.padding(6.dp))
-                                Text(
-                                    text = timestampFormatConverter(eventDetails.eventDate),
-                                    style = MaterialTheme.typography.headlineSmall.copy(
-                                        fontSize = (MaterialTheme.typography.headlineSmall.fontSize.value - 2).sp,
-                                        fontFamily = ClashDisplay,
-                                        color = LocalAppColors.current.landingPageAppTitle
-                                    ),
-                                )
-                                Spacer(modifier = Modifier.padding(12.dp))
-                                Text(
-                                    text = eventDetails.eventName,
-                                    style = MaterialTheme.typography.headlineMedium.copy(
-                                        fontFamily = ClashDisplay,
-                                        color = LocalAppColors.current.landingPageAppTitle
-                                    ),
-                                )
-                                Spacer(modifier = Modifier.padding(10.dp))
-                                Text(
-                                    text = "${eventDetails.rsvp} RSVPs",
-                                    style = MaterialTheme.typography.headlineSmall.copy(
-                                        fontFamily = ClashDisplay,
-                                        color = LocalAppColors.current.landingPageAppTitle
-                                    ),
-                                )
-                                Spacer(modifier = Modifier.padding(10.dp))
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.9f)
+                                        .align(Alignment.CenterHorizontally),
+                                    horizontalAlignment = Alignment.Start,
+                                ) {
+                                    Spacer(modifier = Modifier.padding(6.dp))
+                                    Text(
+                                        text = timestampFormatConverter(eventDetails.eventDate),
+                                        style = MaterialTheme.typography.headlineSmall.copy(
+                                            fontSize = (MaterialTheme.typography.headlineSmall.fontSize.value - 2).sp,
+                                            fontFamily = ClashDisplay,
+                                            color = LocalAppColors.current.landingPageAppTitle
+                                        ),
+                                    )
+                                    Spacer(modifier = Modifier.padding(12.dp))
+                                    Text(
+                                        text = eventDetails.eventName,
+                                        style = MaterialTheme.typography.headlineMedium.copy(
+                                            fontFamily = ClashDisplay,
+                                            color = LocalAppColors.current.landingPageAppTitle
+                                        ),
+                                    )
+                                    Spacer(modifier = Modifier.padding(10.dp))
+                                    Text(
+                                        text = "${eventDetails.rsvp} RSVPs",
+                                        style = MaterialTheme.typography.headlineSmall.copy(
+                                            fontFamily = ClashDisplay,
+                                            color = LocalAppColors.current.landingPageAppTitle
+                                        ),
+                                    )
+                                    Spacer(modifier = Modifier.padding(10.dp))
+                                }
                             }
+                            Spacer(modifier = Modifier.padding(8.dp))
                         }
-                        Spacer(modifier = Modifier.padding(8.dp))
+                        Spacer(modifier = Modifier.padding(6.dp))
                     }
-                    Spacer(modifier = Modifier.padding(6.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(0.9f),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Additional Details",
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                fontFamily = ClashDisplay,
+                    if(uiState.additionalDetails.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Additional Details",
+                                style = MaterialTheme.typography.headlineMedium.copy(
+                                    fontFamily = ClashDisplay,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            HorizontalDivider(
+                                thickness = 2.dp,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
-                        HorizontalDivider(
-                            thickness = 2.dp,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(4.dp))
-                    Box(
-                        modifier = Modifier.fillMaxWidth(0.9f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = uiState.additionalDetails,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontSize = 24.sp,
-                                fontFamily = ClashDisplay,
-                                color = Orange
-                            ),
-                        )
+                        }
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Box(
+                            modifier = Modifier.fillMaxWidth(0.9f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = uiState.additionalDetails,
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontSize = 24.sp,
+                                    fontFamily = ClashDisplay,
+                                    color = Orange
+                                ),
+                            )
+                        }
                     }
                 }
             }
