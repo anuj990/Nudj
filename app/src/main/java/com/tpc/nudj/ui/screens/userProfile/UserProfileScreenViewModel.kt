@@ -23,7 +23,7 @@ class UserProfileScreenViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val rsvpRepository: RsvpRepository,
     private val reviewRepository: ReviewRepository
-): ViewModel() {
+) : ViewModel() {
     val firebaseAuth = FirebaseAuth.getInstance()
     private val currentUser = firebaseAuth.currentUser
 
@@ -41,10 +41,10 @@ class UserProfileScreenViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     isLoading = true,
-                    )
+                )
             }
-            val normalUser = userRepository.fetchUserById(uid?: "")
-            try{
+            val normalUser = userRepository.fetchUserById(uid ?: "")
+            try {
                 _uiState.update {
                     it.copy(
                         firstName = normalUser?.firstName ?: "",
@@ -54,7 +54,9 @@ class UserProfileScreenViewModel @Inject constructor(
                         branch = normalUser?.branch ?: Branch.CSE,
                     )
                 }
-                val pastEvents = rsvpRepository.fetchPastRsvpEvents(uid?: "") // Assuming this is suspend
+                val pastEvents =
+                    rsvpRepository.fetchPastRsvpEvents(uid ?: "") // Assuming this is suspend
+                updateRatings(pastEvents)
                 _uiState.update {
                     it.copy(
                         pastEventList = pastEvents
@@ -70,11 +72,22 @@ class UserProfileScreenViewModel @Inject constructor(
         }
     }
 
+    private suspend fun updateRatings(events: List<Event>) {
+        val ratingsMap: MutableMap<Event, Boolean> = mutableMapOf()
+        events.forEach { event ->
+            ratingsMap[event] = isRateItEnabled(event)
+        }
+        _uiState.update {
+            it.copy(
+                ratingsMap = ratingsMap,
+            )
+        }
+    }
 
 
     fun onFirstNameChange(input: String) {
         viewModelScope.launch {
-            _uiState.update{
+            _uiState.update {
                 it.copy(
                     firstName = input
                 )
@@ -122,6 +135,7 @@ class UserProfileScreenViewModel @Inject constructor(
             }
         }
     }
+
     fun onDismissFeedback() {
         viewModelScope.launch {
             _uiState.update {
@@ -134,20 +148,31 @@ class UserProfileScreenViewModel @Inject constructor(
     }
 
     suspend fun isRateItEnabled(event: Event): Boolean {
-        return reviewRepository.getReviewbyEventandUser(eventId = event.eventId, userId = uid!!).isEmpty()
+        if (uid == null) {
+            return false
+        }
+        return reviewRepository.getReviewbyEventandUser(eventId = event.eventId, userId = uid)
+            .isEmpty()
     }
+
     fun onFeedbackChange(input: String) {
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
-                     feedback = input
+                    feedback = input
                 )
             }
         }
 
     }
+
     fun onClickSubmit(clubId: String, eventId: String) {
         viewModelScope.launch {
+            _uiState.update { uiState ->
+                uiState.copy(
+                    isLoading = true
+                )
+            }
             currentUser?.uid?.let { userId ->
                 reviewRepository.addReview(
                     review = Review(
@@ -159,7 +184,12 @@ class UserProfileScreenViewModel @Inject constructor(
                     )
                 )
             }
-            initialiseProfile()
+            updateRatings(_uiState.value.pastEventList)
+            _uiState.update { uiState ->
+                uiState.copy(
+                    isLoading = false,
+                )
+            }
         }
     }
 
@@ -175,7 +205,7 @@ class UserProfileScreenViewModel @Inject constructor(
 
     fun onClickSave() {
         viewModelScope.launch {
-            val normalUser = userRepository.fetchUserById(uid?: "")
+            val normalUser = userRepository.fetchUserById(uid ?: "")
             userRepository.saveUser(
                 user = normalUser!!.copy(
                     userid = currentUser?.uid ?: "",

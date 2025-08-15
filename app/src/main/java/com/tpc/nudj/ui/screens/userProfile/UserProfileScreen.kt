@@ -94,31 +94,33 @@ import java.util.Locale
 fun UserProfileScreen(
     viewModel: UserProfileScreenViewModel = hiltViewModel()
 ) {
-    val uiState = viewModel.uiState.collectAsState()
-    val batch = uiState.value.batch
-    val photoUrl = uiState.value.photoUrl
-    val firstName = uiState.value.firstName
-    val lastName = uiState.value.lastName
-    val eventList = uiState.value.pastEventList
-    val branch = uiState.value.branch
-    val isLoading = uiState.value.isLoading
-    UserProfileScreenLayout(
-        batch = batch,
-        photoUrl = photoUrl,
-        firstName = firstName,
-        lastName = lastName,
-        eventList = eventList,
-        onFirstNameChange = { newFirstName -> viewModel.onFirstNameChange(newFirstName) },
-        onLastNameChange = { newLastName -> viewModel.onLastNameChange(newLastName) },
-        onBatchChange = { newBatch -> viewModel.onBatchChange(newBatch) },
-        uiState = uiState.value,
-        viewModel = viewModel,
-        userId = viewModel.uid,
-        branch = branch,
-        onBranchChange = { newBranch -> viewModel.onBranchChange(newBranch) },
-    )
-    if (isLoading) {
-        LoadingScreenOverlay()
+    val uiState by viewModel.uiState.collectAsState()
+    val batch = uiState.batch
+    val photoUrl = uiState.photoUrl
+    val firstName = uiState.firstName
+    val lastName = uiState.lastName
+    val eventList = uiState.pastEventList
+    val branch = uiState.branch
+    val isLoading = uiState.isLoading
+    Box() {
+        UserProfileScreenLayout(
+            batch = batch,
+            photoUrl = photoUrl,
+            firstName = firstName,
+            lastName = lastName,
+            eventList = eventList,
+            onFirstNameChange = { newFirstName -> viewModel.onFirstNameChange(newFirstName) },
+            onLastNameChange = { newLastName -> viewModel.onLastNameChange(newLastName) },
+            onBatchChange = { newBatch -> viewModel.onBatchChange(newBatch) },
+            uiState = uiState,
+            viewModel = viewModel,
+            userId = viewModel.uid,
+            branch = branch,
+            onBranchChange = { newBranch -> viewModel.onBranchChange(newBranch) },
+        )
+        if (uiState.isLoading) {
+            LoadingScreenOverlay()
+        }
     }
 }
 
@@ -499,17 +501,12 @@ fun UserProfileScreenLayout(
             }
             if (eventList.isNotEmpty()) {
                 eventList.forEach { item ->
-                    var isEnabled by remember { mutableStateOf(false) }
-
-                    LaunchedEffect(key1 = item) {
-                        isEnabled = viewModel.isRateItEnabled(item)
-                    }
                     PastEventCard(
                         event = item,
                         onRateClick = {
                             feedbackEvent = item
                         },
-                        isRateItEnabled = isEnabled
+                        isRateItEnabled = uiState.ratingsMap[item] ?: true
                     )
                 }
             } else {

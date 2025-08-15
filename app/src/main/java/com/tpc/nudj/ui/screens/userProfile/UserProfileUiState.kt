@@ -13,5 +13,6 @@ data class UserProfileUiState(
     val pastEventList: List<Event> = emptyList(),
     val feedback: String = "",
     val rating: Int = 0,
-    val branch: Branch = Branch.CSE
+    val branch: Branch = Branch.CSE,
+    val ratingsMap: MutableMap<Event, Boolean> = mutableMapOf()
 )
