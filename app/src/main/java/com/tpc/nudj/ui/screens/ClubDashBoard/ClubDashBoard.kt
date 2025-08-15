@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tpc.nudj.ui.screens.ClubDashBoard.Data.BottomNavItem
 import com.tpc.nudj.ui.screens.ClubDashBoard.Data.ClubDashBoardScreens
+import com.tpc.nudj.ui.screens.clubProfileScreen.ClubProfileScreen
+import com.tpc.nudj.ui.screens.clubProfileScreen.editClubProfile.EditCLubProfileScreen
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.LocalAppColors
 
@@ -44,7 +46,7 @@ fun ClubDashBoardScreen(
 
     LaunchedEffect(viewModel.selectedPage) {
         if (pagerState.currentPage != viewModel.selectedPage) {
-            delay(150)
+            delay(200)
             pagerState.scrollToPage(viewModel.selectedPage)
         }
     }
@@ -52,7 +54,7 @@ fun ClubDashBoardScreen(
 
     LaunchedEffect(pagerState.currentPage) {
         if (pagerState.currentPage != viewModel.selectedPage) {
-            delay(120)
+            delay(130)
             viewModel.onPageSelected(pagerState.currentPage)
         }
     }
@@ -76,7 +78,7 @@ fun ClubDashBoardScreen(
             when (screens[page]) {
                 is ClubDashBoardScreens.Home -> HomeScreenLayout()
                 is ClubDashBoardScreens.Event -> EventScreenLayout()
-                is ClubDashBoardScreens.Profile -> ProfileScreenLayout()
+                is ClubDashBoardScreens.Profile -> ClubProfileScreen()
             }
         }
     }
@@ -97,7 +99,7 @@ fun ClubBottomNavBar(
         val positionWidth = this.maxWidth / items.size
         val slidingEffect by animateDpAsState(
             targetValue = (selectedIndex * positionWidth.value).dp,
-            animationSpec = tween(durationMillis = 200)
+            animationSpec = tween(durationMillis = 140)
         )
 
         Box(
@@ -180,12 +182,6 @@ fun EventScreenLayout() {
     }
 }
 
-@Composable
-fun ProfileScreenLayout() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("PROFILE Screen")
-    }
-}
 
 
 

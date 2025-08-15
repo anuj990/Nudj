@@ -39,7 +39,7 @@ object FirestoreUtils {
             "clubId" to clubUser.clubId,
             "clubName" to clubUser.clubName,
             "description" to clubUser.description,
-            "achievements" to clubUser.achievementsList,
+            "achievementsList" to clubUser.achievementsList,
             "clubEmail" to clubUser.clubEmail,
             "clubLogo" to clubUser.clubLogo,
             "clubCategory" to clubUser.clubCategory.name, // Store enum as string

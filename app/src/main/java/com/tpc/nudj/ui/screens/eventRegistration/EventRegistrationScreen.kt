@@ -39,11 +39,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tpc.nudj.ui.components.TopBar
 import com.tpc.nudj.ui.screens.eventRegistration.eventRegistrationScreen1.EventRegisterScreen1
 import com.tpc.nudj.ui.screens.eventRegistration.eventRegistrationScreen2.EventRegisterScreen2
 import com.tpc.nudj.ui.screens.eventRegistration.eventRegistrationScreen3.EventRegisterScreen3
 import com.tpc.nudj.ui.screens.eventRegistration.eventRegistrationScreen4.EventRegisterScreen4
-import com.tpc.nudj.ui.screens.myClubs.TopBar
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.theme.NudjTheme
