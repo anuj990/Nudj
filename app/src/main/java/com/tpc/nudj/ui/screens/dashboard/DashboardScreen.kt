@@ -52,6 +52,7 @@ import com.tpc.nudj.ui.navigation.Screens
 import com.tpc.nudj.ui.screens.dashboard.announcement.AnnouncementScreen
 import com.tpc.nudj.ui.screens.dashboard.announcement.recentAnnouncement
 import com.tpc.nudj.ui.screens.homeScreen.HomeScreenLayout
+import com.tpc.nudj.ui.screens.userProfile.UserProfileScreen
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
 import com.tpc.nudj.ui.theme.LocalAppColors
 import com.tpc.nudj.ui.viewmodels.AppViewModel
@@ -117,6 +118,9 @@ fun DashboardScreen(
                         onBackClicked = {},
                         navigateToMyClub = onNavigateToMyClubs
                     )
+                }
+                BottomNavScreen.Profile -> {
+                    UserProfileScreen()
                 }
                 else -> NavScreens(
                     screen = screen,

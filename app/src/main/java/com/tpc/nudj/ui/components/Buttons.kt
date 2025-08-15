@@ -126,12 +126,12 @@ fun TertiaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    isDarkModeEnabled: Boolean
+    isDarkModeEnabled: Boolean,
+    contentColor: Color = if (isSystemInDarkTheme()) Color.White else Purple
 ) {
     val isSystemDark = isSystemInDarkTheme()
     val useDarkTheme = isDarkModeEnabled && isSystemDark
 
-    val contentColor = if (useDarkTheme) Color.White else Purple
 
     TextButton(
         onClick = onClick,

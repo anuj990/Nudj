@@ -14,4 +14,6 @@ interface RsvpRepository {
     suspend fun fetchUpcomingRsvpEvents(userId: String): List<Event>
 
     suspend fun fetchUpcomingRsvpEventsOfFollowedClubs(userId: String): List<Event>
+
+    suspend fun fetchPastRsvpEvents(userId: String): List<Event>
 }

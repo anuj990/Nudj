@@ -1,5 +1,6 @@
 package com.tpc.nudj.repository.review
 
+import android.util.Log
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.tpc.nudj.model.Review
@@ -13,13 +14,23 @@ class ReviewRepositoryImpl @Inject constructor() : ReviewRepository {
     private val reviewsCollection = firestore.collection(FirestoreCollections.REVIEWS.path)
 
     override suspend fun addReview(review: Review) {
-        val data = FirestoreUtils.toMap(review)
-        reviewsCollection.document(review.reviewId).set(data).await()
+        try {
+            val reviewWithId = review.copy(
+                reviewId = "${review.userId}:${review.eventId}"
+            )
+            val data = FirestoreUtils.toMap(reviewWithId)
+            reviewsCollection.document(reviewWithId.reviewId).set(data).await()
+        } catch (e: Exception) {
+            Log.e("ReviewRepository", "Unable to add review.")
+        }
     }
 
     override suspend fun updateReview(review: Review) {
-        val data = FirestoreUtils.toMap(review)
-        reviewsCollection.document(review.reviewId).set(data).await()
+        try {
+            val data = FirestoreUtils.toMap(review)
+            reviewsCollection.document(review.reviewId).set(data).await()
+        } catch (e: Exception) {
+            Log.e("ReviewRepository", "Unable to update review.")        }
     }
 
     override suspend fun getReviewbyUser(userId: String): List<Review> {
