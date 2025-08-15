@@ -224,9 +224,12 @@ fun UserProfileScreenLayout(
                     model = photoUrl,
                     contentDescription = "Profile picture",
                     contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.orange_n),
+                    error = painterResource(R.drawable.orange_n),
                     modifier = Modifier
                         .size(200.dp)
                         .clip(CircleShape)
+                        .background(Color.White)
                 )
                 if (isEditEnabled) {
                     Box(
