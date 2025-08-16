@@ -69,7 +69,8 @@ enum class BottomNavScreen(@StringRes val title: Int, @DrawableRes val icon: Int
 fun DashboardScreen(
     viewModel: DashBoardViewModel = viewModel(),
     onNavigateToMyClubs:()->Unit = {},
-    appViewModel: AppViewModel = hiltViewModel()
+    appViewModel: AppViewModel = hiltViewModel(),
+    onEventCardClicked: (String) -> Unit
 ) {
     val uiState by viewModel.dashBoardUiState.collectAsState()
     val destination = listOf(
@@ -110,7 +111,9 @@ fun DashboardScreen(
             val screen = destination[page]
             when (screen) {
                 BottomNavScreen.Home -> {
-                    HomeScreenLayout()
+                    HomeScreenLayout(
+                        onEventCardClicked = onEventCardClicked
+                    )
                 }
                 BottomNavScreen.Clubs -> {
                     AnnouncementScreen(
@@ -267,6 +270,6 @@ fun BottomNavigationBar(
 @Composable
 fun DashboardScreenPreview() {
     NudjTheme {
-        DashboardScreen()
+        DashboardScreen(onEventCardClicked = {})
     }
 }

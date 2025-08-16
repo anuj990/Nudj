@@ -167,4 +167,16 @@ class RsvpRepositoryImpl @Inject constructor() : RsvpRepository {
             emptyList()
         }
     }
+
+    override suspend fun getRsvpCountForEvent(eventId: String): Int {
+        return try {
+            val rsvpCollection = firestore.collection(FirestoreCollections.RSVP.path)
+                .whereEqualTo("eventId",eventId)
+                .get().await()
+            rsvpCollection.size()
+        } catch (e: Exception) {
+            Log.e("RsvpRepository", "Failed to fetch rsvp count.")
+            0
+        }
+    }
 }
