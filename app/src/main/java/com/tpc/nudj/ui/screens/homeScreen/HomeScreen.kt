@@ -338,7 +338,8 @@ fun EventCard(
             ) {
                 EventCardBanner(
                     eventBanner = event.eventBannerUrl,
-                    logo = logo
+                    logo = logo,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
@@ -361,14 +362,15 @@ fun EventCard(
 
 @Composable
 fun EventCardBanner(
+    modifier: Modifier,
     eventBanner: String?,
     @DrawableRes logo: Int
 ) {
     AsyncImage(
         model = eventBanner,
         contentDescription = "Event Banner",
-        modifier = Modifier.clip(RoundedCornerShape(12.dp)),
-        contentScale = ContentScale.FillBounds,
+        modifier = modifier.clip(RoundedCornerShape(12.dp)),
+        contentScale = ContentScale.Crop,
         placeholder = painterResource(id = logo),
         error = painterResource(id = logo)
     )
@@ -477,17 +479,17 @@ fun EventCardMainContent(
         ) {
             Text(
                 text = clubName,
-                style = MaterialTheme.typography.bodyLarge.copy(
+                style = MaterialTheme.typography.bodyMedium.copy(
                     fontFamily = ClashDisplay,
                     color = Color.White,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Text(
             text = eventName,
-            style = MaterialTheme.typography.headlineLarge.copy(
+            style = MaterialTheme.typography.titleLarge.copy(
                 fontFamily = ClashDisplay,
                 color = if (cardColor == Orange) Purple else Orange
             ),
@@ -498,12 +500,10 @@ fun EventCardMainContent(
             modifier = Modifier,
             contentAlignment = Alignment.Center
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column() {
                 Text(
                     text = dateTime,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = ClashDisplay,
                         fontSize = 19.sp,
                         color = Color.White
