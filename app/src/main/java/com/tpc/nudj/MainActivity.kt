@@ -28,7 +28,6 @@ import com.tpc.nudj.ui.screens.auth.emailVerification.EmailVerificationScreen
 import com.tpc.nudj.ui.screens.auth.forgotPassword.ForgetPasswordScreen
 import com.tpc.nudj.ui.screens.auth.landing.LandingScreen
 import com.tpc.nudj.ui.screens.auth.login.LoginScreen
-import com.tpc.nudj.ui.screens.auth.preHomeScreen.PreHomeScreen
 import com.tpc.nudj.ui.screens.auth.signup.SignUpScreen
 import com.tpc.nudj.ui.screens.dashboard.DashboardScreen
 import com.tpc.nudj.ui.screens.detailsFetch.UserDetailsFetchScreen
@@ -92,7 +91,7 @@ class MainActivity : ComponentActivity() {
                         rememberSavedStateNavEntryDecorator(),
                         rememberViewModelStoreNavEntryDecorator(),
                     ),
-                    entryProvider = entryProvider {
+                    entryProvider = entryProvider {                       
                         entry<Screens.Auth.PreHomeScreen> {
                             PreHomeScreen(
                                 onCompleted = {
@@ -182,6 +181,9 @@ class MainActivity : ComponentActivity() {
                             DashboardScreen(
                                 onNavigateToMyClubs = {
                                     backstack.add(Screens.MyClubsScreen)
+                                },
+                                onEventCardClicked = { eventId ->
+                                    backstack.add(Screens.EventDetailsScreen(eventId = eventId))
                                 }
                             )
                         }

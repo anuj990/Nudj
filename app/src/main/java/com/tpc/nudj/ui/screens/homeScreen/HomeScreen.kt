@@ -1,11 +1,11 @@
 package com.tpc.nudj.ui.screens.homeScreen
 
-import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,6 +13,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -33,16 +34,24 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -57,38 +66,89 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.tpc.nudj.ui.theme.LocalAppColors
-import com.tpc.nudj.ui.theme.NudjTheme
-import com.google.firebase.Timestamp
 import com.tpc.nudj.ui.theme.ClashDisplay
 import com.tpc.nudj.ui.theme.Orange
 import com.tpc.nudj.ui.theme.Purple
 import java.text.SimpleDateFormat
 import java.util.*
 import com.tpc.nudj.R
-import com.tpc.nudj.ui.components.TopBar
+import com.tpc.nudj.model.ClubUser
+import com.tpc.nudj.model.Event
+import com.tpc.nudj.ui.components.LoadingScreenOverlay
+import com.tpc.nudj.ui.components.PrimaryButton
+import com.tpc.nudj.ui.components.SecondaryButton
+import com.tpc.nudj.ui.theme.CardBackgroundColor
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorDark
 import com.tpc.nudj.ui.theme.EditTextBackgroundColorLight
+import org.w3c.dom.Text
 
 @Composable
-fun HomeScreenLayout() {
+fun HomeScreenLayout(
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+    onEventCardClicked: (String) -> Unit
+) {
+    val uiState = viewModel.uiState.collectAsState()
+    val filterClicked = uiState.value.filterClicked
+    val clubClicked = uiState.value.clubClicked
+
     HomeScreenContent(
         onBack = {},
-        onFilterClicked = {}
+        onFilterClicked = viewModel::onFilterClicked,
+        query = uiState.value.searchQuery,
+        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+        onQueryCleared = viewModel::onQueryCleared,
+        sampleEvents = uiState.value.eventList,
+        onEventCardClicked = onEventCardClicked
     )
+    if (uiState.value.isLoading) {
+        LoadingScreenOverlay()
+    }
+    if (filterClicked) {
+        FilterBottomSheet(
+            filterList = uiState.value.filters,
+            onDismissRequest = viewModel::onDismissRequest
+            ,
+            onSelectFilter = viewModel::onSelectFilter,
+            onClickClubsFilter = viewModel::onClickClubsFilter,
+            onSelectClubFilter = viewModel::onSelectClubFilter,
+            clubFilterList = uiState.value.clubFilters
+        )
+    }
+    if (clubClicked) {
+        ClubDialog(
+            onDismissRequest = viewModel::onDismissDialog,
+            filterList = uiState.value.filters,
+            clubList = uiState.value.clubList,
+            addFilterFromClub = {
+                viewModel.addFilterFromClub(it)
+                viewModel.onDismissDialog()
+            }
+        )
+    }
+
+
 }
 
 @Composable
 fun HomeScreenContent(
     onBack: () -> Unit,
-    onFilterClicked: () -> Unit
+    onFilterClicked: () -> Unit,
+    query: String,
+    onSearchQueryChanged: (String) -> Unit,
+    onQueryCleared: () -> Unit,
+    sampleEvents: List<Event>,
+    onEventCardClicked: (String) -> Unit
 ) {
-    var query by remember { mutableStateOf("") }
     var searchResult by remember { mutableStateOf(false) }
+    val filterEvents = sampleEvents.filter {
+        it.eventName.lowercase().contains(query.lowercase())
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -112,7 +172,7 @@ fun HomeScreenContent(
                     SearchBar(
                         value = query,
                         onValueChange = {
-                            query = it
+                            onSearchQueryChanged(it)
                             if (it.isEmpty()) {
                                 searchResult = false
                             }
@@ -124,7 +184,7 @@ fun HomeScreenContent(
                         },
                         clearSearch = query != "",
                         onClearClicked = {
-                            query = ""
+                            onQueryCleared()
                             searchResult = false
                         },
                         searchBarColor = EditTextBackgroundColorLight,
@@ -180,7 +240,7 @@ fun HomeScreenContent(
                     SearchBar(
                         value = query,
                         onValueChange = {
-                            query = it
+                            onSearchQueryChanged(it)
                             if (it.isEmpty()) {
                                 searchResult = false
                             }
@@ -192,7 +252,7 @@ fun HomeScreenContent(
                         },
                         clearSearch = query != "",
                         onClearClicked = {
-                            query = ""
+                            onQueryCleared()
                             searchResult = false
                         },
                         searchBarColor = Color.White,
@@ -228,12 +288,13 @@ fun HomeScreenContent(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            itemsIndexed(sampleEvents) { index, eventData ->
+            itemsIndexed(filterEvents) { index, eventData ->
                 EventCard(
-                    eventId = eventData.eventId,
+                    event = eventData,
                     index = index,
-                    onEventCardClicked = {},
-                    data = eventData
+                    onEventCardClicked = {
+                        onEventCardClicked(eventData.eventId)
+                    }
                 )
                 Spacer(modifier = Modifier.padding(10.dp))
             }
@@ -244,12 +305,11 @@ fun HomeScreenContent(
 
 @Composable
 fun EventCard(
-    eventId: String,
+    event: Event,
     index: Int,
-    onEventCardClicked:()->Unit,
-    data: HomeUiState
+    onEventCardClicked: () -> Unit,
 ) {
-    val date = data.eventDates.first().startDateTime.toDate()
+    val date = event.eventDates.first().startDateTime.toDate()
     val formattedDate = SimpleDateFormat("MMMM dd, EEEE", Locale.getDefault()).format(date)
     val cardColor =
         if (index % 2 == 0) Orange else if (isSystemInDarkTheme()) EditTextBackgroundColorDark else Purple
@@ -258,13 +318,13 @@ fun EventCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable{onEventCardClicked()},
+            .clickable { onEventCardClicked() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -277,8 +337,9 @@ fun EventCard(
                 contentAlignment = Alignment.Center,
             ) {
                 EventCardBanner(
-                    eventBanner = data.eventBannerUrl,
-                    logo = logo
+                    eventBanner = event.eventBannerUrl,
+                    logo = logo,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
@@ -288,10 +349,10 @@ fun EventCard(
             ) {
                 EventCardMainContent(
                     cardColor = cardColor,
-                    clubName = data.clubId,
-                    eventName = data.eventName,
+                    clubName = event.organizerName,
+                    eventName = event.eventName,
                     dateTime = formattedDate,
-                    eventVenue = data.eventVenue
+                    eventVenue = event.eventVenue
                 )
             }
         }
@@ -301,17 +362,96 @@ fun EventCard(
 
 @Composable
 fun EventCardBanner(
-    eventBanner: String,
+    modifier: Modifier,
+    eventBanner: String?,
     @DrawableRes logo: Int
 ) {
     AsyncImage(
         model = eventBanner,
         contentDescription = "Event Banner",
-        modifier = Modifier.clip(RoundedCornerShape(12.dp)),
-        contentScale = ContentScale.FillBounds,
+        modifier = modifier.clip(RoundedCornerShape(12.dp)),
+        contentScale = ContentScale.Crop,
         placeholder = painterResource(id = logo),
         error = painterResource(id = logo)
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FilterBottomSheet(
+    filterList: List<FilterData>,
+    clubFilterList: List<FilterData>,
+    onDismissRequest: () -> Unit,
+    onSelectFilter: (FilterData) -> Unit,
+    onSelectClubFilter: (FilterData) -> Unit,
+    onClickClubsFilter: () -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = rememberModalBottomSheetState(),
+        containerColor = CardBackgroundColor,
+        dragHandle = null
+    ) {
+        Column(
+            modifier = Modifier.padding(10.dp)
+        ) {
+            Text(
+                text = "Filters",
+                fontFamily = ClashDisplay,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(10.dp)
+            )
+            FlowRow {
+                Box(
+                    modifier = Modifier.padding(10.dp)
+                ) {
+                    SecondaryButton(
+                        text = "Clubs",
+                        onClick = onClickClubsFilter,
+                        isDarkModeEnabled = isSystemInDarkTheme()
+                    )
+                }
+                filterList.forEach { item ->
+                    key(item.filterName) {
+                        FilterCard(item, onSelectFilter)
+                    }
+                }
+                clubFilterList.forEach { item ->
+                    key(item.filterName) {
+                        FilterCard(item, onSelectClubFilter)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FilterCard(
+    filter: FilterData,
+    onSelectFilter: (FilterData) -> Unit,
+) {
+    Box(
+        modifier = Modifier.padding(10.dp)
+    ) {
+        if (!filter.isSelected) {
+            SecondaryButton(
+                text = filter.filterName,
+                onClick = {
+                    onSelectFilter(filter)
+                },
+                isDarkModeEnabled = isSystemInDarkTheme(),
+            )
+        } else {
+            PrimaryButton(
+                text = filter.filterName,
+                onClick = {
+                    onSelectFilter(filter)
+                },
+                isDarkModeEnabled = isSystemInDarkTheme(),
+            )
+        }
+    }
 }
 
 
@@ -339,16 +479,17 @@ fun EventCardMainContent(
         ) {
             Text(
                 text = clubName,
-                style = MaterialTheme.typography.titleLarge.copy(
+                style = MaterialTheme.typography.bodyMedium.copy(
                     fontFamily = ClashDisplay,
-                    color = Color.White
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
                 )
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Text(
             text = eventName,
-            style = MaterialTheme.typography.headlineLarge.copy(
+            style = MaterialTheme.typography.titleLarge.copy(
                 fontFamily = ClashDisplay,
                 color = if (cardColor == Orange) Purple else Orange
             ),
@@ -359,12 +500,10 @@ fun EventCardMainContent(
             modifier = Modifier,
             contentAlignment = Alignment.Center
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column() {
                 Text(
                     text = dateTime,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = ClashDisplay,
                         fontSize = 19.sp,
                         color = Color.White
@@ -384,6 +523,90 @@ fun EventCardMainContent(
     }
 }
 
+@Composable
+fun TopBar(
+    onBackClicked: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.app_name),
+            style = MaterialTheme.typography.displayMedium.copy(
+                fontFamily = ClashDisplay,
+                color = LocalAppColors.current.appTitle
+            ),
+            modifier = Modifier.align(Alignment.Center)
+        )
+        IconButton(
+            onClick = { onBackClicked() }
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBackIosNew,
+                contentDescription = stringResource(R.string.back_navigation),
+                modifier = Modifier.size(25.dp),
+                tint = LocalAppColors.current.appTitle
+            )
+        }
+    }
+}
+
+@Composable
+fun ClubDialog(
+    onDismissRequest: () -> Unit,
+    filterList: List<FilterData>,
+    clubList: List<ClubUser>,
+    addFilterFromClub: (ClubUser) -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismissRequest
+    ) {
+        Card(
+            colors = CardDefaults.cardColors(containerColor = CardBackgroundColor),
+            border = BorderStroke(width = 2.dp, color = Color.Black),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+
+            ) {
+                item {
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        text = "Clubs",
+                        fontFamily = ClashDisplay,
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(Modifier.height(10.dp))
+                }
+                itemsIndexed(clubList) { index, club ->
+                    Button(
+                        modifier = Modifier.fillMaxWidth(0.9f),
+                        onClick = {
+                            addFilterFromClub(club)
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                        shape = RoundedCornerShape(20),
+                        border = BorderStroke(width = 1.dp, color = Color.Black)
+                    ) {
+                        Text(
+                            text = club.clubName,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontFamily = ClashDisplay
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun SearchBar(
@@ -449,89 +672,6 @@ fun SearchBar(
             modifier = Modifier
                 .border(1.dp, Color.Black, shape = RoundedCornerShape(30.dp))
                 .fillMaxWidth()
-        )
-    }
-}
-
-val sampleEvents = listOf<HomeUiState>(
-    HomeUiState(
-        eventId = "1",
-        clubId = "SAAZ",
-        eventName = "SAAZ NIGHT'25",
-        eventDescription = "A collaborative UI/UX design event for rapid prototyping.",
-        eventVenue = "OAT",
-        eventBannerUrl = "https://i.ibb.co/7dzZq7rr/SAAZ-NIGHT-25-poster.jpg",
-        organizerName = "Saaz Club",
-        organizerContactNumber = "+91 941XXXXXXX",
-        eventDates = listOf(
-            EventTime(
-                startDateTime = Timestamp(
-                    Date(
-                        2025 - 1900,
-                        5,
-                        25,
-                        16,
-                        0
-                    )
-                ),
-                estimatedDuration = "2 hours"
-            )
-        ),
-        faqs = listOf(
-            FAQS("Who can participate?", "Anyone from any branch."),
-            FAQS("Do I need a team?", "No, individual entries are allowed.")
-        ),
-        isDeleted = false,
-        creationTimestamp = Timestamp.now(),
-        lastUpdatedTimestamp = Timestamp.now()
-    ),
-
-    HomeUiState(
-        eventId = "2",
-        eventDates = listOf(
-            EventTime(
-                estimatedDuration = "24 hours"
-            )
-        ),
-        faqs = emptyList(),
-        isDeleted = false,
-        creationTimestamp = Timestamp.now(),
-        lastUpdatedTimestamp = Timestamp.now()
-    ),
-    HomeUiState(
-        eventId = "2",
-        eventDates = listOf(
-            EventTime(
-                estimatedDuration = "24 hours"
-            )
-        ),
-        faqs = emptyList(),
-        isDeleted = false,
-        creationTimestamp = Timestamp.now(),
-        lastUpdatedTimestamp = Timestamp.now()
-    ),
-    HomeUiState(
-        eventId = "2",
-        eventDates = listOf(
-            EventTime(
-                estimatedDuration = "24 hours"
-            )
-        ),
-        faqs = emptyList(),
-        isDeleted = false,
-        creationTimestamp = Timestamp.now(),
-        lastUpdatedTimestamp = Timestamp.now()
-    )
-)
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun HomeScreenPreview() {
-    NudjTheme {
-        HomeScreenContent(
-            onBack = {},
-            onFilterClicked = {}
         )
     }
 }

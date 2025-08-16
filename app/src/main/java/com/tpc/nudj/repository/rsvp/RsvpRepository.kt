@@ -1,7 +1,6 @@
 package com.tpc.nudj.repository.rsvp
 
 import com.tpc.nudj.model.Event
-import com.tpc.nudj.model.RSVP
 
 interface RsvpRepository {
 
@@ -16,4 +15,6 @@ interface RsvpRepository {
     suspend fun fetchUpcomingRsvpEventsOfFollowedClubs(userId: String): List<Event>
 
     suspend fun fetchPastRsvpEvents(userId: String): List<Event>
+
+    suspend fun getRsvpCountForEvent(eventId: String): Int
 }

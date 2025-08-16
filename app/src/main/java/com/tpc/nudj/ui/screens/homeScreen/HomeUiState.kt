@@ -1,38 +1,28 @@
 package com.tpc.nudj.ui.screens.homeScreen
 
 import com.google.firebase.Timestamp
+import com.tpc.nudj.model.ClubUser
+import com.tpc.nudj.model.Event
 import java.util.Date
+import java.util.logging.Filter
 
+data class FilterData(
+    val filterName: String,
+    var isSelected: Boolean
+)
 data class HomeUiState(
-    val eventId: String,
-    val clubId: String = "Club Name",
-    val eventName: String = "Event Name",
-    val eventDescription: String = "",
-    val eventVenue: String = "Venue",
-    val eventBannerUrl: String = "",
-    val organizerName: String = "Organizer Name",
-    val organizerContactNumber: String = "+91 123456XXXX",
-    val eventDates: List<EventTime> = emptyList(),
-    val faqs: List<FAQS> = emptyList(),
-    val isDeleted: Boolean = false,
-    val creationTimestamp: Timestamp,
-    val lastUpdatedTimestamp: Timestamp
-)
-
-data class EventTime(
-    val startDateTime: Timestamp = Timestamp(
-        Date(
-            2024,
-            0,
-            1,
-            12,
-            0
-        )
+    val searchQuery: String = "",
+    val eventList: List<Event> = emptyList(),
+    val isLoading: Boolean = false,
+    val filterClicked: Boolean = false,
+    val filters: List<FilterData> = listOf(
+        FilterData("Popular", false),
+        FilterData("Recently Posted", false),
+        FilterData("Date: Closest to Farthest", false),
+        FilterData("Date: Farthest to Closest", false)
     ),
-    val estimatedDuration: String
+    val clubList: List<ClubUser> = emptyList(),
+    val clubClicked: Boolean = false,
+    val clubFilters: List<FilterData> = emptyList()
 )
 
-data class FAQS(
-    val question: String,
-    val answer: String
-)
